@@ -1,37 +1,101 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState } from 'react';
+import {
+  Container,
+  Title,
+  Text,
+  Button,
+  TextInput,
+  Card,
+  Badge,
+  Group,
+  Stack,
+  Paper,
+} from '@mantine/core';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [name, setName] = useState('');
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8">
-      <div className="flex gap-8 mb-8">
-        <a href="https://vite.dev" target="_blank" className="hover:opacity-80 transition-opacity">
-          <img src={viteLogo} className="h-24 w-24" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" className="hover:opacity-80 transition-opacity">
-          <img src={reactLogo} className="h-24 w-24 animate-spin" alt="React logo" />
-        </a>
-      </div>
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">Vite + React + Tailwind</h1>
-      <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-        <button 
-          onClick={() => setCount((count) => count + 1)}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors mb-4"
-        >
-          count is {count}
-        </button>
-        <p className="text-gray-600">
-          Edit <code className="bg-gray-100 px-2 py-1 rounded text-sm">src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="text-gray-500 mt-8 text-center">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <Container size="md" py={40}>
+      <Stack gap="xl">
+        <Paper shadow="xs" p="xl" radius="md">
+          <Stack gap="md">
+            <Group justify="space-between" align="center">
+              <Title order={1}>Mantine is Working! 🎉</Title>
+              <Badge size="lg" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
+                v8.3.5
+              </Badge>
+            </Group>
+            <Text c="dimmed">
+              Your Mantine setup is configured correctly and all components are rendering properly.
+            </Text>
+          </Stack>
+        </Paper>
+
+        <Card shadow="sm" padding="lg" radius="md" withBorder>
+          <Stack gap="md">
+            <Title order={2}>Interactive Components</Title>
+            
+            <Group grow>
+              <TextInput
+                label="Your name"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(event) => setName(event.currentTarget.value)}
+              />
+            </Group>
+
+            {name && (
+              <Text size="lg" fw={500}>
+                Hello, {name}! 👋
+              </Text>
+            )}
+
+            <Group justify="center" mt="md">
+              <Button variant="filled" onClick={() => setCount(count + 1)}>
+                Count: {count}
+              </Button>
+              <Button variant="light" onClick={() => setCount(0)}>
+                Reset
+              </Button>
+            </Group>
+          </Stack>
+        </Card>
+
+        <Card shadow="sm" padding="lg" radius="md" withBorder>
+          <Stack gap="md">
+            <Title order={2}>Button Variants</Title>
+            <Group>
+              <Button variant="filled">Filled</Button>
+              <Button variant="light">Light</Button>
+              <Button variant="outline">Outline</Button>
+              <Button variant="subtle">Subtle</Button>
+              <Button variant="default">Default</Button>
+            </Group>
+          </Stack>
+        </Card>
+
+        <Card shadow="sm" padding="lg" radius="md" withBorder>
+          <Stack gap="md">
+            <Title order={2}>Badge Colors</Title>
+            <Group>
+              <Badge color="blue">Blue</Badge>
+              <Badge color="green">Green</Badge>
+              <Badge color="red">Red</Badge>
+              <Badge color="yellow">Yellow</Badge>
+              <Badge color="purple">Purple</Badge>
+              <Badge color="gray">Gray</Badge>
+            </Group>
+          </Stack>
+        </Card>
+
+        <Text ta="center" c="dimmed" size="sm">
+          Edit src/App.tsx to start building your application
+        </Text>
+      </Stack>
+    </Container>
+  );
 }
 
-export default App
+export default App;
