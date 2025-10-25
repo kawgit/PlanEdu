@@ -80,7 +80,7 @@ const QuestionsPage: React.FC = () => {
       .catch(err => console.error('Error loading departments:', err));
   }, [selectedSchool, backendUrl]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputValue.trim()) return;
     
     // Add user message
@@ -88,19 +88,40 @@ const QuestionsPage: React.FC = () => {
     setMessages([...messages, { type: 'user', content: userMessage }]);
     setInputValue('');
     
-    // Simulate AI response with context about filtered classes
+    // Call Gemini API with context about filtered classes
     setIsLoading(true);
-    setTimeout(() => {
-      const classContext = filteredClasses.slice(0, 5).map(cls => 
-        `${cls.school}-${cls.department}-${cls.number}: ${cls.title}`
-      ).join(', ');
+    
+    try {
+      const response = await fetch(`${backendUrl}/api/gemini/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: userMessage,
+          classes: filteredClasses,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+      
+      const data = await response.json();
       
       setMessages(prev => [...prev, { 
         type: 'ai', 
-        content: `Based on the ${filteredClasses.length} classes currently filtered (${selectedSchool} ${selectedDepartment}), here's my response: This is a simulated response. The Gemini API will be connected to provide intelligent answers about these classes: ${classContext}...` 
+        content: data.response 
       }]);
+    } catch (error) {
+      console.error('Error calling Gemini:', error);
+      setMessages(prev => [...prev, { 
+        type: 'ai', 
+        content: 'Sorry, I encountered an error processing your question. Please try again.' 
+      }]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -357,7 +378,12 @@ const QuestionsPage: React.FC = () => {
               style={{ flexGrow: 1 }}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
               disabled={isLoading}
               size="md"
             />

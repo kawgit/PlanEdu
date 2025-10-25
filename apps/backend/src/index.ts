@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { OAuth2Client } from 'google-auth-library';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import sql from './db';
 
 const app = express();
@@ -9,6 +10,10 @@ const port = 3001;
 
 // Initialize Google OAuth client
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const geminiModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
 // Middleware
 app.use(cors({
@@ -167,6 +172,51 @@ app.get('/api/departments', async (req, res) => {
   } catch (error) {
     console.error('Database error:', error);
     res.status(500).json({ error: 'Failed to fetch departments' });
+  }
+});
+
+// Gemini AI chat endpoint
+app.post('/api/gemini/chat', async (req, res) => {
+  try {
+    const { question, classes } = req.body;
+
+    if (!question) {
+      return res.status(400).json({ error: 'Question is required' });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ error: 'Gemini API key not configured' });
+    }
+
+    // Build context from filtered classes
+    let context = '';
+    if (classes && classes.length > 0) {
+      context = `You are a helpful BU course advisor. Answer questions about the following BU classes:\n\n`;
+      
+      classes.forEach((cls: any) => {
+        const code = `${cls.school}-${cls.department}-${cls.number}`;
+        context += `${code}: ${cls.title}\n`;
+        context += `Description: ${cls.description}\n\n`;
+      });
+      
+      context += `\nStudent question: ${question}\n\n`;
+      context += `Please provide a helpful, concise answer about these courses. If recommending courses, explain why they might be a good fit.`;
+    } else {
+      context = `You are a helpful BU course advisor. Answer the following question:\n\n${question}`;
+    }
+
+    // Call Gemini API
+    const result = await geminiModel.generateContent(context);
+    const response = await result.response;
+    const text = response.text();
+
+    res.json({ response: text });
+  } catch (error: any) {
+    console.error('Gemini API error:', error);
+    res.status(500).json({ 
+      error: 'Failed to get AI response',
+      details: error.message 
+    });
   }
 });
 
