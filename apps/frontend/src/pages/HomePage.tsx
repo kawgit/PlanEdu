@@ -1,12 +1,25 @@
 import React from 'react';
 import { Title, Button, Group, Container, Box } from '@mantine/core';
 import { TabName } from '../App';
+import Login from '../components/Login';
+import { CredentialResponse } from '@react-oauth/google';
 
 interface HomePageProps {
   setActiveTab: (tab: TabName) => void;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
+  const handleLoginSuccess = (credentialResponse: CredentialResponse) => {
+    console.log('Login successful!', credentialResponse);
+    // You can add additional logic here, like redirecting to another page
+    // or updating the UI to show the logged-in state
+  };
+
+  const handleLoginError = () => {
+    console.error('Login error!');
+    // Handle login error (e.g., show error message to user)
+  };
+
   return (
     <Container fluid p="lg">
       {/* Top Header Section */}
@@ -16,14 +29,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
         </Title>
         
         <Group gap="md">
-          <Button 
-            variant="outline" 
-            color="bu-red" 
-            radius="xl"
-            onClick={() => alert('Create Account Clicked!')}
-          >
-            Create Account
-          </Button>
+          <Login onSuccess={handleLoginSuccess} onError={handleLoginError} />
         </Group>
       </Group>
 
