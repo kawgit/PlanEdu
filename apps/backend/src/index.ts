@@ -50,10 +50,19 @@ app.get('/api/user', async (req, res) => {
   }
 });
 
-// Update user preferences (major, minor, target_graduation)
+// Update user preferences (major, minor, target_graduation, incoming_credits, interests, study_abroad_interest, preferred_course_load)
 app.put('/api/user/preferences', async (req, res) => {
   try {
-    const { googleId, major, minor, target_graduation } = req.body;
+    const { 
+      googleId, 
+      major, 
+      minor, 
+      target_graduation,
+      incoming_credits,
+      interests,
+      study_abroad_interest,
+      preferred_course_load
+    } = req.body;
 
     if (!googleId) {
       return res.status(400).json({ error: 'googleId is required' });
@@ -65,7 +74,11 @@ app.put('/api/user/preferences', async (req, res) => {
       SET 
         major = ${major || null},
         minor = ${minor || null},
-        target_graduation = ${target_graduation || null}
+        target_graduation = ${target_graduation || null},
+        incoming_credits = ${incoming_credits || null},
+        interests = ${interests || null},
+        study_abroad_interest = ${study_abroad_interest || null},
+        preferred_course_load = ${preferred_course_load || null}
       WHERE google_id = ${googleId}
     `;
 
