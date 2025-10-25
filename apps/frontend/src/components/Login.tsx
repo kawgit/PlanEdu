@@ -36,6 +36,14 @@ const Login: React.FC<LoginProps> = ({ onSuccess, onError }) => {
       const data = await response.json();
       console.log('Backend response:', data);
       
+      // Store the user's Google sub ID for later use
+      if (data.user?.id) {
+        localStorage.setItem('userGoogleId', data.user.id);
+        localStorage.setItem('userEmail', data.user.email);
+        localStorage.setItem('userName', data.user.name);
+        localStorage.setItem('userPicture', data.user.picture);
+      }
+      
       // Store the JWT token (if your backend returns one)
       if (data.token) {
         localStorage.setItem('authToken', data.token);
