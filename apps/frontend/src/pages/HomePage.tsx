@@ -18,10 +18,10 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
   const quickActions = [
     {
       icon: IconCalendar,
-      title: 'Build Your Plan',
-      description: 'Set up your preferences and generate your 4-year schedule',
+      title: 'AI Schedule Builder',
+      description: 'Build your perfect schedule from bookmarked classes',
       color: 'bu-red',
-      action: () => setActiveTab('preferences'),
+      action: () => setActiveTab('schedule-builder'),
     },
     {
       icon: IconBook,
@@ -333,7 +333,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
                     size="md"
                     radius="md"
                     fullWidth
-                    onClick={() => setActiveTab('preferences')}
+                    onClick={() => setActiveTab('schedule-builder')}
                     style={{ transition: 'all 0.3s ease' }}
                     styles={{
                       root: {
@@ -344,7 +344,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
                       },
                     }}
                   >
-                    Start Planning
+                    Build My Schedule
                   </Button>
                 </Box>
               </Stack>

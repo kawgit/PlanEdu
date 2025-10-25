@@ -7,8 +7,9 @@ import PreferencesPage from './pages/PreferencesPage';
 import QuestionsPage from './pages/QuestionsPage';
 import ClassSwiperPage from './pages/ClassSwiperPage';
 import BookmarksPage from './pages/BookmarksPage';
+import ScheduleBuilderPage from './pages/ScheduleBuilderPage';
 
-export type TabName = 'home' | 'signin' | 'preferences' | 'questions' | 'swiper' | 'bookmarks';
+export type TabName = 'home' | 'signin' | 'preferences' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabName>('signin');
@@ -26,7 +27,9 @@ const App: React.FC = () => {
       case 'swiper':
         return <ClassSwiperPage />;
       case 'bookmarks':
-        return <BookmarksPage />;
+        return <BookmarksPage setActiveTab={setActiveTab} />;
+      case 'schedule-builder':
+        return <ScheduleBuilderPage />;
       default:
         return <SignInPage setActiveTab={setActiveTab} />;
     }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, UnstyledButton, Text, useMantineTheme } from '@mantine/core';
-import { IconHome, IconSettings, IconMessageCircle, IconCards, IconBookmark } from '@tabler/icons-react';
+import { IconHome, IconSettings, IconMessageCircle, IconCards, IconBookmark, IconCalendar } from '@tabler/icons-react';
 import { TabName } from '../App';
 
 interface NavigationProps {
@@ -114,6 +114,12 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
           label="Bookmarks"
           active={activeTab === 'bookmarks'}
           onClick={() => setActiveTab('bookmarks')}
+        />
+        <NavItem
+          icon={<IconCalendar size={24} stroke={1.5} />}
+          label="Schedule"
+          active={activeTab === 'schedule-builder'}
+          onClick={() => setActiveTab('schedule-builder')}
         />
       </Box>
     </Box>

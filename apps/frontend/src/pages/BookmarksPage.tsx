@@ -1,8 +1,13 @@
 import React from 'react';
-import { Container, Title, Text, Card, Badge, Group, Stack, ActionIcon } from '@mantine/core';
-import { IconBookmarkOff, IconExternalLink } from '@tabler/icons-react';
+import { Container, Title, Text, Card, Badge, Group, Stack, ActionIcon, Button, Box } from '@mantine/core';
+import { IconBookmarkOff, IconExternalLink, IconSparkles } from '@tabler/icons-react';
+import { TabName } from '../App';
 
-const BookmarksPage: React.FC = () => {
+interface BookmarksPageProps {
+  setActiveTab?: (tab: TabName) => void;
+}
+
+const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab }) => {
   // Example bookmarked classes (this would come from state/API in the real app)
   const bookmarkedClasses = [
     {
@@ -30,12 +35,35 @@ const BookmarksPage: React.FC = () => {
 
   return (
     <Container size="md" p="lg">
-      <Title order={2} mb="xs" c="bu-red">
-        Class Bookmarks
-      </Title>
-      <Text c="dimmed" mb="xl" size="sm">
-        Your saved classes for planning your schedule
-      </Text>
+      <Group justify="space-between" align="flex-start" mb="xl">
+        <Box>
+          <Title order={2} mb="xs" c="bu-red">
+            Class Bookmarks
+          </Title>
+          <Text c="dimmed" size="sm">
+            Your saved classes for planning your schedule
+          </Text>
+        </Box>
+        {setActiveTab && bookmarkedClasses.length > 0 && (
+          <Button
+            color="bu-red"
+            size="md"
+            leftSection={<IconSparkles size={18} />}
+            onClick={() => setActiveTab('schedule-builder')}
+            style={{ transition: 'all 0.3s ease' }}
+            styles={{
+              root: {
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 16px rgba(204, 0, 0, 0.3)',
+                },
+              },
+            }}
+          >
+            Build Schedule with AI
+          </Button>
+        )}
+      </Group>
 
       <Stack gap="md">
         {bookmarkedClasses.map((course, index) => (

@@ -65,7 +65,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ showBookmarks = false }) => {
         {userData.picture && (
           <img 
             src={userData.picture} 
-            alt={userData.name} 
+            alt={userData.name || 'User'} 
             className="w-16 h-16 rounded-full"
           />
         )}

@@ -1,0 +1,490 @@
+import React, { useState } from 'react';
+import { 
+  Container, 
+  Title, 
+  Text, 
+  Card, 
+  Stack, 
+  Button, 
+  Group, 
+  Badge, 
+  Textarea, 
+  Grid, 
+  Box, 
+  ActionIcon, 
+  Alert,
+  Progress,
+  ScrollArea,
+  Paper
+} from '@mantine/core';
+import { 
+  IconRobot, 
+  IconCalendar, 
+  IconBookmark, 
+  IconRefresh, 
+  IconCheck, 
+  IconX, 
+  IconClock, 
+  IconUsers,
+  IconAlertCircle,
+  IconSparkles,
+  IconArrowRight
+} from '@tabler/icons-react';
+
+interface BookmarkedClass {
+  code: string;
+  title: string;
+  prereqs: string;
+  rating: number;
+  credits: number;
+  time?: string;
+  professor?: string;
+}
+
+interface GeneratedSchedule {
+  semester: string;
+  classes: BookmarkedClass[];
+  totalCredits: number;
+  conflicts: string[];
+  recommendations: string[];
+}
+
+const ScheduleBuilderPage: React.FC = () => {
+  const [userPrompt, setUserPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedSchedule, setGeneratedSchedule] = useState<GeneratedSchedule | null>(null);
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
+
+  // Mock bookmarked classes (in real app, this would come from state/API)
+  const bookmarkedClasses: BookmarkedClass[] = [
+    {
+      code: 'CS 111',
+      title: 'Intro to Computer Science',
+      prereqs: 'None',
+      rating: 4.5,
+      credits: 4,
+      time: 'MWF 10:00 AM',
+      professor: 'Dr. Smith'
+    },
+    {
+      code: 'WR 100',
+      title: 'Writing Seminar',
+      prereqs: 'None',
+      rating: 4.2,
+      credits: 4,
+      time: 'TR 2:00 PM',
+      professor: 'Prof. Johnson'
+    },
+    {
+      code: 'MA 123',
+      title: 'Calculus I',
+      prereqs: 'High School Math',
+      rating: 3.8,
+      credits: 4,
+      time: 'MWF 11:00 AM',
+      professor: 'Dr. Brown'
+    },
+    {
+      code: 'PH 101',
+      title: 'Physics I',
+      prereqs: 'MA 123',
+      rating: 4.1,
+      credits: 4,
+      time: 'TR 9:00 AM',
+      professor: 'Dr. Wilson'
+    },
+    {
+      code: 'PS 101',
+      title: 'Intro to Psychology',
+      prereqs: 'None',
+      rating: 4.3,
+      credits: 3,
+      time: 'MW 1:00 PM',
+      professor: 'Dr. Davis'
+    },
+    {
+      code: 'EC 101',
+      title: 'Microeconomics',
+      prereqs: 'None',
+      rating: 3.9,
+      credits: 3,
+      time: 'TR 11:00 AM',
+      professor: 'Prof. Miller'
+    }
+  ];
+
+  const handleGenerateSchedule = async () => {
+    if (!userPrompt.trim()) return;
+    
+    setIsGenerating(true);
+    
+    // Simulate AI processing time
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // Mock AI-generated schedule based on user prompt and bookmarked classes
+    const mockSchedule: GeneratedSchedule = {
+      semester: 'Fall 2024',
+      classes: bookmarkedClasses.slice(0, 4), // Take first 4 classes
+      totalCredits: 15,
+      conflicts: [
+        'CS 111 and MA 123 have overlapping time slots (MWF 10:00-11:00 AM)',
+        'Consider taking MA 123 in a different time slot'
+      ],
+      recommendations: [
+        'Great balance of STEM and liberal arts courses',
+        'Consider adding a Hub course to fulfill general education requirements',
+        'Physics I requires Calculus I as prerequisite - good sequencing',
+        'Total credit load (15) is optimal for first semester'
+      ]
+    };
+    
+    setGeneratedSchedule(mockSchedule);
+    setIsGenerating(false);
+  };
+
+  const toggleBookmarkSelection = (classCode: string) => {
+    setSelectedBookmarks(prev => 
+      prev.includes(classCode) 
+        ? prev.filter(code => code !== classCode)
+        : [...prev, classCode]
+    );
+  };
+
+
+  const examplePrompts = [
+    "Build me a balanced schedule for my first semester with a mix of STEM and liberal arts",
+    "Create a schedule focused on computer science prerequisites",
+    "I want to take 15 credits with no Friday classes",
+    "Build a schedule that includes my favorite psychology and economics classes"
+  ];
+
+  return (
+    <Container size="lg" p="lg">
+      <Title order={2} mb="xs" c="bu-red">
+        AI Schedule Builder
+      </Title>
+      <Text c="dimmed" mb="xl" size="sm">
+        Tell our AI what you want, and we'll build the perfect schedule from your bookmarked classes
+      </Text>
+
+      <Grid gutter="lg">
+        {/* Left Column - Input and Controls */}
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Stack gap="lg">
+            {/* AI Prompt Input */}
+            <Card shadow="md" p="lg" radius="md" withBorder>
+              <Group mb="md">
+                <IconRobot size={24} color="#CC0000" />
+                <Title order={3}>Tell AI What You Want</Title>
+              </Group>
+              
+              <Textarea
+                placeholder="Describe your ideal schedule... (e.g., 'I want a balanced first semester with 15 credits, no Friday classes, and include my favorite psychology course')"
+                value={userPrompt}
+                onChange={(e) => setUserPrompt(e.target.value)}
+                minRows={4}
+                maxRows={6}
+                mb="md"
+              />
+              
+              <Button
+                color="bu-red"
+                size="md"
+                fullWidth
+                onClick={handleGenerateSchedule}
+                loading={isGenerating}
+                disabled={!userPrompt.trim()}
+                leftSection={<IconSparkles size={18} />}
+                style={{ transition: 'all 0.3s ease' }}
+                styles={{
+                  root: {
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 16px rgba(204, 0, 0, 0.3)',
+                    },
+                  },
+                }}
+              >
+                {isGenerating ? 'AI is thinking...' : 'Generate My Schedule'}
+              </Button>
+            </Card>
+
+            {/* Example Prompts */}
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Text size="sm" fw={600} mb="sm" c="dimmed">
+                Try these example prompts:
+              </Text>
+              <Stack gap="xs">
+                {examplePrompts.map((prompt, index) => (
+                  <Text
+                    key={index}
+                    size="sm"
+                    c="dimmed"
+                    style={{
+                      cursor: 'pointer',
+                      padding: '8px',
+                      borderRadius: '4px',
+                      transition: 'all 0.2s ease',
+                    }}
+                    styles={{
+                      root: {
+                        '&:hover': {
+                          backgroundColor: '#f8f9fa',
+                          color: '#CC0000',
+                        },
+                      },
+                    }}
+                    onClick={() => setUserPrompt(prompt)}
+                  >
+                    "{prompt}"
+                  </Text>
+                ))}
+              </Stack>
+            </Card>
+
+            {/* Bookmarked Classes */}
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Group justify="space-between" mb="md">
+                <Group>
+                  <IconBookmark size={20} color="#CC0000" />
+                  <Text fw={600}>Your Bookmarked Classes</Text>
+                </Group>
+                <Button
+                  variant="subtle"
+                  size="xs"
+                  onClick={() => setShowBookmarks(!showBookmarks)}
+                >
+                  {showBookmarks ? 'Hide' : 'Show'} ({bookmarkedClasses.length})
+                </Button>
+              </Group>
+              
+              {showBookmarks && (
+                <ScrollArea.Autosize mah={300}>
+                  <Stack gap="sm">
+                    {bookmarkedClasses.map((course, index) => (
+                      <Paper
+                        key={index}
+                        p="sm"
+                        radius="md"
+                        style={{
+                          border: selectedBookmarks.includes(course.code) 
+                            ? '2px solid #CC0000' 
+                            : '1px solid #e9ecef',
+                          backgroundColor: selectedBookmarks.includes(course.code) 
+                            ? '#fff5f5' 
+                            : '#fff',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                        }}
+                        onClick={() => toggleBookmarkSelection(course.code)}
+                      >
+                        <Group justify="space-between">
+                          <Box>
+                            <Text fw={600} size="sm" c="bu-red">
+                              {course.code}
+                            </Text>
+                            <Text size="xs" c="dark">
+                              {course.title}
+                            </Text>
+                            <Text size="xs" c="dimmed">
+                              {course.credits} credits • Rating: {course.rating}/5
+                            </Text>
+                          </Box>
+                          <ActionIcon
+                            variant="subtle"
+                            color={selectedBookmarks.includes(course.code) ? 'red' : 'gray'}
+                          >
+                            {selectedBookmarks.includes(course.code) ? (
+                              <IconCheck size={16} />
+                            ) : (
+                              <IconX size={16} />
+                            )}
+                          </ActionIcon>
+                        </Group>
+                      </Paper>
+                    ))}
+                  </Stack>
+                </ScrollArea.Autosize>
+              )}
+            </Card>
+          </Stack>
+        </Grid.Col>
+
+        {/* Right Column - Generated Schedule */}
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          {isGenerating && (
+            <Card shadow="md" p="xl" radius="md" withBorder ta="center">
+              <Stack gap="md" align="center">
+                <IconRobot size={48} color="#CC0000" />
+                <Title order={3}>AI is Building Your Schedule</Title>
+                <Text c="dimmed" size="sm">
+                  Analyzing your preferences and bookmarked classes...
+                </Text>
+                <Progress value={75} color="bu-red" size="md" style={{ width: '100%' }} />
+              </Stack>
+            </Card>
+          )}
+
+          {generatedSchedule && !isGenerating && (
+            <Stack gap="lg">
+              {/* Generated Schedule Header */}
+              <Card shadow="md" p="lg" radius="md" withBorder>
+                <Group justify="space-between" mb="md">
+                  <Group>
+                    <IconCalendar size={24} color="#CC0000" />
+                    <Title order={3}>Your Generated Schedule</Title>
+                  </Group>
+                  <Badge color="green" variant="light">
+                    {generatedSchedule.semester}
+                  </Badge>
+                </Group>
+                
+                <Group gap="md" mb="md">
+                  <Badge color="blue" variant="light">
+                    {generatedSchedule.totalCredits} Credits
+                  </Badge>
+                  <Badge color="grape" variant="light">
+                    {generatedSchedule.classes.length} Classes
+                  </Badge>
+                </Group>
+
+                <Button
+                  variant="light"
+                  color="bu-red"
+                  size="sm"
+                  leftSection={<IconRefresh size={16} />}
+                  onClick={() => setGeneratedSchedule(null)}
+                >
+                  Generate New Schedule
+                </Button>
+              </Card>
+
+              {/* Schedule Classes */}
+              <Card shadow="sm" p="lg" radius="md" withBorder>
+                <Title order={4} mb="md">Classes</Title>
+                <Stack gap="sm">
+                  {generatedSchedule.classes.map((course, index) => (
+                    <Paper
+                      key={index}
+                      p="md"
+                      radius="md"
+                      style={{
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e9ecef',
+                      }}
+                    >
+                      <Group justify="space-between" mb="xs">
+                        <Text fw={600} c="bu-red" size="sm">
+                          {course.code}
+                        </Text>
+                        <Badge color="blue" variant="light" size="sm">
+                          {course.credits} credits
+                        </Badge>
+                      </Group>
+                      <Text size="sm" c="dark" mb="xs">
+                        {course.title}
+                      </Text>
+                      <Group gap="md">
+                        {course.time && (
+                          <Group gap="xs">
+                            <IconClock size={14} color="#868e96" />
+                            <Text size="xs" c="dimmed">
+                              {course.time}
+                            </Text>
+                          </Group>
+                        )}
+                        {course.professor && (
+                          <Group gap="xs">
+                            <IconUsers size={14} color="#868e96" />
+                            <Text size="xs" c="dimmed">
+                              {course.professor}
+                            </Text>
+                          </Group>
+                        )}
+                      </Group>
+                    </Paper>
+                  ))}
+                </Stack>
+              </Card>
+
+              {/* Conflicts */}
+              {generatedSchedule.conflicts.length > 0 && (
+                <Card shadow="sm" p="lg" radius="md" withBorder>
+                  <Group mb="md">
+                    <IconAlertCircle size={20} color="orange" />
+                    <Title order={4}>Schedule Conflicts</Title>
+                  </Group>
+                  <Stack gap="sm">
+                    {generatedSchedule.conflicts.map((conflict, index) => (
+                      <Alert
+                        key={index}
+                        color="orange"
+                        variant="light"
+                        icon={<IconAlertCircle size={16} />}
+                      >
+                        <Text size="sm">{conflict}</Text>
+                      </Alert>
+                    ))}
+                  </Stack>
+                </Card>
+              )}
+
+              {/* AI Recommendations */}
+              <Card shadow="sm" p="lg" radius="md" withBorder>
+                <Group mb="md">
+                  <IconSparkles size={20} color="#CC0000" />
+                  <Title order={4}>AI Recommendations</Title>
+                </Group>
+                <Stack gap="sm">
+                  {generatedSchedule.recommendations.map((rec, index) => (
+                    <Group key={index} gap="sm" align="flex-start">
+                      <IconArrowRight size={16} color="#CC0000" style={{ marginTop: '2px' }} />
+                      <Text size="sm">{rec}</Text>
+                    </Group>
+                  ))}
+                </Stack>
+              </Card>
+
+              {/* Action Buttons */}
+              <Group>
+                <Button
+                  color="bu-red"
+                  size="md"
+                  leftSection={<IconCheck size={18} />}
+                  style={{ flex: 1 }}
+                >
+                  Accept This Schedule
+                </Button>
+                <Button
+                  variant="outline"
+                  color="bu-red"
+                  size="md"
+                  leftSection={<IconRefresh size={18} />}
+                >
+                  Regenerate
+                </Button>
+              </Group>
+            </Stack>
+          )}
+
+          {!generatedSchedule && !isGenerating && (
+            <Card shadow="sm" p="xl" radius="md" withBorder ta="center">
+              <Stack gap="md" align="center">
+                <IconCalendar size={48} color="#868e96" />
+                <Title order={3} c="dimmed">
+                  Ready to Build Your Schedule?
+                </Title>
+                <Text c="dimmed" size="sm">
+                  Enter your preferences above and let our AI create the perfect schedule from your bookmarked classes.
+                </Text>
+              </Stack>
+            </Card>
+          )}
+        </Grid.Col>
+      </Grid>
+    </Container>
+  );
+};
+
+export default ScheduleBuilderPage;
