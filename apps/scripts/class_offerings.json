@@ -1,0 +1,1537 @@
+{
+  "CAS-CS-101": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-101",
+    "school": "CAS",
+    "department": "CS",
+    "number": "101",
+    "semesters": {}
+  },
+  "CAS-CS-103": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-103",
+    "school": "CAS",
+    "department": "CS",
+    "number": "103",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Davoodi",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "R 9:55 am-10:45 am"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "R 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "R 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "R 5:00 pm-5:50 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Davoodi",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "R 9:55 am-10:45 am"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "R 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "R 12:30 pm-1:20 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "R 3:35 pm-4:25 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-105": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-105",
+    "school": "CAS",
+    "department": "CS",
+    "number": "105",
+    "semesters": {}
+  },
+  "CAS-CS-108": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-108",
+    "school": "CAS",
+    "department": "CS",
+    "number": "108",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Stevens",
+          "schedule": "MW 12:20 pm-2:05 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-111": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-111",
+    "school": "CAS",
+    "department": "CS",
+    "number": "111",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 9:30 am-10:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 10:30 am-11:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 11:30 am-12:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 12:30 pm-1:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 1:30 pm-2:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 3:30 pm-4:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 4:30 pm-5:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 5:30 pm-6:20 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 10:30 am-11:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 11:30 am-12:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 12:30 pm-1:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 1:30 pm-2:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 3:30 pm-4:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-112": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-112",
+    "school": "CAS",
+    "department": "CS",
+    "number": "112",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 12:20 pm-1:20 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-115": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-115",
+    "school": "CAS",
+    "department": "CS",
+    "number": "115",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Narayanan",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Narayanan",
+          "schedule": "W 12:20 pm-2:05 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-131": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-131",
+    "school": "CAS",
+    "department": "CS",
+    "number": "131",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Reyzin",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Reyzin",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Gaboardi",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 1:25 pm-2:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-132": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-132",
+    "school": "CAS",
+    "department": "CS",
+    "number": "132",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Mull",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Chien",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 4:40 pm-5:30 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Mull",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 3:35 pm-4:25 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-210": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-210",
+    "school": "CAS",
+    "department": "CS",
+    "number": "210",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 4:30 pm-6:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 4:30 pm-6:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 4:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-235": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-235",
+    "school": "CAS",
+    "department": "CS",
+    "number": "235",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Homer",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Homer",
+          "schedule": "W 3:35 pm-4:25 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-237": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-237",
+    "school": "CAS",
+    "department": "CS",
+    "number": "237",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Januario",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Januario",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-320": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-320",
+    "school": "CAS",
+    "department": "CS",
+    "number": "320",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Das",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Mull",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-330": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-330",
+    "school": "CAS",
+    "department": "CS",
+    "number": "330",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ]
+    }
+  },
+  "CAS-CS-332": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-332",
+    "school": "CAS",
+    "department": "CS",
+    "number": "332",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Levin",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Levin",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Levin",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Levin",
+          "schedule": "W 12:20 pm-1:10 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Bun",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-369": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-369",
+    "school": "CAS",
+    "department": "EC",
+    "number": "369",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Cati",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-370": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-370",
+    "school": "CAS",
+    "department": "EC",
+    "number": "370",
+    "semesters": {}
+  },
+  "CAS-EC-371": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-371",
+    "school": "CAS",
+    "department": "EC",
+    "number": "371",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Gnedenko",
+          "schedule": "MWF 10:10 am-11:00 am"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Erbas",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-404": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-404",
+    "school": "CAS",
+    "department": "EC",
+    "number": "404",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Ortner",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Orzach",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-405": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-405",
+    "school": "CAS",
+    "department": "EC",
+    "number": "405",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Cati",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-406": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-406",
+    "school": "CAS",
+    "department": "EC",
+    "number": "406",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Kafali",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-411": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-411",
+    "school": "CAS",
+    "department": "EC",
+    "number": "411",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Idson",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-EC-412": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-412",
+    "school": "CAS",
+    "department": "EC",
+    "number": "412",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Idson",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-EC-421": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-421",
+    "school": "CAS",
+    "department": "EC",
+    "number": "421",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "King",
+          "schedule": "M 4:00 pm-5:00 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-422": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-422",
+    "school": "CAS",
+    "department": "EC",
+    "number": "422",
+    "semesters": {}
+  },
+  "CAS-EC-436": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-436",
+    "school": "CAS",
+    "department": "EC",
+    "number": "436",
+    "semesters": {}
+  },
+  "CAS-EC-445": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-445",
+    "school": "CAS",
+    "department": "EC",
+    "number": "445",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Persson",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-490": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-490",
+    "school": "CAS",
+    "department": "EC",
+    "number": "490",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Guren",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EC-491": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-491",
+    "school": "CAS",
+    "department": "EC",
+    "number": "491",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Switala",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Ramondo",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-EC-492": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ec-492",
+    "school": "CAS",
+    "department": "EC",
+    "number": "492",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Switala",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-EE-100": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-100",
+    "school": "CAS",
+    "department": "EE",
+    "number": "100",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Demeritt",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "M 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "W 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "W 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "R 11:15 am-12:05 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Demeritt",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "M 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "M 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "T 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "W 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Demeritt",
+          "schedule": "F 10:10 am-11:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-EE-105": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-105",
+    "school": "CAS",
+    "department": "EE",
+    "number": "105",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Bratley",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Bratley",
+          "schedule": "M 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Bratley",
+          "schedule": "T 1:30 pm-3:15 pm"
+        },
+        {
+          "instructor": "Bratley",
+          "schedule": "W 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Bratley",
+          "schedule": "F 2:30 pm-4:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-107": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-107",
+    "school": "CAS",
+    "department": "EE",
+    "number": "107",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Becker",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "M 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "T 9:00 am-10:45 am"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "T 3:30 pm-5:15 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "W 4:30 pm-6:15 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "F 10:10 am-11:55 am"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Becker",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "M 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "T 9:00 am-10:45 am"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "W 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "W 4:30 pm-6:15 pm"
+        },
+        {
+          "instructor": "Becker",
+          "schedule": "R 1:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-142": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-142",
+    "school": "CAS",
+    "department": "EE",
+    "number": "142",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "FitzGerald",
+          "schedule": "TR 8:00 am-9:15 am"
+        }
+      ]
+    }
+  },
+  "CAS-EE-144": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-144",
+    "school": "CAS",
+    "department": "EE",
+    "number": "144",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Kurtz",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-150": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-150",
+    "school": "CAS",
+    "department": "EE",
+    "number": "150",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Baldwin",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Baldwin",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Baldwin",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-201": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-201",
+    "school": "CAS",
+    "department": "EE",
+    "number": "201",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Baldwin",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Baldwin",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Baldwin",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Baldwin",
+          "schedule": "F 4:40 pm-5:30 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Baldwin",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Baldwin",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Baldwin",
+          "schedule": "W 12:20 pm-1:10 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-230": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-230",
+    "school": "CAS",
+    "department": "EE",
+    "number": "230",
+    "semesters": {}
+  },
+  "CAS-EE-250": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-250",
+    "school": "CAS",
+    "department": "EE",
+    "number": "250",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Kaufmann",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-460": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-460",
+    "school": "CAS",
+    "department": "EE",
+    "number": "460",
+    "semesters": {}
+  },
+  "CAS-EE-475": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-475",
+    "school": "CAS",
+    "department": "EE",
+    "number": "475",
+    "semesters": {}
+  },
+  "CAS-EE-483": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-483",
+    "school": "CAS",
+    "department": "EE",
+    "number": "483",
+    "semesters": {}
+  },
+  "CAS-EE-501": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-501",
+    "school": "CAS",
+    "department": "EE",
+    "number": "501",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-503": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-503",
+    "school": "CAS",
+    "department": "EE",
+    "number": "503",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Friedl",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-504": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-504",
+    "school": "CAS",
+    "department": "EE",
+    "number": "504",
+    "semesters": {}
+  },
+  "CAS-EE-505": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-505",
+    "school": "CAS",
+    "department": "EE",
+    "number": "505",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Gopal",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Gopal",
+          "schedule": "F 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Gopal",
+          "schedule": "F 2:30 pm-4:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-507": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-507",
+    "school": "CAS",
+    "department": "EE",
+    "number": "507",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Ruan",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-508": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-508",
+    "school": "CAS",
+    "department": "EE",
+    "number": "508",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Nolte",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-509": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-509",
+    "school": "CAS",
+    "department": "EE",
+    "number": "509",
+    "semesters": {}
+  },
+  "CAS-EE-510": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-510",
+    "school": "CAS",
+    "department": "EE",
+    "number": "510",
+    "semesters": {}
+  },
+  "CAS-EE-511": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-511",
+    "school": "CAS",
+    "department": "EE",
+    "number": "511",
+    "semesters": {}
+  },
+  "CAS-EE-512": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-512",
+    "school": "CAS",
+    "department": "EE",
+    "number": "512",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Li",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-EE-514": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-514",
+    "school": "CAS",
+    "department": "EE",
+    "number": "514",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Salvucci",
+          "schedule": "MWF 9:05 am-9:55 am"
+        }
+      ]
+    }
+  },
+  "CAS-EE-516": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-516",
+    "school": "CAS",
+    "department": "EE",
+    "number": "516",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Friedl",
+          "schedule": "MF 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Baldwin",
+          "schedule": "MF 12:20 pm-2:05 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-518": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-518",
+    "school": "CAS",
+    "department": "EE",
+    "number": "518",
+    "semesters": {}
+  },
+  "CAS-EE-519": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-519",
+    "school": "CAS",
+    "department": "EE",
+    "number": "519",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Cleveland",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-EE-521": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-521",
+    "school": "CAS",
+    "department": "EE",
+    "number": "521",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Reibstein",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-522": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-522",
+    "school": "CAS",
+    "department": "EE",
+    "number": "522",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Reibstein",
+          "schedule": "T 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-EE-524": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ee-524",
+    "school": "CAS",
+    "department": "EE",
+    "number": "524",
+    "semesters": {}
+  }
+}
