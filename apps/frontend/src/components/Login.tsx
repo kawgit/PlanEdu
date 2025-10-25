@@ -59,7 +59,7 @@ const Login: React.FC<LoginProps> = ({ onSuccess, onError }) => {
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={handleError}
-        useOneTap
+        useOneTap={false}
         theme="outline"
         size="large"
         text="signin_with"
