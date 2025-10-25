@@ -32,9 +32,9 @@ from tqdm import tqdm
 
 # ------------------------ Config / Defaults ------------------------
 
-INPUT_FILE_DEFAULT = "class_urls.txt"
-JSON_OUT_DEFAULT = "class_offerings.json"
-LOG_FILE = "scrape.log"
+INPUT_FILE_DEFAULT = "class_urls_cas2.txt"
+JSON_OUT_DEFAULT = "class_offeringsp2.json"
+LOG_FILE = "scrape2.log"
 
 # Semester & schedule patterns
 SEMESTER_PAT = re.compile(
@@ -60,7 +60,6 @@ COURSE_CODE_H2_PAT = re.compile(r"^[A-Z]{3}\s+[A-Z]{2,4}\s+[0-9A-Z]+$")
 BOILERPLATE_PAT = re.compile(r"^Note that this information may change", re.I)
 
 # Optional disk cache (enabled via --cache flag)
-from diskcache import Cache
 
 # ------------------------ Networking (Session & Rate limiting) ------------------------
 
