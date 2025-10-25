@@ -1,51 +1,50 @@
 import React from 'react';
-// 1. Import 'useMantineTheme' instead of 'createStyles'
-import { Container, Title, Text, Paper, useMantineTheme } from '@mantine/core';
+import { Title, Button, Group, Container, Box } from '@mantine/core';
+import { TabName } from '../App';
 
-const ClassSwiperPage: React.FC = () => {
-  // 2. Call the hook to get the theme object
-  const theme = useMantineTheme();
+interface HomePageProps {
+  setActiveTab: (tab: TabName) => void;
+}
 
+const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
   return (
-    <Container ta="center">
-      <Title order={2} mb="md">
-        Class Swiper (HUBSWIPE)
-      </Title>
-      <Text c="dimmed">
-        This is where the Tinder-style card swiper for classes will go. (Phase 3)
-      </Text>
+    <Container fluid p="lg">
+      {/* Top Header Section */}
+      <Group justify="space-between" mb="xl">
+        <Title order={1}>
+          Welcome to <Box component="span" c="bu-red">PlanEdu</Box>
+        </Title>
+        
+        <Group gap="md">
+          <Button 
+            variant="outline" 
+            color="bu-red" 
+            radius="xl"
+            onClick={() => alert('Create Account Clicked!')}
+          >
+            Create Account
+          </Button>
+        </Group>
+      </Group>
 
-      <Paper
-        withBorder
-        shadow="xl"
-        p="xl"
-        mt="xl"
-        // 3. Use the 'style' prop and the theme object directly
-        style={{
-          height: 400,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          maxWidth: 350,
-          margin: '2rem auto',
-          borderStyle: 'dashed',
-          borderColor: theme.colors['bu-red'][6],
-        }}
-      >
-        {/* 4. Use the 'style' prop for the text as well */}
-        <Text
-          style={{
-            color: theme.colors['bu-red'][6],
-            fontWeight: 500,
-          }}
+      {/* Main Content Area (Centered Button) */}
+      <Container style={{ textAlign: 'center', marginTop: '15vh' }}>
+        <Title order={2} fw={300} mb="xl">
+          Your AI-powered university planner.
+        </Title>
+        
+        <Button
+          onClick={() => setActiveTab('preferences')}
+          color="bu-red"
+          size="xl"
+          radius="xl"
+          tt="uppercase"
         >
-          {/* === THIS IS THE CORRECTED TEXT === */}
-          Class Card Stack
-        </Text>
-      </Paper>
+          Create 4-Year-Plan
+        </Button>
+      </Container>
     </Container>
   );
 };
 
-export default ClassSwiperPage;
-
+export default HomePage;
