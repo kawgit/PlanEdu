@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Container, Title, Text, Card, Group, Badge, Button, Stack, Box, useMantineTheme } from '@mantine/core';
 import { IconHeart, IconX, IconStar, IconClock, IconUsers } from '@tabler/icons-react';
 
@@ -11,13 +11,18 @@ interface ClassCard {
   enrollment: string;
   hubArea: string;
 }
+interface ClassSwiperPageProps {
+  addBookmark?: (course: ClassCard) => void;
+  // preferences shape can expand; for now we accept a primary interest/hubArea
+  preferences?: { interests?: string | null };
+}
 
-const ClassSwiperPage: React.FC = () => {
+const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark, preferences }) => {
   const theme = useMantineTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Example classes (this would come from an API in the real app)
-  const classes: ClassCard[] = [
+  const rawClasses: ClassCard[] = [
     {
       code: 'CFA AR 101',
       title: 'Introduction to Studio Art',
@@ -47,12 +52,44 @@ const ClassSwiperPage: React.FC = () => {
     },
   ];
 
+  // Sort classes based on user preferences, then by class number ascending.
+  const classes = useMemo(() => {
+    const preferred = preferences?.interests;
+
+    const copy = [...rawClasses];
+
+    // If a preferred hub area is provided, bump matching hubArea to the front
+    if (preferred) {
+      copy.sort((a, b) => {
+        const aPref = a.hubArea === preferred ? -1 : 1;
+        const bPref = b.hubArea === preferred ? -1 : 1;
+        if (aPref !== bPref) return aPref - bPref;
+        return extractClassNumber(a.code) - extractClassNumber(b.code);
+      });
+    } else {
+      copy.sort((a, b) => extractClassNumber(a.code) - extractClassNumber(b.code));
+    }
+
+    return copy;
+  }, [rawClasses, preferences]);
+
   const currentClass = classes[currentIndex];
 
   const handleSwipe = (liked: boolean) => {
     console.log(liked ? 'Liked' : 'Passed', currentClass.code);
+    if (liked && addBookmark) {
+      addBookmark(currentClass);
+    }
     setCurrentIndex((prev) => (prev + 1) % classes.length);
   };
+
+  // Helper to extract numeric part of class code for sorting. Falls back to large number.
+  function extractClassNumber(code: string) {
+    // examples: 'CFA AR 101', 'CAS PH 100', 'CS 111'
+    const match = code.match(/(\d{2,4})/);
+    if (!match) return 9999;
+    return Number(match[0]);
+  }
 
   return (
     <Container size="sm" p="lg" ta="center">

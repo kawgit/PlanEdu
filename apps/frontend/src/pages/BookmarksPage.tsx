@@ -5,33 +5,14 @@ import { TabName } from '../App';
 
 interface BookmarksPageProps {
   setActiveTab?: (tab: TabName) => void;
+  bookmarks?: Array<any>;
+  removeBookmark?: (code: string) => void;
 }
 
-const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab }) => {
-  // Example bookmarked classes (this would come from state/API in the real app)
-  const bookmarkedClasses = [
-    {
-      code: 'CS 111',
-      title: 'Intro to Computer Science',
-      prereqs: 'None',
-      rating: 4.5,
-      credits: 4,
-    },
-    {
-      code: 'WR 100',
-      title: 'Writing Seminar',
-      prereqs: 'None',
-      rating: 4.2,
-      credits: 4,
-    },
-    {
-      code: 'MA 123',
-      title: 'Calculus I',
-      prereqs: 'High School Math',
-      rating: 3.8,
-      credits: 4,
-    },
-  ];
+const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks = [], removeBookmark }) => {
+
+  // Sort bookmarks by numeric class number ascending
+  const sorted = [...bookmarks].sort((a, b) => extractClassNumber(a.code) - extractClassNumber(b.code));
 
   return (
     <Container size="md" p="lg">
@@ -44,7 +25,7 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab }) => {
             Your saved classes for planning your schedule
           </Text>
         </Box>
-        {setActiveTab && bookmarkedClasses.length > 0 && (
+  {setActiveTab && sorted.length > 0 && (
           <Button
             color="bu-red"
             size="md"
@@ -66,7 +47,7 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab }) => {
       </Group>
 
       <Stack gap="md">
-        {bookmarkedClasses.map((course, index) => (
+  {sorted.map((course, index) => (
           <Card
             key={index}
             shadow="md"
@@ -123,7 +104,7 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab }) => {
                     },
                   }}
                 >
-                  <IconBookmarkOff size={18} />
+                  <IconBookmarkOff size={18} onClick={() => removeBookmark && removeBookmark(course.code)} />
                 </ActionIcon>
               </Group>
             </Group>
@@ -153,7 +134,7 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab }) => {
         ))}
       </Stack>
 
-      {bookmarkedClasses.length === 0 && (
+      {sorted.length === 0 && (
         <Card shadow="sm" p="xl" radius="md" withBorder ta="center">
           <Text c="dimmed" size="lg">
             No bookmarked classes yet. Start swiping!
@@ -165,3 +146,9 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab }) => {
 };
 
 export default BookmarksPage;
+
+function extractClassNumber(code: string) {
+  const match = code.match(/(\d{2,4})/);
+  if (!match) return 9999;
+  return Number(match[0]);
+}
