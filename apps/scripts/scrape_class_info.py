@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 # scrape_bu_classes_mt.py
 """
-Multithreaded scraper for BU course pages listed in class_urls.txt.
+Multithreaded BU course scraper (JSON only, with proper description extraction).
 
-- Extracts: school code, department, number
-- For each semester (e.g., SPRG 2026, FALL 2026): instructor(s), schedule
-- Error-resilient: retries, timeouts, logs; one failure doesn't stop the run
-- Progress bar across all URLs
-- Outputs CSV + JSON + log
-- Concurrency: configurable via --workers (default 8)
+Usage:
+  pip install requests beautifulsoup4 tqdm
+  # optional cache:
+  pip install diskcache
+
+  python scrape_bu_classes_mt.py --workers 6 --rps 0.5 --burst 2 --delay 0.05 --cache
 """
 
 import argparse
-import csv
 import json
 import logging
-import os
+import random
 import re
 import sys
 import threading
 import time
+from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -30,55 +30,59 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from tqdm import tqdm
 
-INPUT_FILE = "class_urls.txt"
-CSV_OUT = "class_offerings.csv"
-JSON_OUT = "class_offerings.json"
+# ------------------------ Config / Defaults ------------------------
+
+INPUT_FILE_DEFAULT = "class_urls.txt"
+JSON_OUT_DEFAULT = "class_offerings.json"
 LOG_FILE = "scrape.log"
 
+# Semester & schedule patterns
 SEMESTER_PAT = re.compile(
     r"\b(?:(?:FALL|SPRING|SPRG|SUMMER|SUM(?:\s*(?:I|II|1|2))?))\s+\d{4}\b",
     flags=re.IGNORECASE,
 )
-
 TIME_PAT = re.compile(
     r"\b(?:M|T|W|R|F|S|U){1,4}\s+\d{1,2}:\d{2}\s*(?:am|pm|AM|PM)\s*-\s*\d{1,2}:\d{2}\s*(?:am|pm|AM|PM)\b"
 )
 
+# Table header candidates
 INSTR_HEADER_CANDIDATES = {"instructor", "instructors", "professor", "faculty"}
 SCHED_HEADER_CANDIDATES = {"schedule", "days/times", "days & times", "meeting time", "time", "days", "location & time"}
 
+# URL: /academics/{school}/courses/{school}-{dept}-{num}/
 URL_CODE_PAT = re.compile(
     r"/academics/([a-z]{3})/courses/([a-z]{3})-([a-z]{2,4})-([0-9a-z]+)(?:/|$)",
     re.IGNORECASE,
 )
 
-# Thread-local session for connection pooling per worker
+# Title/description helpers
+COURSE_CODE_H2_PAT = re.compile(r"^[A-Z]{3}\s+[A-Z]{2,4}\s+[0-9A-Z]+$")
+BOILERPLATE_PAT = re.compile(r"^Note that this information may change", re.I)
+
+# Optional disk cache (enabled via --cache flag)
+from diskcache import Cache
+
+# ------------------------ Networking (Session & Rate limiting) ------------------------
+
 _tls = threading.local()
 
-
 def make_session() -> requests.Session:
-    session = requests.Session()
+    s = requests.Session()
     retries = Retry(
         total=5,
-        backoff_factor=0.6,
+        backoff_factor=0.8,
         status_forcelist=(429, 500, 502, 503, 504),
         allowed_methods=frozenset(["GET", "HEAD"]),
         raise_on_status=False,
+        respect_retry_after_header=True,
     )
     adapter = HTTPAdapter(max_retries=retries, pool_connections=32, pool_maxsize=32)
-    session.mount("https://", adapter)
-    session.mount("http://", adapter)
-    session.headers.update(
-        {
-            "User-Agent": (
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-            )
-        }
-    )
-    session.timeout = 15
-    return session
-
+    s.mount("https://", adapter)
+    s.mount("http://", adapter)
+    s.headers.update({
+        "User-Agent": "BU-Course-Scraper (research; contact: your-email@example.com)"
+    })
+    return s
 
 def session() -> requests.Session:
     s = getattr(_tls, "session", None)
@@ -87,24 +91,64 @@ def session() -> requests.Session:
         _tls.session = s
     return s
 
+class TokenBucket:
+    """Global requests-per-second limiter with small burst capacity."""
+    def __init__(self, rate_per_sec: float, burst: int):
+        self.rate = max(rate_per_sec, 1e-6)
+        self.capacity = max(1, burst)
+        self.tokens = self.capacity
+        self.updated = time.monotonic()
+        self.lock = threading.Lock()
+
+    def wait(self):
+        with self.lock:
+            now = time.monotonic()
+            self.tokens = min(self.capacity, self.tokens + (now - self.updated) * self.rate)
+            self.updated = now
+            if self.tokens < 1:
+                sleep_for = (1 - self.tokens) / self.rate
+                # release lock while sleeping
+                self.lock.release()
+                try:
+                    time.sleep(sleep_for)
+                finally:
+                    self.lock.acquire()
+                self.tokens = 0
+            else:
+                self.tokens -= 1
+
+def parse_retry_after(hdr: Optional[str]) -> float:
+    if not hdr:
+        return 0.0
+    try:
+        return float(hdr)  # seconds
+    except ValueError:
+        try:
+            dt = datetime.strptime(hdr, "%a, %d %b %Y %H:%M:%S %Z")
+            return max(0.0, (dt - datetime.utcnow()).total_seconds())
+        except Exception:
+            return 0.0
+
+def backoff_sleep(attempt: int, base: float = 0.8, cap: float = 30.0):
+    # Full-jitter exponential backoff
+    sleep_for = min(cap, base * (2 ** attempt))
+    time.sleep(random.uniform(0, sleep_for))
+
+# ------------------------ Parsing helpers ------------------------
+
+def header_text(el: Optional[Tag]) -> str:
+    return "" if el is None else " ".join(el.get_text(separator=" ", strip=True).split())
 
 def parse_codes_from_url(url: str) -> Tuple[str, str, str]:
     m = URL_CODE_PAT.search(url)
     if m:
-        school = m.group(2).upper()
-        dept = m.group(3).upper()
-        num = m.group(4).upper()
-        return school, dept, num
-
+        return m.group(2).upper(), m.group(3).upper(), m.group(4).upper()
     last = url.rstrip("/").split("/")[-1]
     parts = last.split("-")
     if len(parts) >= 3:
-        school, dept, num = parts[0].upper(), parts[1].upper(), parts[2].upper()
-        return school, dept, num
-
+        return parts[0].upper(), parts[1].upper(), parts[2].upper()
     logging.warning(f"Could not parse course codes from URL: {url}")
     return "UNK", "UNK", "UNK"
-
 
 def normalize_semester_text(s: str) -> str:
     s = s.strip()
@@ -127,19 +171,12 @@ def normalize_semester_text(s: str) -> str:
     term_norm = mapping.get(term, term)
     return f"{term_norm} {year}"
 
-
-def header_text(el: Tag) -> str:
-    return " ".join(el.get_text(separator=" ", strip=True).split())
-
-
 def find_semester_headers(soup: BeautifulSoup) -> List[Tag]:
     headers = []
     for tag in soup.find_all(["h2", "h3", "h4", "h5"]):
-        txt = header_text(tag)
-        if SEMESTER_PAT.search(txt):
+        if SEMESTER_PAT.search(header_text(tag)):
             headers.append(tag)
     return headers
-
 
 def table_header_map(table: Tag) -> Dict[str, int]:
     header_cells = []
@@ -152,14 +189,12 @@ def table_header_map(table: Tag) -> Dict[str, int]:
         first_tr = table.find("tr")
         if first_tr:
             header_cells = first_tr.find_all(["th", "td"])
-
     mapping = {}
     for idx, cell in enumerate(header_cells):
         txt = cell.get_text(strip=True).lower()
         if txt:
             mapping[txt] = idx
     return mapping
-
 
 def best_col_idx(header_map: Dict[str, int], candidates: set) -> Optional[int]:
     for key, idx in header_map.items():
@@ -171,32 +206,23 @@ def best_col_idx(header_map: Dict[str, int], candidates: set) -> Optional[int]:
                 return idx
     return None
 
-
 def extract_rows_from_table(table: Optional[Tag]) -> List[Dict[str, str]]:
     out: List[Dict[str, str]] = []
     if not table:
         return out
-
     hmap = table_header_map(table)
     i_col = best_col_idx(hmap, INSTR_HEADER_CANDIDATES)
     s_col = best_col_idx(hmap, SCHED_HEADER_CANDIDATES)
-
-    body_rows = table.find_all("tr")
-    if not body_rows:
+    trs = table.find_all("tr")
+    if not trs:
         return out
-
     start_idx = 1 if hmap else 0
-
-    for tr in body_rows[start_idx:]:
+    for tr in trs[start_idx:]:
         cells = tr.find_all(["td", "th"])
         if not cells:
             continue
-        instructor = (
-            cells[i_col].get_text(" ", strip=True) if i_col is not None and i_col < len(cells) else ""
-        )
-        schedule = (
-            cells[s_col].get_text(" ", strip=True) if s_col is not None and s_col < len(cells) else ""
-        )
+        instructor = (cells[i_col].get_text(" ", strip=True) if i_col is not None and i_col < len(cells) else "")
+        schedule = (cells[s_col].get_text(" ", strip=True) if s_col is not None and s_col < len(cells) else "")
         if not schedule:
             txt = " ".join(c.get_text(" ", strip=True) for c in cells)
             m = TIME_PAT.search(txt)
@@ -205,7 +231,6 @@ def extract_rows_from_table(table: Optional[Tag]) -> List[Dict[str, str]]:
         if instructor or schedule:
             out.append({"instructor": instructor, "schedule": schedule})
     return out
-
 
 def nearest_following_table(start: Tag) -> Optional[Tag]:
     sib = start
@@ -221,6 +246,134 @@ def nearest_following_table(start: Tag) -> Optional[Tag]:
                 return maybe
     return None
 
+COURSE_CODE_H2_PAT = re.compile(r"^[A-Z]{3}\s+[A-Z]{2,4}\s+[0-9A-Z]+$")
+BOILERPLATE_PAT = re.compile(r"^Note that this information may change", re.I)
+SKIP_PREFIX_PAT = re.compile(
+    r"^(Units?:|Undergraduate Prerequisites?:|Graduate Prerequisites?:|Also offered as:|Topic for|Hub areas?:)",
+    re.I,
+)
+
+def _is_site_h1(t: str) -> bool:
+    t = (t or "").strip().lower()
+    return t == "boston university academics" or t.endswith("| boston university")
+
+def _is_semester_header(tag: Tag) -> bool:
+    if tag.name in ("h2","h3","h4","h5"):
+        txt = " ".join(tag.get_text(" ", strip=True).split())
+        return bool(SEMESTER_PAT.search(txt))
+    return False
+
+def _is_schedule_table(tag: Tag) -> bool:
+    if tag.name != "table":
+        return False
+    text = " ".join(tag.get_text(" ", strip=True).split()).lower()
+    return any(key in text for key in ("schedule", "days", "time", "instructor", "location"))
+
+def _looks_like_hub_badge_line(s: str) -> bool:
+    s_clean = s.strip()
+    if not s_clean:
+        return True
+    # Common markers on these lines
+    if s_clean.startswith("BU Hub") or "Learn More" in s_clean:
+        return True
+    # Short, title-case, no period → likely badges/labels
+    if len(s_clean) < 120 and s_clean[0].isupper() and s_clean.endswith(tuple(["Hub", "Literacy", "Exploration", "Thinking"])) and "." not in s_clean:
+        return True
+    return False
+
+def _sanitize_para(txt: str) -> str:
+    # Strip leading/trailing whitespace and collapse spaces
+    txt = " ".join(txt.split())
+    if not txt:
+        return ""
+    if BOILERPLATE_PAT.search(txt) or SKIP_PREFIX_PAT.search(txt):
+        return ""
+    if _looks_like_hub_badge_line(txt):
+        return ""
+    return txt
+
+def extract_title_and_description(soup: BeautifulSoup, fallback_code: str = "") -> tuple[str, str]:
+    """Robust title/description extraction that ignores BU Hub badges and Units lines."""
+    # --- Locate course code header ---
+    code_hdr = None
+    for tag_name in ("h2", "h3"):
+        for h in soup.find_all(tag_name):
+            txt = " ".join(h.get_text(" ", strip=True).split())
+            if COURSE_CODE_H2_PAT.match(txt) and (not fallback_code or fallback_code in txt):
+                code_hdr = h
+                break
+        if code_hdr:
+            break
+
+    # --- Title selection ---
+    title = ""
+    if code_hdr:
+        prev_h1 = code_hdr.find_previous("h1")
+        if prev_h1:
+            t = " ".join(prev_h1.get_text(" ", strip=True).split())
+            if not _is_site_h1(t):
+                title = t
+        if not title:
+            nxt_h1 = code_hdr.find_next("h1")
+            if nxt_h1:
+                t2 = " ".join(nxt_h1.get_text(" ", strip=True).split())
+                if not _is_site_h1(t2):
+                    title = t2
+    if not title:
+        for h1 in soup.find_all("h1"):
+            t = " ".join(h1.get_text(" ", strip=True).split())
+            if not _is_site_h1(t):
+                title = t
+                break
+    if not title:
+        title = "Unknown Title"
+
+    # --- Description collection ---
+    # Walk forward from code_hdr in document order; collect only <p> paragraphs,
+    # except if we hit a "description" container, from which we take its <p> children.
+    candidates: list[str] = []
+    it = code_hdr.find_all_next(True) if code_hdr is not None else soup.find_all(True)
+
+    for el in it:
+        # Stop conditions
+        if _is_semester_header(el) or _is_schedule_table(el):
+            break
+        if el.name in ("h1","h2","h3","h4","h5"):
+            heading_txt = " ".join(el.get_text(" ", strip=True).split())
+            if heading_txt and heading_txt != title:
+                break
+
+        classes = " ".join((el.get("class") or []))
+
+        # Prefer explicit description containers, but only take <p> inside them
+        if classes and "description" in classes.lower():
+            for p in el.find_all("p"):
+                txt = _sanitize_para(p.get_text(" ", strip=True))
+                if txt:
+                    candidates.append(txt)
+            # Don't break; sometimes the main paragraph follows outside
+            continue
+
+        # Otherwise, only collect direct <p> elements
+        if el.name == "p":
+            txt = _sanitize_para(el.get_text(" ", strip=True))
+            if txt:
+                candidates.append(txt)
+
+        # If we enter a known schedule/sections wrapper, stop
+        if el.has_attr("id") and "schedule" in str(el.get("id")).lower():
+            break
+        if classes and any(k in classes.lower() for k in ("schedule", "sections", "meeting")):
+            break
+
+    # Pick the first one or two substantial paragraphs
+    longish = [c for c in candidates if len(c) >= 80]
+    if longish:
+        description = " ".join(longish[:2]).strip()
+    else:
+        description = (candidates[0] if candidates else "").strip()
+
+    return title, description
 
 def parse_semesters_and_sections(soup: BeautifulSoup) -> Dict[str, List[Dict[str, str]]]:
     results: Dict[str, List[Dict[str, str]]] = {}
@@ -228,8 +381,7 @@ def parse_semesters_and_sections(soup: BeautifulSoup) -> Dict[str, List[Dict[str
     seen_any = False
 
     for h in headers:
-        txt = header_text(h)
-        sm = SEMESTER_PAT.search(txt)
+        sm = SEMESTER_PAT.search(header_text(h))
         if not sm:
             continue
         semester = normalize_semester_text(sm.group(0))
@@ -242,6 +394,7 @@ def parse_semesters_and_sections(soup: BeautifulSoup) -> Dict[str, List[Dict[str
     if seen_any:
         return results
 
+    # fallback: any table with plausible columns
     for table in soup.find_all("table"):
         rows = extract_rows_from_table(table)
         if rows:
@@ -252,8 +405,7 @@ def parse_semesters_and_sections(soup: BeautifulSoup) -> Dict[str, List[Dict[str
                 if not parent:
                     break
                 if isinstance(parent, Tag):
-                    txt = header_text(parent)
-                    sm = SEMESTER_PAT.search(txt)
+                    sm = SEMESTER_PAT.search(header_text(parent))
                     if sm:
                         semester = normalize_semester_text(sm.group(0))
                         break
@@ -263,6 +415,7 @@ def parse_semesters_and_sections(soup: BeautifulSoup) -> Dict[str, List[Dict[str
     if seen_any:
         return results
 
+    # last-resort: scan page text for semesters + times
     page_text = soup.get_text(" ", strip=True)
     semesters = {normalize_semester_text(m.group(0)) for m in SEMESTER_PAT.finditer(page_text)}
     times = [m.group(0) for m in TIME_PAT.finditer(page_text)]
@@ -272,6 +425,7 @@ def parse_semesters_and_sections(soup: BeautifulSoup) -> Dict[str, List[Dict[str
                 results.setdefault(sem, []).append({"instructor": "", "schedule": sch})
     return results
 
+# ------------------------ IO helpers ------------------------
 
 def read_urls(path: str) -> List[str]:
     urls = []
@@ -282,79 +436,94 @@ def read_urls(path: str) -> List[str]:
                 urls.append(url)
     return urls
 
+# ------------------------ Worker ------------------------
 
-def fetch_and_parse(url: str, polite_delay: float = 0.0):
-    """Worker: fetch a single URL and return (rows_for_csv, course_block_for_json)."""
-    school, dept, num = parse_codes_from_url(url)
-    try:
-        if polite_delay > 0:
-            # small stagger to avoid bursty hammering
-            time.sleep(polite_delay)
-        resp = session().get(url, timeout=15)
-        if resp.status_code != 200:
-            logging.error(f"HTTP {resp.status_code} for URL: {url}")
-            return [], None
+def make_fetcher(rate_limiter: TokenBucket, cache):
+    def fetch_and_parse(url: str, polite_delay: float = 0.0):
+        school, dept, num = parse_codes_from_url(url)
+        code_for_match = f"{school} {dept} {num}".strip()
 
-        soup = BeautifulSoup(resp.text, "html.parser")
-        sem_map = parse_semesters_and_sections(soup)
+        # Check cache
+        html = None
+        if cache is not None:
+            cached = cache.get(url)
+            if cached is not None:
+                html = cached
 
-        rows_for_csv = []
-        any_row = False
-        for sem, entries in sem_map.items():
-            for e in entries:
-                rows_for_csv.append(
-                    {
-                        "url": url,
-                        "school": school,
-                        "department": dept,
-                        "number": num,
-                        "semester": sem,
-                        "instructor": e.get("instructor", ""),
-                        "schedule": e.get("schedule", ""),
-                    }
-                )
-                any_row = True
+        try:
+            # Rate-limit + small per-request delay to smooth bursts
+            rate_limiter.wait()
+            if polite_delay > 0:
+                time.sleep(polite_delay)
 
-        if not any_row:
-            rows_for_csv.append(
-                {
-                    "url": url,
-                    "school": school,
-                    "department": dept,
-                    "number": num,
-                    "semester": "",
-                    "instructor": "",
-                    "schedule": "",
-                }
-            )
-            logging.warning(f"No semester/sections extracted for URL: {url}")
+            if html is None:
+                max_attempts = 5
+                attempt = 0
+                while True:
+                    attempt += 1
+                    resp = session().get(url, timeout=20)
+                    status = resp.status_code
 
-        key = f"{school}-{dept}-{num}"
-        course_block = {
-            "url": url,
-            "school": school,
-            "department": dept,
-            "number": num,
-            "semesters": {sem: [{"instructor": e.get("instructor", ""), "schedule": e.get("schedule", "")}
-                                for e in entries]
-                          for sem, entries in sem_map.items()}
-        }
-        return rows_for_csv, (key, course_block)
+                    if status == 200:
+                        html = resp.text
+                        if cache is not None:
+                            cache.set(url, html, expire=60 * 60 * 24)  # 24h
+                        break
 
-    except Exception as e:
-        logging.exception(f"Failed to process URL: {url} | {e}")
-        return [], None
+                    if status == 429:
+                        ra = parse_retry_after(resp.headers.get("Retry-After"))
+                        if ra > 0:
+                            logging.info(f"429 Retry-After={ra:.1f}s for {url}; sleeping.")
+                            time.sleep(ra)
+                        else:
+                            logging.info(f"429 for {url}; backoff attempt {attempt}.")
+                            backoff_sleep(attempt)
+                    elif status in (500, 502, 503, 504):
+                        logging.info(f"{status} for {url}; backoff attempt {attempt}.")
+                        backoff_sleep(attempt)
+                    else:
+                        logging.error(f"HTTP {status} for URL: {url}")
+                        return None
 
+                    if attempt >= max_attempts:
+                        logging.error(f"Gave up after {max_attempts} attempts: {url}")
+                        return None
+
+            soup = BeautifulSoup(html, "html.parser")
+            title, description = extract_title_and_description(soup, fallback_code=code_for_match)
+            sem_map = parse_semesters_and_sections(soup)
+
+            return {
+                "url": url,
+                "school": school,
+                "department": dept,
+                "number": num,
+                "title": title,
+                "description": description,
+                "semesters": {
+                    sem: [{"instructor": e.get("instructor", ""), "schedule": e.get("schedule", "")}
+                          for e in entries]
+                    for sem, entries in sem_map.items()
+                },
+            }
+
+        except Exception as e:
+            logging.exception(f"Failed to process URL: {url} | {e}")
+            return None
+    return fetch_and_parse
+
+# ------------------------ Main ------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description="Multithreaded BU course scraper")
-    parser.add_argument("--input", default=INPUT_FILE, help="Input file with URLs (one per line)")
-    parser.add_argument("--csv", default=CSV_OUT, help="CSV output path")
-    parser.add_argument("--json", default=JSON_OUT, help="JSON output path")
-    parser.add_argument("--workers", type=int, default=8, help="Number of concurrent workers (default: 8)")
-    parser.add_argument("--delay", type=float, default=0.05,
-                        help="Polite per-request delay in seconds (applied inside workers, default: 0.05)")
-    args = parser.parse_args()
+    ap = argparse.ArgumentParser(description="Multithreaded BU course scraper (JSON-only)")
+    ap.add_argument("--input", default=INPUT_FILE_DEFAULT, help="Input file with URLs (one per line)")
+    ap.add_argument("--json", default=JSON_OUT_DEFAULT, help="JSON output path")
+    ap.add_argument("--workers", type=int, default=8, help="Number of concurrent workers (default 8)")
+    ap.add_argument("--delay", type=float, default=0.05, help="Per-request smoothing delay (default 0.05s)")
+    ap.add_argument("--rps", type=float, default=0.5, help="Global requests/second (default 0.5)")
+    ap.add_argument("--burst", type=int, default=2, help="Token bucket burst capacity (default 2)")
+    ap.add_argument("--cache", action="store_true", help="Enable on-disk HTML cache (.scrape_cache)")
+    args = ap.parse_args()
 
     logging.basicConfig(
         filename=LOG_FILE,
@@ -363,61 +532,44 @@ def main():
         format="%(asctime)s [%(levelname)s] %(message)s",
     )
 
-    if not Path(args.input).exists():
+    path = Path(args.input)
+    if not path.exists():
         print(f"Input file not found: {args.input}", file=sys.stderr)
         sys.exit(1)
 
     urls = read_urls(args.input)
-    rows_for_csv_all: List[dict] = []
-    grouped_for_json: Dict[str, dict] = {}
+    # Deduplicate while preserving order
+    seen = set()
+    urls = [u for u in urls if not (u in seen or seen.add(u))]
 
-    # Sensible cap to avoid hitting the site too hard
+    # Cap workers for politeness
     workers = max(1, min(args.workers, 24))
+    rate_limiter = TokenBucket(args.rps, args.burst)
+    cache = Cache(".scrape_cache") if args.cache and Cache is not None else None
+
+    results: Dict[str, dict] = {}
+    fetch_and_parse = make_fetcher(rate_limiter, cache)
 
     with tqdm(total=len(urls), desc="Scraping BU courses", unit="url") as pbar:
         with ThreadPoolExecutor(max_workers=workers) as ex:
-            futures = {ex.submit(fetch_and_parse, url, args.delay): url for url in urls}
-            for fut in as_completed(futures):
-                url = futures[fut]
+            fut_to_url = {ex.submit(fetch_and_parse, url, args.delay): url for url in urls}
+            for fut in as_completed(fut_to_url):
+                url = fut_to_url[fut]
                 try:
-                    csv_rows, json_pair = fut.result()
-                    if csv_rows:
-                        rows_for_csv_all.extend(csv_rows)
-                    if json_pair:
-                        key, block = json_pair
-                        grouped_for_json[key] = block
+                    item = fut.result()
+                    if item:
+                        key = f"{item['school']}-{item['department']}-{item['number']}"
+                        results[key] = item
                 except Exception as e:
                     logging.exception(f"Unhandled exception for URL: {url} | {e}")
                 finally:
                     pbar.update(1)
 
-    # Write CSV
-    with open(args.csv, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(
-            f,
-            fieldnames=[
-                "url",
-                "school",
-                "department",
-                "number",
-                "semester",
-                "instructor",
-                "schedule",
-            ],
-        )
-        writer.writeheader()
-        for r in rows_for_csv_all:
-            writer.writerow(r)
-
-    # Write JSON
+    # Write JSON only
     with open(args.json, "w", encoding="utf-8") as f:
-        json.dump(grouped_for_json, f, ensure_ascii=False, indent=2)
+        json.dump(results, f, ensure_ascii=False, indent=2)
 
-    print(
-        f"Done. Wrote:\n- {args.csv}\n- {args.json}\n- logs: {LOG_FILE}\n"
-        f"Workers: {workers}, Delay: {args.delay}s"
-    )
-
+    print(f"Done.\n- {args.json}\n- logs: {LOG_FILE}\nWorkers: {workers}, RPS: {args.rps}, Burst: {args.burst}, Cache: {'on' if cache else 'off'}")
 
 if __name__ == "__main__":
     main()
