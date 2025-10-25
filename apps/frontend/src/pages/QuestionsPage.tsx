@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader, Select, ScrollArea, Badge } from '@mantine/core';
 import { IconSend, IconRobot, IconUser, IconFilter, IconBook } from '@tabler/icons-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
   type: 'user' | 'ai';
@@ -321,7 +323,21 @@ const QuestionsPage: React.FC = () => {
                     },
                   }}
                 >
-                  <Text size="sm">{message.content}</Text>
+                  {message.type === 'ai' ? (
+                    <Box
+                      style={{
+                        fontSize: '0.875rem',
+                        lineHeight: 1.6,
+                      }}
+                      className="markdown-content"
+                    >
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {message.content}
+                      </ReactMarkdown>
+                    </Box>
+                  ) : (
+                    <Text size="sm">{message.content}</Text>
+                  )}
                 </Paper>
 
                 {message.type === 'user' && (
