@@ -5,6 +5,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import App from './App';
 
 import '@mantine/core/styles.css';
+import './App.css';
 
 const theme = createTheme({
   colors: {

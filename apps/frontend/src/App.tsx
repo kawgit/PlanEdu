@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Box } from '@mantine/core';
 import Navigation from './components/Navigation';
 import HomePage from './pages/HomePage';
 import SignInPage from './pages/SignInPage';
@@ -33,10 +34,17 @@ const App: React.FC = () => {
 
   return (
     <>
-      {activeTab !== 'signin' && (
+      <Box
+        style={{
+          paddingBottom: activeTab !== 'signin' && activeTab !== 'home' ? '80px' : '0',
+          minHeight: '100vh',
+        }}
+      >
+        {renderPage()}
+      </Box>
+      {activeTab !== 'signin' && activeTab !== 'home' && (
         <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
       )}
-      {renderPage()}
     </>
   );
 };

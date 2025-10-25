@@ -1,5 +1,6 @@
 import React from 'react';
-import { Group, Button } from '@mantine/core';
+import { Box, UnstyledButton, Text, useMantineTheme } from '@mantine/core';
+import { IconHome, IconSettings, IconMessageCircle, IconCards, IconBookmark } from '@tabler/icons-react';
 import { TabName } from '../App';
 
 interface NavigationProps {
@@ -7,45 +8,115 @@ interface NavigationProps {
   setActiveTab: (tab: TabName) => void;
 }
 
+interface NavItemProps {
+  icon: React.ReactNode;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}
+
+const NavItem: React.FC<NavItemProps> = ({ icon, label, active, onClick }) => {
+  const theme = useMantineTheme();
+  const buRed = theme.colors['bu-red'][6];
+
+  return (
+    <UnstyledButton
+      onClick={onClick}
+      style={{
+        flex: 1,
+        padding: '0.75rem 0.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'all 0.2s ease',
+        transform: active ? 'scale(1.05)' : 'scale(1)',
+      }}
+      styles={{
+        root: {
+          '&:hover': {
+            transform: 'scale(1.08)',
+            backgroundColor: 'rgba(204, 0, 0, 0.05)',
+          },
+        },
+      }}
+    >
+      <Box
+        style={{
+          color: active ? buRed : '#868e96',
+          transition: 'color 0.2s ease',
+          marginBottom: '0.25rem',
+        }}
+      >
+        {icon}
+      </Box>
+      <Text
+        size="xs"
+        fw={active ? 600 : 400}
+        style={{
+          color: active ? buRed : '#868e96',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        {label}
+      </Text>
+    </UnstyledButton>
+  );
+};
+
 const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
   return (
-    <Group justify="center" p="md" style={{ borderBottom: '1px solid #e0e0e0' }}>
-      <Button
-        variant={activeTab === 'home' ? 'filled' : 'subtle'}
-        color="bu-red"
-        onClick={() => setActiveTab('home')}
+    <Box
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'white',
+        borderTop: '1px solid #e9ecef',
+        boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.05)',
+        zIndex: 100,
+      }}
+    >
+      <Box
+        style={{
+          display: 'flex',
+          maxWidth: '600px',
+          margin: '0 auto',
+        }}
       >
-        Home
-      </Button>
-      <Button
-        variant={activeTab === 'preferences' ? 'filled' : 'subtle'}
-        color="bu-red"
-        onClick={() => setActiveTab('preferences')}
-      >
-        Preferences
-      </Button>
-      <Button
-        variant={activeTab === 'questions' ? 'filled' : 'subtle'}
-        color="bu-red"
-        onClick={() => setActiveTab('questions')}
-      >
-        Questions
-      </Button>
-      <Button
-        variant={activeTab === 'swiper' ? 'filled' : 'subtle'}
-        color="bu-red"
-        onClick={() => setActiveTab('swiper')}
-      >
-        Class Swiper
-      </Button>
-      <Button
-        variant={activeTab === 'bookmarks' ? 'filled' : 'subtle'}
-        color="bu-red"
-        onClick={() => setActiveTab('bookmarks')}
-      >
-        Bookmarks
-      </Button>
-    </Group>
+        <NavItem
+          icon={<IconHome size={24} stroke={1.5} />}
+          label="Home"
+          active={activeTab === 'home'}
+          onClick={() => setActiveTab('home')}
+        />
+        <NavItem
+          icon={<IconSettings size={24} stroke={1.5} />}
+          label="Preferences"
+          active={activeTab === 'preferences'}
+          onClick={() => setActiveTab('preferences')}
+        />
+        <NavItem
+          icon={<IconMessageCircle size={24} stroke={1.5} />}
+          label="Questions"
+          active={activeTab === 'questions'}
+          onClick={() => setActiveTab('questions')}
+        />
+        <NavItem
+          icon={<IconCards size={24} stroke={1.5} />}
+          label="Swiper"
+          active={activeTab === 'swiper'}
+          onClick={() => setActiveTab('swiper')}
+        />
+        <NavItem
+          icon={<IconBookmark size={24} stroke={1.5} />}
+          label="Bookmarks"
+          active={activeTab === 'bookmarks'}
+          onClick={() => setActiveTab('bookmarks')}
+        />
+      </Box>
+    </Box>
   );
 };
 
