@@ -1,0 +1,1891 @@
+{
+  "CAS-CS-101": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-101",
+    "school": "CAS",
+    "department": "CS",
+    "number": "101",
+    "title": "Introduction to Computing",
+    "description": "The computer is presented as a tool that can assist in solving a broad spectrum of problems. This course provides a general introduction designed to dispel the mystery surrounding computers and introduces the fundamental ideas of programs and algorithms. Carries MCS divisional credit in CAS. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Quantitative Reasoning II, Digital/Multimedia Expression. Effective Fall 2022, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, Quantitative Reasoning II, Critical Thinking.",
+    "semesters": {},
+    "parsed_prerequisites": null,
+    "hub_areas": [
+      "Quantitative Reasoning II",
+      "Digital/Multimedia Expression"
+    ]
+  },
+  "CAS-CS-115": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-115",
+    "school": "CAS",
+    "department": "CS",
+    "number": "115",
+    "title": "Academic Writing in Computer Science",
+    "description": "Undergraduate Prerequisites: CAS WR 120 or equivalent; CAS CS 111. - Pre-req: WR 120 or equivalent, CS 111. This 2-credit course offers a Writing Intensive unit through the topic of computer science. Students engage with readings and discussions in current computer science issues. The course focuses on teaching critical reading, creating a strong argument, and engaging with a variety of sources. Effective Spring 2023, this course fulfills a single unit in the following BU Hub area: Writing-Intensive Course.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Narayanan",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Narayanan",
+          "schedule": "W 12:20 pm-2:05 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASWR 120"
+        ]
+      },
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS111"
+        ]
+      }
+    ],
+    "hub_areas": [
+      "Writing-Intensive Course"
+    ]
+  },
+  "CAS-CS-108": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-108",
+    "school": "CAS",
+    "department": "CS",
+    "number": "108",
+    "title": "Programming for Non-CS Majors",
+    "description": "A rigorous introduction to programming for students not majoring in computer science. Covers a broad set of topics about application development, including basic programming concepts, testing and debugging, abstraction and design, and an introduction to data analytics. Effective Fall 2018, this course fulfills a single unit in the following BU Hub area: Quantitative Reasoning I.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Stevens",
+          "schedule": "MW 12:20 pm-2:05 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": null,
+    "hub_areas": [
+      "Quantitative Reasoning I"
+    ]
+  },
+  "CAS-CS-131": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-131",
+    "school": "CAS",
+    "department": "CS",
+    "number": "131",
+    "title": "Combinatoric Structures",
+    "description": "Fundamentals of logic (the laws of logic, rules of inference, quantifiers, proofs and inductive reasoning), fundamental principles of counting (permutations, combinations), set theory, relations and functions, principles for manipulating basic combinatoric structures. Effective Fall 2018, this course fulfills a single unit in the following BU Hub area: Quantitative Reasoning II. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Quantitative Reasoning II, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Reyzin",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Reyzin",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Gaboardi",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Gaboardi",
+          "schedule": "W 1:25 pm-2:15 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": null,
+    "hub_areas": [
+      "Quantitative Reasoning II"
+    ]
+  },
+  "CAS-CS-132": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-132",
+    "school": "CAS",
+    "department": "CS",
+    "number": "132",
+    "title": "Geometric Algorithms",
+    "description": "Undergraduate Prerequisites: (CASCS111 & CASMA123) - Basic concepts, data structures, and algorithms for geometric objects. Examples of topics: Cartesian geometry, transformations and their representation, queries and sampling, triangulations. Emphasis on rigorous reasoning and analysis, advancing algorithmic maturity and expertise in its application. Effective Fall 2019, this course fulfills a single unit in the following BU Hub areas: Quantitative Reasoning II, Digital/Multimedia Expression.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Mull",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Chien",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 4:40 pm-5:30 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Mull",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 3:35 pm-4:25 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS111",
+          "CASMA123"
+        ]
+      }
+    ],
+    "hub_areas": [
+      "Quantitative Reasoning II",
+      "Digital/Multimedia Expression"
+    ]
+  },
+  "CAS-CS-235": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-235",
+    "school": "CAS",
+    "department": "CS",
+    "number": "235",
+    "title": "Algebraic Algorithms",
+    "description": "Undergraduate Corequisites: CASCS132 recommended. - Basic concepts and algorithms for manipulation of algebraic objects, such as residues, matrices, polynomials; and applications to various CS areas, such as cryptography and fault-tolerance. Emphasis on rigorous reasoning and analysis. Effective Fall 2018, this course fulfills a single unit in the following BU Hub area: Quantitative Reasoning II.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Homer",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Homer",
+          "schedule": "W 3:35 pm-4:25 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": null,
+    "hub_areas": [
+      "Quantitative Reasoning II"
+    ]
+  },
+  "CAS-CS-210": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-210",
+    "school": "CAS",
+    "department": "CS",
+    "number": "210",
+    "title": "Computer Systems",
+    "description": "Undergraduate Prerequisites: (CASCS112) - Fundamental concepts of computer systems and systems programming. Hardware fundamentals including digital logic, memory systems, processor design, buses, I/O subsystems, data representations, computer arithmetic, and instruction- set architecture. Software concepts including assembly language programming, operating systems, assemblers, linkers, and systems programming in C. Effective Fall 2018, this course fulfills a single unit in the following BU Hub area: Quantitative Reasoning II.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 4:30 pm-6:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 4:30 pm-6:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 10:10 am-11:55 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 12:20 pm-2:05 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 2:30 pm-4:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "M 4:30 pm-6:15 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS112"
+        ]
+      }
+    ],
+    "hub_areas": [
+      "Quantitative Reasoning II"
+    ]
+  },
+  "CAS-CS-112": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-112",
+    "school": "CAS",
+    "department": "CS",
+    "number": "112",
+    "title": "Introduction to Computer Science 2",
+    "description": "Undergraduate Prerequisites: (CASCS111) or equivalent. - Covers advanced programming techniques and data structures. Topics include recursion, algorithm analysis, linked lists, stacks, queues, trees, graphs, tables, searching, and sorting. Carries MCS divisional credit in CAS. Effective Fall 2018, this course fulfills a single unit in the following BU Hub areas: Quantitative Reasoning II, Creativity/Innovation, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 12:20 pm-1:20 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Papadakis-Kanaris",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS111"
+        ]
+      },
+      {
+        "type": "equivalent"
+      }
+    ],
+    "hub_areas": [
+      "Quantitative Reasoning II",
+      "Creativity/Innovation",
+      "Critical Thinking"
+    ]
+  },
+  "CAS-CS-111": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-111",
+    "school": "CAS",
+    "department": "CS",
+    "number": "111",
+    "title": "Introduction to Computer Science 1",
+    "description": "The first course for computer science majors and anyone seeking a rigorous introduction. Develops computational problem-solving skills by programming in the Python language, and exposes students to variety of other topics from computer science and its applications. Carries MCS divisional credit in CAS. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Quantitative Reasoning II, Creativity/Innovation, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "M 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 9:30 am-10:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 10:30 am-11:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 11:30 am-12:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 12:30 pm-1:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 1:30 pm-2:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 3:30 pm-4:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 4:30 pm-5:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 5:30 pm-6:20 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 10:30 am-11:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 11:30 am-12:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 12:30 pm-1:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 1:30 pm-2:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "T 3:30 pm-4:20 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": null,
+    "hub_areas": [
+      "Quantitative Reasoning II",
+      "Creativity/Innovation",
+      "Critical Thinking"
+    ]
+  },
+  "CAS-CS-332": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-332",
+    "school": "CAS",
+    "department": "CS",
+    "number": "332",
+    "title": "Elements of the Theory of Computation",
+    "description": "Undergraduate Prerequisites: (CASCS330) - The basic concepts of the theory of computation are studied. Topics include models of computation, polynomial time, Church's thesis; universal algorithms, undecidability and intractability; time and space complexity, nondeterminism, probabilistic computation and reductions of computational problems.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Levin",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Levin",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Levin",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Levin",
+          "schedule": "W 12:20 pm-1:10 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Bun",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS330"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-357": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-357",
+    "school": "CAS",
+    "department": "CS",
+    "number": "357",
+    "title": "Introduction to Information Security",
+    "description": "Undergraduate Prerequisites: (CASCS210) or consent of instructor. - Provides basic concepts needed for understanding information security. Discusses vulnerabilities, design principles, basic algorithms, security definitions, and analytical methods. Covers system security, network security, web security, cryptography, and data privacy. Also addresses social, ethical, and policy aspects of security.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Goldberg",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Goldberg",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Goldberg",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Goldberg",
+          "schedule": "W 12:20 pm-1:10 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS210"
+        ]
+      },
+      {
+        "type": "consent"
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-237": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-237",
+    "school": "CAS",
+    "department": "CS",
+    "number": "237",
+    "title": "Probability in Computing",
+    "description": "Undergraduate Prerequisites: (CASCS131) - Introduction to basic probabilistic concepts and methods used in computer science. Develops an understanding of the crucial role played by randomness in computing, both as a powerful tool and as a challenge to confront and analyze. Emphasis on rigorous reasoning, analysis, and algorithmic thinking. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Quantitative Reasoning II, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Januario",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Januario",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Januario",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS131"
+        ]
+      }
+    ],
+    "hub_areas": [
+      "Quantitative Reasoning II",
+      "Critical Thinking"
+    ]
+  },
+  "CAS-CS-350": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-350",
+    "school": "CAS",
+    "department": "CS",
+    "number": "350",
+    "title": "Fundamentals of Computing Systems",
+    "description": "Undergraduate Prerequisites: CASCS 210 - Programming-centric introduction to computer systems. The course discusses system design principles, performance analysis, communication and synchronization primitives, concurrency control, database transactions, data consistency, task and data parallelism, replication, fault tolerance, and distributed consensus. NOTE: CASCS 350 and CASCS 351 fulfill the same major requirement (\u201ctake two of the 3 courses in CS 320, CS 332, CS 350\u201d). Students are allowed to take both CS 350 and CS 351 for credit. In this case one of the two will be applied towards electives in the major.",
+    "semesters": {},
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS210"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-330": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-330",
+    "school": "CAS",
+    "department": "CS",
+    "number": "330",
+    "title": "Introduction to Analysis of Algorithms",
+    "description": "Prerequisites: CASCS 112 and CASCS 131 and one of the following: CASCS 132/MA242 or CASCS 235/MA294 or CASCS 237/MA581. - Examines the basic principles of algorithm design and analysis; asymptotic analysis; graph algorithms; greedy algorithms; dynamic programming; network flows; polynomial- time reductions; NP-hard and NP-complete problems. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Quantitative Reasoning II, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS112",
+          "CASCS131",
+          "CASCS132",
+          "MA242"
+        ]
+      },
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS235",
+          "MA294"
+        ]
+      },
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS237",
+          "MA581"
+        ]
+      }
+    ],
+    "hub_areas": [
+      "Quantitative Reasoning II",
+      "Critical Thinking"
+    ]
+  },
+  "CAS-CS-320": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-320",
+    "school": "CAS",
+    "department": "CS",
+    "number": "320",
+    "title": "Concepts of Programming Languages",
+    "description": "Undergraduate Prerequisites: (CASCS131 & CASCS210) - Concepts involved in the design of programming languages. Bindings, argument transmission, and control structures. Environments: compile-time, load-time, and run-time. Interpreters. Effective Fall 2019, this course fulfills a single unit in the following BU Hub area: Creativity/Innovation.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Das",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "W 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Mull",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "M 2:30 pm-3:20 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS131",
+          "CASCS210"
+        ]
+      }
+    ],
+    "hub_areas": [
+      "Creativity/Innovation"
+    ]
+  },
+  "CAS-CS-351": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-351",
+    "school": "CAS",
+    "department": "CS",
+    "number": "351",
+    "title": "Distributed Systems",
+    "description": "Prerequisites: CASCS 210. - Covers fundamental concepts of distributed computing (logical clocks, causal order, snapshots, consensus, atomic commit), communication and synchronization primitives, concurrency control, task and data parallelism, data consistency, replication, and fault tolerance. NOTE: CASCS 350 and CASCS 351 fulfill the same major requirement (\u201ctake two of the 3 courses in CS 320, CS 332, CS 350\u201d). Students are allowed to take both CS 350 and CS 351 for credit. In this case one of the two will be applied towards electives in the major.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "MW 2:30 pm-3:45 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 1:25 pm-2:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "MW 2:30 pm-3:45 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "MW 4:00 pm-5:15 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Arpaci-Dusseau",
+          "schedule": "W 1:25 pm-2:15 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS210"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-365": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-365",
+    "school": "CAS",
+    "department": "CS",
+    "number": "365",
+    "title": "Foundations of Data Science",
+    "description": "Undergraduate Prerequisites: CAS CS112 and CAS CS131 and CAS CS132 and CAS CS237 (or equivalent). O r consent of instructor. Recommended: CAS CS330. - Lays the foundation towards more advanced data-intensive classes, such as Data Science, Machine Learning, Data Mining. The course provides an understanding of the fundamentals and the practical implications of concepts. It covers both theoretical skills as well as working/practical knowledge.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Wood",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "M 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "M 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "M 12:20 pm-1:10 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Erdos",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS112",
+          "CASCS131",
+          "CASCS132",
+          "CASCS237"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-392": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-392",
+    "school": "CAS",
+    "department": "CS",
+    "number": "392",
+    "title": "Topics in Computer Science",
+    "description": "Topics vary, course descriptions for each semester can be found at https://www.bu.edu/cs/undergraduate/courses/topics/ Different sections of the course may be taken for credit as topics vary.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Januario",
+          "schedule": "F 2:30 pm-5:15 pm"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Xi",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Januario",
+          "schedule": "F 2:30 pm-5:15 pm"
+        },
+        {
+          "instructor": "Xi",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": null,
+    "hub_areas": null
+  },
+  "CAS-CS-402": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-402",
+    "school": "CAS",
+    "department": "CS",
+    "number": "402",
+    "title": "Senior Independent Work",
+    "description": "Undergraduate Prerequisites: approval of the Honors Committee. - Effective Spring 2023, this course fulfills a single unit in the following BU Hub area: Oral and/or Signed Communication.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Crovella",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Erdos",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Onak",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Plummer",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Varia",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "text",
+        "value": "approval of the Honors Committee"
+      }
+    ],
+    "hub_areas": [
+      "Oral",
+      "/or Signed Communication"
+    ]
+  },
+  "CAS-CS-412": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-412",
+    "school": "CAS",
+    "department": "CS",
+    "number": "412",
+    "title": "Full-Stack Application Design and Development",
+    "description": "Undergraduate Prerequisites: (CASCS111 & CASCS112 & CASCS411) or consent of instructor. - Introduction to design and development of full-stack web applications. Topics include asynchronous programming; non-relational data stores; use of APIs; serverless (cloudbased) applications; decoupled client/server architectures; performance; testing; packaging; and deployment. Examines current and proposed technology stacks.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Stevens",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Stevens",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Stevens",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Stevens",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS111",
+          "CASCS112",
+          "CASCS411"
+        ]
+      },
+      {
+        "type": "consent"
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-401": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-401",
+    "school": "CAS",
+    "department": "CS",
+    "number": "401",
+    "title": "Senior Independent Work",
+    "description": "Undergraduate Prerequisites: approval of the Honors Committee. - Effective Fall 2022, this course fulfills a single unit in the following BU Hub area: Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Neuman",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "text",
+        "value": "approval of the Honors Committee"
+      }
+    ],
+    "hub_areas": [
+      "Research",
+      "Information Literacy"
+    ]
+  },
+  "CAS-CS-410": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-410",
+    "school": "CAS",
+    "department": "CS",
+    "number": "410",
+    "title": "Advanced Software Systems",
+    "description": "Undergraduate Prerequisites: (CASCS210) - Systems programming including such topics as project management, tools, I/O networking, multiprocessing, exception handling, and system services. Other topics are explored using C and Perl under the UNIX operating system. Requires a working knowledge of the C programming language and experience with UNIX as a user, or equivalent.",
+    "semesters": {},
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS210"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-440": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-440",
+    "school": "CAS",
+    "department": "CS",
+    "number": "440",
+    "title": "Introduction to Artificial Intelligence",
+    "description": "Undergraduate Prerequisites: (CASCS112 & CASCS132) - Introduction to computer systems that exhibit intelligent behavior, in particular, perceptual and robotic systems. Topics include human computer interfaces, computer vision, robotics, game playing, pattern recognition, knowledge representation, planning.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Wood",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "M 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "M 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "T 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "T 5:00 pm-5:50 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Wood",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "M 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "T 9:55 am-10:45 am"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "T 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "T 12:30 pm-1:20 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "T 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Wood",
+          "schedule": "T 5:00 pm-5:50 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS112",
+          "CASCS132"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-411": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-411",
+    "school": "CAS",
+    "department": "CS",
+    "number": "411",
+    "title": "Software Engineering",
+    "description": "Undergraduate Prerequisites: (CASCS112) - Introduction to the construction of reliable software. Topics may include software tools, software testing methodologies, retrofitting, regression testing, structured design and structured programming, software characteristics and quality, complexity, entropy, deadlock, fault tolerance, formal proofs of program correctness, chief program teams, and structured walk-throughs. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub area: Teamwork/Collaboration.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "F 12:20 pm-1:10 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 12:20 pm-1:10 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS112"
+        ]
+      }
+    ],
+    "hub_areas": [
+      "Teamwork/Collaboration"
+    ]
+  },
+  "CAS-CS-391": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-391",
+    "school": "CAS",
+    "department": "CS",
+    "number": "391",
+    "title": "Topics in Computer Science",
+    "description": "Topics vary, course descriptions for each semester can be found at https://www.bu.edu/cs/undergraduate/courses/topics/ Different sections of the course may be taken for credit as topics vary.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Davoodi",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "M 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "M 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Bun",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Neuman",
+          "schedule": "MW 2:30 pm-3:45 pm"
+        },
+        {
+          "instructor": "Neuman",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "White",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        },
+        {
+          "instructor": "White",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "White",
+          "schedule": "F 10:10 am-11:00 am"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Davoodi",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Davoodi",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Appavoo",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Appavoo",
+          "schedule": "F 1:25 pm-2:15 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": null,
+    "hub_areas": null
+  },
+  "CAS-CS-451": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-451",
+    "school": "CAS",
+    "department": "CS",
+    "number": "451",
+    "title": "Distributed Systems",
+    "description": "Undergraduate Prerequisites: (CASCS210) - Programming-centric introduction to how networks of computers are structured to operate as coherent single systems. Introducing principles of architecture, processes, communications, naming, synchronization, consistency and replication, fault tolerance and security, and paradigms such as web-based, object-based, file system, and consistency-based.",
+    "semesters": {},
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS210"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-491": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-491",
+    "school": "CAS",
+    "department": "CS",
+    "number": "491",
+    "title": "Directed Study",
+    "description": "Undergraduate Prerequisites: sophomore or higher standing, consent of instructor, and a completed D irected Study Application form. - Independent study in Computer Science under the guidance of a faculty member. Student and supervising faculty member arrange and document expectations and requirements. Examples include internship opportunities for academic credit, in-depth study of a special topic, or independent research project.",
+    "semesters": {},
+    "parsed_prerequisites": [
+      {
+        "type": "text",
+        "value": "sophomore"
+      },
+      {
+        "type": "text",
+        "value": "higher standing"
+      },
+      {
+        "type": "consent"
+      },
+      {
+        "type": "text",
+        "value": "and a completed D irected Study Application form"
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-480": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-480",
+    "school": "CAS",
+    "department": "CS",
+    "number": "480",
+    "title": "Introduction to Computer Graphics",
+    "description": "Undergraduate Prerequisites: (CASCS112 & CASCS132) - Introduction to computer graphics algorithms, programming methods, and applications. Focus on fundamentals of two- and three-dimensional raster graphics: scan-conversion, clipping, geometric transformations, and camera modeling. Introduces concepts in computational geometry, computer-human interfaces, animation, and visual realism. Effective Fall 2019, this course fulfills a single unit in the following BU Hub area: Digital/Multimedia Expression.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Whiting",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Whiting",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Whiting",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Whiting",
+          "schedule": "W 12:20 pm-1:10 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS112",
+          "CASCS132"
+        ]
+      }
+    ],
+    "hub_areas": [
+      "Digital/Multimedia Expression"
+    ]
+  },
+  "CAS-CS-454": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-454",
+    "school": "CAS",
+    "department": "CS",
+    "number": "454",
+    "title": "Embedded Systems Development",
+    "description": "Undergraduate Prerequisites: (CASCS210) - Lab-based course exploring concepts, techniques, best practices, and tools for the development of connected embedded systems, including: signal processing; sensing, control and actuation; programming and debugging on microprocessors; 1/0 interfacing and development of device drivers; and time-critical data handling.",
+    "semesters": {},
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS210"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-501": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-501",
+    "school": "CAS",
+    "department": "CS",
+    "number": "501",
+    "title": "Computer Science Practicum",
+    "description": "Various applications of computer science that vary semester to semester. Please contact the CAS Computer Science Department for detailed descriptions.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Czik",
+          "schedule": "T 6:30 pm-9:15 pm"
+        },
+        {
+          "instructor": "El-Sheikh",
+          "schedule": "T 3:30 pm-6:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Czik",
+          "schedule": "T 6:30 pm-9:15 pm"
+        },
+        {
+          "instructor": "El-Sheikh",
+          "schedule": "T 3:30 pm-6:15 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": null,
+    "hub_areas": null
+  },
+  "CAS-CS-492": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-492",
+    "school": "CAS",
+    "department": "CS",
+    "number": "492",
+    "title": "Directed Study",
+    "description": "Undergraduate Prerequisites: sophomore or higher standing, consent of instructor, and a completed D irected Study Application form. - Independent study in Computer Science under the guidance of a faculty member. Student and supervising faculty member arrange and document expectations and requirements. Examples include internship opportunities for academic credit, in-depth study of a special topic, or independent research project.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Chien",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Neuman",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "West",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Canetti",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Crovella",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Mull",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "text",
+        "value": "sophomore"
+      },
+      {
+        "type": "text",
+        "value": "higher standing"
+      },
+      {
+        "type": "consent"
+      },
+      {
+        "type": "text",
+        "value": "and a completed D irected Study Application form"
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-455": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-455",
+    "school": "CAS",
+    "department": "CS",
+    "number": "455",
+    "title": "Computer Networks",
+    "description": "Undergraduate Prerequisites: (CASCS210) - Concepts underlying the design of high-performance computer networks and scalable protocols. Topics include Internet design principles and methodology, TCP/IP implementation, packet switching and routing algorithms, multicast, quality of service considerations, error detection and correction, and performance evaluation.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Yang",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Yang",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Yang",
+          "schedule": "F 11:15 am-12:05 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS210"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-460": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-460",
+    "school": "CAS",
+    "department": "CS",
+    "number": "460",
+    "title": "Introduction to Database Systems",
+    "description": "Undergraduate Prerequisites: (CASCS112) - Introduction to database management systems. Examines entity-relationship, relational, and object-oriented data models; commercial query languages: SQL, relational algebra, relational calculus, and QBE; file organization, indexing and hashing, query optimization, transaction processing, concurrency control and recovery,integrity, and security.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 9:30 am-10:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 10:30 am-11:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 11:30 am-12:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 12:30 pm-1:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 1:30 pm-2:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 3:30 pm-4:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 4:30 pm-5:20 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Sullivan",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 9:30 am-10:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 10:30 am-11:20 am"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 11:30 am-12:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 12:30 pm-1:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 1:30 pm-2:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 3:30 pm-4:20 pm"
+        },
+        {
+          "instructor": "Sullivan",
+          "schedule": "R 4:30 pm-5:20 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS112"
+        ]
+      }
+    ],
+    "hub_areas": null
+  },
+  "CAS-CS-528": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-cs-528",
+    "school": "CAS",
+    "department": "CS",
+    "number": "528",
+    "title": "Cloud Computing",
+    "description": "Undergraduate Prerequisites: (CASCS350 & CASCS460) or consent of instructor. CASCS455, CASCS552, and CASCS562 are recomme nded. - Fundamentals of cloud computing covering IaaS platforms, OpenStack, key Big Data platforms, and data center scale systems. Examines influential publications in cloud computing. Culminates in a group project supervised by a mentor from industry or academia.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "M 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Kontothanassis",
+          "schedule": "M 11:15 am-12:05 pm"
+        }
+      ]
+    },
+    "parsed_prerequisites": [
+      {
+        "type": "courses",
+        "courses": [
+          "CASCS350",
+          "CASCS460"
+        ]
+      },
+      {
+        "type": "consent"
+      }
+    ],
+    "hub_areas": null
+  }
+}
