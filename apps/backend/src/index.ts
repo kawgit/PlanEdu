@@ -71,6 +71,105 @@ app.put('/api/user/preferences', async (req, res) => {
   }
 });
 
+// Get classes with optional filters
+app.get('/api/classes', async (req, res) => {
+  try {
+    const { school, department, keyword, limit = '1000' } = req.query;
+    
+    let classes;
+    
+    if (school && department && keyword) {
+      const searchTerm = `%${keyword}%`;
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "school" = ${school} 
+          AND "department" = ${department}
+          AND ("title" ILIKE ${searchTerm} OR "description" ILIKE ${searchTerm})
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else if (school && department) {
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "school" = ${school} AND "department" = ${department}
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else if (school && keyword) {
+      const searchTerm = `%${keyword}%`;
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "school" = ${school}
+          AND ("title" ILIKE ${searchTerm} OR "description" ILIKE ${searchTerm})
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else if (school) {
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "school" = ${school}
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else if (keyword) {
+      const searchTerm = `%${keyword}%`;
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "title" ILIKE ${searchTerm} OR "description" ILIKE ${searchTerm}
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else {
+      classes = await sql`
+        SELECT * FROM "Class" 
+        LIMIT ${parseInt(limit as string)}
+      `;
+    }
+    
+    res.json(classes);
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'Failed to fetch classes' });
+  }
+});
+
+// Get unique schools
+app.get('/api/schools', async (req, res) => {
+  try {
+    const schools = await sql`
+      SELECT DISTINCT "school" FROM "Class" 
+      WHERE "school" IS NOT NULL
+      ORDER BY "school"
+    `;
+    res.json(schools.map(s => s.school));
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'Failed to fetch schools' });
+  }
+});
+
+// Get departments (optionally filtered by school)
+app.get('/api/departments', async (req, res) => {
+  try {
+    const { school } = req.query;
+    
+    let departments;
+    if (school) {
+      departments = await sql`
+        SELECT DISTINCT "department" FROM "Class" 
+        WHERE "school" = ${school} AND "department" IS NOT NULL
+        ORDER BY "department"
+      `;
+    } else {
+      departments = await sql`
+        SELECT DISTINCT "department" FROM "Class" 
+        WHERE "department" IS NOT NULL
+        ORDER BY "department"
+      `;
+    }
+    
+    res.json(departments.map(d => d.department));
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'Failed to fetch departments' });
+  }
+});
+
 // Google OAuth authentication endpoint
 app.post('/auth/google', async (req, res) => {
   try {
