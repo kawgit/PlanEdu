@@ -31,8 +31,8 @@ from tqdm import tqdm
 
 # ------------------------ Defaults ------------------------
 
-INPUT_FILE_DEFAULT = "class_urls.txt"
-JSON_OUT_DEFAULT = "class_offerings.json"
+INPUT_FILE_DEFAULT = "class_url_cas3.txt"
+JSON_OUT_DEFAULT = "class_offerings_cas2.json"
 
 # Semester & schedule patterns
 SEMESTER_PAT = re.compile(

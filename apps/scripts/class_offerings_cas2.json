@@ -1,0 +1,4279 @@
+{
+  "CAS-SO-201": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-201",
+    "school": "CAS",
+    "department": "SO",
+    "number": "201",
+    "title": "Sociological Methods",
+    "description": "Undergraduate Prerequisites: one introductory course or consent of instructor. - Required of sociology majors and minors. Students learn to evaluate and practice social science research: survey, interview, ethnography, and experiments. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Simes",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Simes",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Simes",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Simes",
+          "schedule": "W 1:25 pm-2:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Simes",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Simes",
+          "schedule": "W 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Simes",
+          "schedule": "W 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Simes",
+          "schedule": "W 4:40 pm-5:30 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-100": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-100",
+    "school": "CAS",
+    "department": "SO",
+    "number": "100",
+    "title": "Principles in Sociology",
+    "description": "An introduction to the major theories and basic principles of sociological analysis. Explores culture, media, socialization, race and ethnicity, globalization, capitalism, gender and sexuality, inequality and poverty, power in American society, and health and medicine from a sociological perspective. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Critical Thinking. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, The Individual in Community, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Greenberg",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Greenberg",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "W 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "W 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "W 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Sheehan",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "W 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "F 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Sheehan",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Kibria",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Kibria",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Kibria",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Kibria",
+          "schedule": "F 11:15 am-12:05 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-208": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-208",
+    "school": "CAS",
+    "department": "SO",
+    "number": "208",
+    "title": "Sociological Approaches to Current Issues",
+    "description": "Topic for Spring 2025: Latinx Sociology. The diverse histories of the Latinx population in the United States and the issues that shape their political, social and cultural practices and experiences. Topics discussed include: race and ethnicity, colonialism, migration, class and wealth, language, gender and sexuality, media representation, and social movements and resistance.",
+    "semesters": {}
+  },
+  "CAS-SO-230": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-230",
+    "school": "CAS",
+    "department": "SO",
+    "number": "230",
+    "title": "Crime and Justice",
+    "description": "Examines sociological research on the social context of crime and justice in the US. Considers how research can inform policy reform. Introduces students to data science and real-world datasets on criminal justice. Key topics: policing, racial disparities, incarceration, and abolition. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry II, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-203": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-203",
+    "school": "CAS",
+    "department": "SO",
+    "number": "203",
+    "title": "Introduction to Sociological Theories",
+    "description": "Undergraduate Prerequisites: one introductory course or consent of instructor. - Required of sociology majors and minors. The works of major theorists of the discipline are the focus: W.E.B. Du Bois, Karl Marx, Max Weber, and Emile Durkheim. In-depth comparisons and contrasts in respect to themes and approaches are offered.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Pryma",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Pryma",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Walsh",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-205": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-205",
+    "school": "CAS",
+    "department": "SO",
+    "number": "205",
+    "title": "American Families",
+    "description": "Examines the family as a historically and geographically contingent social construction. How families in the U.S. are organized. Considers diverse family formations and intersections of race, class, gender, and sexuality in the operation of family dynamics and politics. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Kibria",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-225": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-225",
+    "school": "CAS",
+    "department": "SO",
+    "number": "225",
+    "title": "Law and Society",
+    "description": "The development and impact of law as an institution. Analysis of the social and political foundations of law, the legal profession and the legal system in the U.S. context. Examination of law in everyday life and in social change. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, The Individual in Community, Critical Thinking.",
+    "semesters": {}
+  },
+  "CAS-SO-207": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-207",
+    "school": "CAS",
+    "department": "SO",
+    "number": "207",
+    "title": "Sociology of Race and Ethnicity",
+    "description": "Examines the fundamental theoretical and empirical approaches regarding race/ethnicity and the current state of race relations in the U.S. that explore both contemporary social problems. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, The Individual in Community, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Grundy",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Grundy",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Grundy",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Grundy",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Grundy",
+          "schedule": "F 1:25 pm-2:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Grundy",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Grundy",
+          "schedule": "W 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Grundy",
+          "schedule": "W 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Grundy",
+          "schedule": "W 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Grundy",
+          "schedule": "W 1:25 pm-2:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-215": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-215",
+    "school": "CAS",
+    "department": "SO",
+    "number": "215",
+    "title": "Sociology of Health Care",
+    "description": "Social, cultural, and intercultural factors in health and illness. Training and socialization of medical professionals, roots of medical power and authority, organization and operation of health care facilities. U.S. health care system and its main problems. Comparison of health care systems in the U.S. and in other countries. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Ethical Reasoning.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Guseva",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Guseva",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Guseva",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Guseva",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Guseva",
+          "schedule": "F 3:35 pm-4:25 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "",
+          "schedule": "F 1:25 pm-2:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-206": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-206",
+    "school": "CAS",
+    "department": "SO",
+    "number": "206",
+    "title": "Introduction to the Sociology of Globalization",
+    "description": "A sociological introduction to globalization. Explores the roles of technology, transnational corporations, and the state. Considers globalization's impacts on the workplace, the environment, and other institutions as well as the emergence of global social movements. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Global Citizenship and Intercultural Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-242": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-242",
+    "school": "CAS",
+    "department": "SO",
+    "number": "242",
+    "title": "Globalization and World Poverty",
+    "description": "Addresses enduring global poverty and race, ethnic, gender, and class inequalities, especially in Latin America, Africa, and Asia. Focuses on colonialism and post-colonialism, strategies of development, urbanization, immigration, religion, politics, women, drugs, social justice, and health issues. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Ethical Reasoning.",
+    "semesters": {}
+  },
+  "CAS-SO-238": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-238",
+    "school": "CAS",
+    "department": "SO",
+    "number": "238",
+    "title": "Sociology of Aging and the Life Course",
+    "description": "Examines the social, psychological, and biological factors that shape aging and human development. Considers how childhood conditions affect later-life experiences. Reviews life course theories and research methods. Explores the importance of race, gender, and social class in shaping human experiences. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Quantitative Reasoning I, Social Inquiry I, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Carr",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-SO-241": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-241",
+    "school": "CAS",
+    "department": "SO",
+    "number": "241",
+    "title": "Sociology of Gender",
+    "description": "An introduction to the social construction of sex and gender with a focus on the economic, political, social, and cultural forces that shape gender relations. Examines gender as a social structure that patterns institutional inequalities and everyday interactions on society. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry II, The Individual in Community, Teamwork/Collaboration.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Miller",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "M 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "M 4:40 pm-5:30 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-240": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-240",
+    "school": "CAS",
+    "department": "SO",
+    "number": "240",
+    "title": "Sexuality and Social Life",
+    "description": "Introduction to sociological perspectives on sexuality. Historical and comparative analysis of sexuality, with a focus on the social and cultural institutions that shape sexuality in the contemporary U.S. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Critical Thinking. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Critical Thinking, Digital/Multimedia Expression.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Connell",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        },
+        {
+          "instructor": "Connell",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Connell",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Connell",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-250": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-250",
+    "school": "CAS",
+    "department": "SO",
+    "number": "250",
+    "title": "Introduction to the Sociology of Religion",
+    "description": "Explores the role of religion in the organization of meaning within human societies and its contribution to the construction, maintenance, and transformation of the social order. Ways in which religion provides specific sets of solutions to the problems of social order are also explored. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Social Inquiry I, Critical Thinking.",
+    "semesters": {}
+  },
+  "CAS-SO-306": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-306",
+    "school": "CAS",
+    "department": "SO",
+    "number": "306",
+    "title": "Boston's People and Neighborhoods",
+    "description": "Undergraduate Prerequisites: (CASSO244) or consent of instructor. - Via readings, field trips and documentaries, the course explores Boston neighborhoods, tracing their history and dynamics. We identify forces that shape Boston, garner insight into how different groups experience the city, and grapple with the challenges that Boston faces. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry II, The Individual in Community, Teamwork/Collaboration.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Brown-Saracino",
+          "schedule": "R 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-313": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-313",
+    "school": "CAS",
+    "department": "SO",
+    "number": "313",
+    "title": "Economic Sociology",
+    "description": "Undergraduate Prerequisites: at least one previous Sociology course or consent of instructor. - Presents the sociological approach to the study of production, distribution, consumption and markets, emphasizing the impact of norms, power, social structure, and institutions on the economy. Compares classic and contemporary approaches to the economy by the social science disciplines. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry II, Ethical Reasoning, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Guseva",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-302": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-302",
+    "school": "CAS",
+    "department": "SO",
+    "number": "302",
+    "title": "Social Networks",
+    "description": "Explores the mainstream theories in the field of social networks by sampling from empirical work across diverse fields such as social structure, culture, the economy, social media, and others. The course also focuses on the \"how\" of doing social network analysis including analyzing and interpreting properties of social networks quantitatively and learning to use software tools for analyzing social networks. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Quantitative Reasoning I, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Gondal",
+          "schedule": "T 3:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-244": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-244",
+    "school": "CAS",
+    "department": "SO",
+    "number": "244",
+    "title": "Urban Sociology",
+    "description": "Explores urban growth and dynamics, delving into how cities reproduce inequalities, and foster culture. Additional topics include public space, crime and policing, gentrification, segregation, housing, and climate change. Students will collect original data and explore policy solutions for urban issues. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Critical Thinking, Social Inquiry I.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Schmidt",
+          "schedule": "MWF 10:10 am-11:00 am"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Schmidt",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-SO-303": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-303",
+    "school": "CAS",
+    "department": "SO",
+    "number": "303",
+    "title": "Substantive Themes in Sociological Theory",
+    "description": "Undergraduate Prerequisites: (CASSO203) or consent of instructor. - Critique and application of major sociological theories to key themes and topics. Connections between classical and modern arguments, syntheses of alternative perspectives, and gaps between various perspectives. Themes include the maintenance of social order, power and authority, conflict and change, and sources of alienation. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, The Individual in Community.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Crosser",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Puri",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-280": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-280",
+    "school": "CAS",
+    "department": "SO",
+    "number": "280",
+    "title": "Global Urban Studies",
+    "description": "Looks at theoretical and methodological debates concerning the nature of global urbanization and global urbanism. It looks at cities globally, both historically and contemporary, and investigates the economic, political, spatial, and cultural processes involved in their making. Effective Fall 2025 fulfills a single unit in each of the following BU Hub areas: Critical Thinking, Global Citizenship, The Individual in Community.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Lees",
+          "schedule": "R 3:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-253": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-253",
+    "school": "CAS",
+    "department": "SO",
+    "number": "253",
+    "title": "Sociology of Popular Culture",
+    "description": "Sociological perspectives on popular culture and mass media, with a focus on the consumption and production of cultural goods; the effects of popular culture on politics and inequalities; and the mutual interdependence of consumer identities and cultural fields. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Social Inquiry I.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Zabala Ortiz",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-314": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-314",
+    "school": "CAS",
+    "department": "SO",
+    "number": "314",
+    "title": "Social Problems and Social Change",
+    "description": "Examines how certain issues come to be seen as social problems and the role of memory, identity, knowledge, and power in social change. Explores how individuals, organizations, and institutions respond to social problems and what produces meaningful change. We also consider the role of social science in creating a better world. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas: Critical Thinking, Ethical Reasoning, Writing Intensive.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Greenberg",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-315": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-315",
+    "school": "CAS",
+    "department": "SO",
+    "number": "315",
+    "title": "Technology and Society",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g., WR120). An introduction to Sociology would be beneficial, although not absolutely necessary, for the course. - A sociological exploration of the complex relationship between society and technology. Examines technologies' explicit and hidden costs and their potential to improve the human condition as well as the evolution of the relationship between technology and society over time. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas Social Inquiry I, Writing-Intensive Course.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Walsh",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-SO-322": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-322",
+    "school": "CAS",
+    "department": "SO",
+    "number": "322",
+    "title": "Gender and Health",
+    "description": "Prerequisites: at least one previous sociology course or consent of instructor. - Gender power relations and inequalities in health, healthcare institutions, medical research, public health policy, and global health politics. Examines the intersection of gender with other systems of power in medical practice, research, and the experience of health and illness. Effective Fall 2025, this course fulfills a single unit in each of the following BU Hub areas: Ethical Reasoning, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Pryma",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-335": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-335",
+    "school": "CAS",
+    "department": "SO",
+    "number": "335",
+    "title": "Sociology of Race, Class & Gender",
+    "description": "Undergraduate Prerequisites: At least one prior 100- or 200-level sociology course, or CAS WS 101/1 02. - No one of us is one thing, one identity, nor motivated by one singular interest, nor privileged or subjugated by one singular form of power, but how do those multiple forms of ourselves affect how we are advantaged, disadvantaged, viewed, and understood by the social world' Our social world, is, by default, a vast web of social intersections between and across groups with shared, overlapping, and conflicting identities. Race, class and gender affect nearly all of our lived experiences and greatly complicate and nuance concepts of diversity and difference. Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, The Individual in Community, Historical Consciousness.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Grundy",
+          "schedule": "T 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-317": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-317",
+    "school": "CAS",
+    "department": "SO",
+    "number": "317",
+    "title": "Gender and Crime",
+    "description": "Examines social forces shaping gender discrepancies in crime. Using a feminist lens, students explore how cultural ideologies about masculinity and femininity shape criminalization, victimization, and offending. Topics include the gendered contexts of crime and punishment, gender-based violence, and intimate labor. Effective Spring 2023 this course fulfills a single unit in each of the following BU Hub areas: Oral and/or Signed Communication, The Individual in Community, Teamwork/Collaboration.",
+    "semesters": {}
+  },
+  "CAS-SO-352": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-352",
+    "school": "CAS",
+    "department": "SO",
+    "number": "352",
+    "title": "American Masculinities",
+    "description": "Undergraduate Prerequisites: one 100- or 200-level course in either sociology or women's, gender, & sexuality. - Explores masculinity: as a historical, social construct and site of power and violence; as a facet of identity and system of oppression; as style, myth, and representation; as something perpetually in \"crisis\" and in need of recuperation; as a process that helps and harms; as a set of ideals, practices, and traditions; and as system that cuts across race, ethnicity, sexuality, social class, nation, geography and place, age, and other lines of difference. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, Social Inquiry I, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Greenberg",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-318": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-318",
+    "school": "CAS",
+    "department": "SO",
+    "number": "318",
+    "title": "Sociology of Childhood and Youth",
+    "description": "Undergraduate Prerequisites: at least one previous Sociology course or consent of instructor. - Uses in-depth studies centered on children and youth to examine the socially stratified and fragmented experiences of young people historically and contemporarily. This course focuses on the social construction of youth and the cultural and institutional forces that shape the social experiences of youth and our knowledge of them. Effective Fall 2019, this course fulfills a single unit in the following BU Hub areas: Social Inquiry II, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-320": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-320",
+    "school": "CAS",
+    "department": "SO",
+    "number": "320",
+    "title": "Political Sociology",
+    "description": "Undergraduate Prerequisites: at least one previous Sociology course or consent of instructor. - Traces the sociology of politics from ancient times to modern era. Analyzes U.S. & global political shifts. Topics include: political cultures, constitutions and laws; political authority; political parties; revolutions and war; mass media, and politics of violence. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-323": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-323",
+    "school": "CAS",
+    "department": "SO",
+    "number": "323",
+    "title": "Markets in Biomedicine and Healthcare",
+    "description": "Undergraduate Prerequisites: at least one previous Sociology course or consent of instructor. - Complex ways in which market exchange impacts commodification of the human body, the practice of medicine (assisted reproduction, organ transplantation) and drug clinical trials. Theoretical discussion of market exchange from an interdisciplinary perspective, brief overview of the US health care system and global medical tourism. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry II, Ethical Reasoning, Teamwork/Collaboration.",
+    "semesters": {}
+  },
+  "CAS-SO-334": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-334",
+    "school": "CAS",
+    "department": "SO",
+    "number": "334",
+    "title": "Sociology of Mental Illness",
+    "description": "Undergraduate Prerequisites: at least one previous Sociology course or consent of instructor. First Year Writing Seminar (e.g., WR 100 or WR 120) - An evaluation of current theories and research on the social sources and consequences of mental illness. Featured topics for discussion include social- psychological perspectives on the definition, diagnosis, etiology, and treatment of mental disorders. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Critical Thinking, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Walsh",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Walsh",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-391": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-391",
+    "school": "CAS",
+    "department": "SO",
+    "number": "391",
+    "title": "Social Inequality in America",
+    "description": "Students learn about sociological theories and read empirical research describing how social inequality in the US is produced and reproduced in various institutions and through different mechanisms. We explore what it would take to address these different sources of social inequality in the American context and learn from comparisons with other countries and historical moments. Effective Fall 2022, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Social Inquiry I.",
+    "semesters": {}
+  },
+  "CAS-SO-400": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-400",
+    "school": "CAS",
+    "department": "SO",
+    "number": "400",
+    "title": "Advanced Research Practicum",
+    "description": "Undergraduate Prerequisites: (CASSO303) and junior standing; or consent of instructor. First Year Writing Sem inar (e.g., WR 100 or WR 120) - Prepares students planning to conduct honors research project in their senior year. Students interested in developing a research project for alternate purposes are admitted with permission of the instructor. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: Writing- Intensive Course, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Connell",
+          "schedule": "R 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-402": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-402",
+    "school": "CAS",
+    "department": "SO",
+    "number": "402",
+    "title": "Senior Independent Work",
+    "description": "Undergraduate Prerequisites: approval of the Undergraduate Program Committee. - SR INDEP WORK",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Schoenfeld",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Harris",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Kibria",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-SO-404": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-404",
+    "school": "CAS",
+    "department": "SO",
+    "number": "404",
+    "title": "Seminar on Sociology of Families",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous Sociology courses; or consent of instructor. First-Year Writing Seminar (WR 120 or equi valent) - Explores the rise of \"modern\" families and the plurality of contemporary family forms and processes including gay and lesbian families and new reproductive technologies. Particular attention to social and economic inequalities and their implications for family life. Effective Fall 2022, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Global Citizenship and Intercultural Literacy, Research and Information Literacy.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Kibria",
+          "schedule": "R 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-403": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-403",
+    "school": "CAS",
+    "department": "SO",
+    "number": "403",
+    "title": "Seminar: Gender Stratification",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous Sociology courses; or consent of instructor. - Considers how the social production of gender contributes to various forms of gendered inequalities in employment, the family, dating markets, media representation, etc., with a special emphasis on how race, class, sexuality, and disability mediate the process.",
+    "semesters": {}
+  },
+  "CAS-SO-401": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-401",
+    "school": "CAS",
+    "department": "SO",
+    "number": "401",
+    "title": "Senior Independent Work",
+    "description": "Undergraduate Prerequisites: approval of the Undergraduate Program Committee. Senior independent work in sociology.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Zabala Ortiz",
+          "schedule": "ARR 12:00 am-12:00 am"
+        },
+        {
+          "instructor": "Curington",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-SO-415": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-415",
+    "school": "CAS",
+    "department": "SO",
+    "number": "415",
+    "title": "Seminar: Sociology of Law",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous Sociology courses: or consent of instructor. First Year Writing Seminar (e.g., WR 100 or WR 120) - Classical and contemporary perspectives on law's development in society. Selected applications of law are then examined with attention to constraints on law's ability to achieve such societal goals as justice and equality and to alter social relations fundamentally. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-418": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-418",
+    "school": "CAS",
+    "department": "SO",
+    "number": "418",
+    "title": "Seminar: Sociology of Medicine",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous sociology courses; or consent of instructor. First Year Writing Seminar (e.g., WR 100 or WR 120) - Focuses on major topics in the area of health and medicine, with different themes each semester. Topics have included Global Health; Health Disparities; and Death and Dying. Check with instructor for topic. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry II, Writing- Intensive Course, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-405": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-405",
+    "school": "CAS",
+    "department": "SO",
+    "number": "405",
+    "title": "Senior Research Seminar",
+    "description": "Prerequisite: approval of the Undergraduate Program Committee. - Provides an in-depth engagement with the skills of sociological thesis-writing, including: reviewing literature, data coding and analysis, writing abstracts, presenting at conferences, and managing long-term projects. This is the Fall course in the Sociology Honors Thesis senior-year sequence.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Greenberg",
+          "schedule": "R 4:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-431": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-431",
+    "school": "CAS",
+    "department": "SO",
+    "number": "431",
+    "title": "Seminar: Genders, Sexualities, and Youth Cultures",
+    "description": "Undergraduate Prerequisites: senior standing or consent of instructor. - Investigates the social construction of gender and sexuality in adolescence. Engaging critical approaches to youth cultures, the course examines the structural conditions that shape gender and sexuality norms, and the ways youth navigate and redefine their social worlds. Effective Fall 2023 this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Miller",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-408": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-408",
+    "school": "CAS",
+    "department": "SO",
+    "number": "408",
+    "title": "Seminar: Ethnic, Race, and Minority Relations",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous Sociology courses, at least one of which must be CAS SO 207; or consent of instructor. - Formation and position of ethnic minorities in the United States, including cross-group comparisons from England, Africa, and other parts of the world. Readings and field experience.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Zabala Ortiz",
+          "schedule": "M 12:30 pm-3:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Grundy",
+          "schedule": "T 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-425": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-425",
+    "school": "CAS",
+    "department": "SO",
+    "number": "425",
+    "title": "Seminar: Sex and the City",
+    "description": "Explores the relationship between sexualities and place. Taking us from big city \"gayborhoods\" to rural hamlets, the course considers how sexual identities and behaviors interact with place ecologies and processes, from gentrification to suburbanization. Effective Fall 2022, this course fulfills a single unit in the following BU Hub area: The Individual in Community.",
+    "semesters": {}
+  },
+  "CAS-SO-420": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-420",
+    "school": "CAS",
+    "department": "SO",
+    "number": "420",
+    "title": "Seminar: Women and Social Change in the Developing World",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous sociology courses; or consent of instructor. - The class goes around the world to examine similarities and differences in women's experiences, with a focus on the Global South, the poorer countries of the world, in Latin America, Africa, and Asia. It focuses on social, political, cultural, and economic issues. Comparisons will be made with women's experiences in the US and other wealthy countries of the world. A seminar, students are expected to discuss the readings each week.",
+    "semesters": {}
+  },
+  "CAS-SO-411": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-411",
+    "school": "CAS",
+    "department": "SO",
+    "number": "411",
+    "title": "Seminar: Sociology of the Nonprofit Sector",
+    "description": "Introduction to sociological research on that part of society known as the nonprofit sector, including nonprofit organizations, community-based organizations, voluntary associations, and social movements. Focus on some of the literature's major themes: civil society, social capital, and nongovernmental organizations. Effective Spring 2024, this course fulfills a single unit in each of the following BU HUB areas: The Individual in Community, Social Inquiry II, Teamwork/Collaboration.",
+    "semesters": {}
+  },
+  "CAS-SO-437": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-437",
+    "school": "CAS",
+    "department": "SO",
+    "number": "437",
+    "title": "Seminar: Sociology of Culture",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous sociology courses; or consent of instructor. - The sociology of culture in the twenty-first century. Focuses on the connection between the mind and culture. Examines the interdependence between culture, society, and individuals, and how belief, faith, knowledge, symbol, ritual, and the like both produce and are products of social organization.",
+    "semesters": {}
+  },
+  "CAS-SO-438": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-438",
+    "school": "CAS",
+    "department": "SO",
+    "number": "438",
+    "title": "Seminar on International Migration",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous sociology courses; or consent of instructor. - Explores key themes in international migration. It emphasizes connections between current topics in immigration, and sociological theories that explain immigrant pathways, mobilities, and outcomes. Students engage in analytical memo-writing that make these links, and write a final term paper. Throughout, the course emphasizes how the intersection of inequalities--of legal status, gender, race and class--shape immigration processes. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Schmidt",
+          "schedule": "R 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-440": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-440",
+    "school": "CAS",
+    "department": "SO",
+    "number": "440",
+    "title": "Seminar: Comparative Political Cultures",
+    "description": "Undergraduate Prerequisites: junior or senior standing - Explores the \"deep cultural\" level behind the daily conduct of politics. A theoretical framework relying upon Tocqueville and Weber is developed and then applied to unveil the political cultures of the United States, Germany, England, Russia, China, Japan, and Mexico.",
+    "semesters": {}
+  },
+  "CAS-SO-460": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-460",
+    "school": "CAS",
+    "department": "SO",
+    "number": "460",
+    "title": "Seminar: Economic Sociology",
+    "description": "Undergraduate Prerequisites: junior standing and at least two prior sociology courses, or consent o f instructor. - Introduction to core theoretical perspectives and debates in contemporary economic sociology (structural/network, cultural, institutional/political, and performativity) with a special attention paid to morality of markets, commensuration and construction of value, money, credit and finance and inequality. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Ethical Reasoning, Social Inquiry II, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Guseva",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-465": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-465",
+    "school": "CAS",
+    "department": "SO",
+    "number": "465",
+    "title": "Intersectionalities: Theories, Methods, and Praxis",
+    "description": "Undergraduate pre-requisites: junior standing or consent of instructor. - Intersectionality,\" is one of the prominent contributions made by critical race feminist scholars that now broadly extend across disciplines. This course takes stock of the multiple ways that intersectional scholars and activists conceptualize intersectionality in relation to sociological theory, research problems, design, and praxis.",
+    "semesters": {}
+  },
+  "CAS-SO-459": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-459",
+    "school": "CAS",
+    "department": "SO",
+    "number": "459",
+    "title": "Deviance and Social Control",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120). - Explores sociological explanations for why attributes and behaviors are defined as deviant, the consequences of deviant labels, and how the state criminalizes and punishes people for deviant behavior. Examines how responses to deviance reflect the state's orientation to social marginality. Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-483": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-483",
+    "school": "CAS",
+    "department": "SO",
+    "number": "483",
+    "title": "Gentrification Studies",
+    "description": "This seminar explores the process of urban gentrification from an interdisciplinary perspective, examining the variegated histories, geographies, and sociologies of gentrification globally, thinking through comparative urbanism. It considers definitions of gentrification, how theorizations developed over time, and key concepts. Effective Fall 2025, this course fulfills a single unit in each of the following BU HUB areas: Oral and/or Signed Communication, Social Inquiry II, Teamwork/Collaboration.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Whittaker",
+          "schedule": "T 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-485": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-485",
+    "school": "CAS",
+    "department": "SO",
+    "number": "485",
+    "title": "Sociology Policy Lab",
+    "description": "Prerequisite: First Year Writing Seminar (e.g., CASWR 100 or WR 120). - This course provides students with an opportunity to learn what sociology has to say about making an impact in policy and practice very generally - and more specifically, to put sociological research on particular issues into conversation with social problems, providing an opportunity for students to gain cutting-edge knowledge both about an area of practice, while contributing to addressing a policy issue through experiential learning that aims to solve a problem for a client working to make social change in the real world.",
+    "semesters": {}
+  },
+  "CAS-SO-452": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-452",
+    "school": "CAS",
+    "department": "SO",
+    "number": "452",
+    "title": "Contemporary Debates in Sexualities Research",
+    "description": "Undergraduate Prerequisites: (CASSO241 OR CASWS200) First Year Writing Seminar (e.g., WR 100 or WR 120). - Engages sociological debates about sexual identities, politics, and practices. Students consider how sexualities are expressed and regulated through various institutions and how they intersect with race, class, gender, citizenship, and other domains of inequality. Also offered as CAS WS 452. Effective Fall 2023, this course fulfills a single unit in each of the following BU HUB areas: Writing-Intensive, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-442": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-442",
+    "school": "CAS",
+    "department": "SO",
+    "number": "442",
+    "title": "Seminar: Urban Inequality in the Americas",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120) - This course examines major theoretical approaches to the study of the city and uses them to explore key features of urban inequality in the United States and in Latin America. In the first part of this course, we examine the strengths and weaknesses of five core theoretical paradigms for studying the city and how these have been challenged over time. In the second part of this course, we use these theoretical tools to examine distinct examples of urban segregation in American and Latin American cities. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Global Citizenship and Intercultural Literacy, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-SO-448": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-448",
+    "school": "CAS",
+    "department": "SO",
+    "number": "448",
+    "title": "Culture, Markets, and Inequality",
+    "description": "Undergraduate Prerequisites: junior or senior standing and at least two previous sociology courses; or consent of instructor. - This seminar examines commerce as a cultural process, focusing on cultural production and consumption practices in fields like fashion, music, and bodily goods and services. Traces the cultural construction and maintenance of gender, race, and class inequalities in markets.",
+    "semesters": {}
+  },
+  "CAS-SO-497": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-497",
+    "school": "CAS",
+    "department": "SO",
+    "number": "497",
+    "title": "Understanding Meritocracy",
+    "description": "Prerequisite: Junior or Senior standing and at least two previous Sociology courses; or consent of instructor. Challenges students to sociologically evaluate the concept of meritocracy, its origins, its societal implications, and contemporary adoption as an ideal worth striving for. Reviews empirical research on perceptions around and explanations of social inequality. Explores how beliefs about inequality are mobilized in class and racial conflict and in what ways people's beliefs are or aren't likely to change. Fall term. Effective Fall 2022, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry II and Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Mijs",
+          "schedule": "R 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-SO-499": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-so-499",
+    "school": "CAS",
+    "department": "SO",
+    "number": "499",
+    "title": "Field Practicum",
+    "description": "Undergraduate Prerequisites: CAS SO 100 and SO 201, requires some foundational knowledge of sociological ideas and methods. - Joins real world experience in social change and social impact work with seminar-based coursework that encourages critical reflection, develops professional experience, and builds skills of sociological research and analysis. Effective Fall 2024, this course fulfills a single unit in the following BU Hub area:",
+    "semesters": {}
+  },
+  "CAS-SY-101": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-sy-101",
+    "school": "CAS",
+    "department": "SY",
+    "number": "101",
+    "title": "Senior Year Topics",
+    "description": "SY101 is an activity and discussion based class focused on a specific topic area to help students prepare for life after college. Topics vary by section number.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Brill",
+          "schedule": "T 2:00 pm-3:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Doust",
+          "schedule": "T 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Ulrich",
+          "schedule": "W 10:10 am-11:25 am"
+        },
+        {
+          "instructor": "Ulrich",
+          "schedule": "R 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-TL-542": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-tl-542",
+    "school": "CAS",
+    "department": "TL",
+    "number": "542",
+    "title": "Literary Translation",
+    "description": "Undergraduate Corequisites: (CASTL540 OR CASTL541) - Guest lecture series in literary translation. Mandatory co-requisite with CAS TL 540 and CAS TL 541. This course cannot be taken on its own.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Waters",
+          "schedule": "F 2:30 pm-4:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-TL-551": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-tl-551",
+    "school": "CAS",
+    "department": "TL",
+    "number": "551",
+    "title": "Topics in Translation",
+    "description": "May be taken multiple times for credit if topics are different. There are two topics for Spring 2025. Section A1: Self-translation and Bilingualism. Explores self-translation, the process and product of a bilingual author’s rendering of their text into another language. Challenges binary categories of original and translation, of author and translator. Students investigate literary translingualism as scholars and as creative writers-translators. Section B1: Translating the Francophone World. Explores the paratextual, transcultural elements, and challenges entailed in translating Francophone literature, through fictional works with writers, translators, and storytellers, part of the narrative. Authors to be discussed: Assia Djebar, Ananda Devi, Danny Laferrière, Mbougar Sarr. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Historical Consciousness, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Garcia De La Puente",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-TL-500": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-tl-500",
+    "school": "CAS",
+    "department": "TL",
+    "number": "500",
+    "title": "History and Theory of Translation",
+    "description": "The goal of this course is to familiarize students with the history of translation and the main trends in Translation Studies. Students learn to apply concepts acquired in class to analyze and critique translations and develop their own strategies. Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Historical Consciousness, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Vincent",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-TL-505": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-tl-505",
+    "school": "CAS",
+    "department": "TL",
+    "number": "505",
+    "title": "Literary Style Workshop",
+    "description": "Undergraduate Prerequisites: Admission to the MA program in translation or permission of instructor. First Year Writing Seminar (e.g., CASWR 100 or WR 120) - Workshop cultivating awareness of and sensitivity to style, cohesiveness, and patterning in literary English. Topics range from text-type to subtle effects of rhythm and sound. Imitation practice. Emphasis on translators' process, from strategic decisions to editing. Workshop format. Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: Writing- Intensive Course, Critical Thinking, Creativity/Innovation.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Tyler",
+          "schedule": "M 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-TL-541": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-tl-541",
+    "school": "CAS",
+    "department": "TL",
+    "number": "541",
+    "title": "Translation Today",
+    "description": "Undergraduate Corequisites: (CASTL542) - Weekly lectures and discussions with prominent literary translators from Boston and elsewhere. Students engage with a variety of languages and several genres: poetry, drama, essay, fiction, and more. Focus on concrete, practical translation issues arising from the speakers' work. Students are required to register for co-requisite CAS TL 542. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, The Individual in Community, Creativity/Innovation.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Waters",
+          "schedule": "M 2:30 pm-3:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-TL-540": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-tl-540",
+    "school": "CAS",
+    "department": "TL",
+    "number": "540",
+    "title": "Translation Seminar",
+    "description": "Undergraduate Prerequisites: Proficiency in a second language; Undergraduate Corequisite: CASTL 542. - Graduate Prerequisites: Proficiency in a second language; Graduate Corequisite: CASTL 542. - Translation seminar where students produce substantial literary translations into English from their language of choice with the guidance of the instructors and language-specific mentors. Students hone their translation skills, read, and discuss articles about practical issues of translation. Students are required to register for co-requisite CASTL 542.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Zielinska-Elliott",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WR-111": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-111",
+    "school": "CAS",
+    "department": "WR",
+    "number": "111",
+    "title": "Academic Writing for ELL Students",
+    "description": "Undergraduate Prerequisites: placement results. - Study of academic conventions and effective strategies of academic reading and writing, along with needs-based review of grammar and mechanics. Emphasis on comprehension, summary, and analysis. Focus on fluency and accuracy in writing and speaking. Frequent papers and in-class writing. Effective Fall 2018, this course fulfills a single unit in the following BU Hub area: The Individual in Community.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Sun Han Chang",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Sun Han Chang",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Sun Han Chang",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Avcikurt",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "O'Mara",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "O'Mara",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Westhues",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Shuckra",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Ward",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Ward",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Ward",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Shuckra",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Kasztalska",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Shetty",
+          "schedule": "MWF 10:10 am-11:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-WR-318": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-318",
+    "school": "CAS",
+    "department": "WR",
+    "number": "318",
+    "title": "Public Speaking",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g., CASWR 120); Writing, Research, and Inquiry (e.g., CASWR 151, WR 152, or WR 153). - How can public speakers engage different communities at different times and in different places? This course explores theories concerning how to construct narratives and arguments that resonate with specific audiences and invites students to put such theories into performative practice. Students may not receive credit for both CASCC 318 and CASWR 318. Effective Spring 2024, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Oral and/or Signed Communication, Teamwork/Collaboration.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Milanese",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Milanese",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Ward",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Milanese",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WR-250": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-250",
+    "school": "CAS",
+    "department": "WR",
+    "number": "250",
+    "title": "AI Literacy for Writing",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g., CASWR 120); Writing, Research, and Inquiry (e.g., CASWR 151, WR 152, or WR 153). This course provides a foundational understanding of generative AI and its impact on the writing landscape and society. Students explore generative AI tools, addressing ethical considerations and real-world applications, and create projects blending traditional writing with multimodal approaches. Effective Fall 2025, this course fulfills a single unit in each of the following BU Hub areas: Creativity/Innovation, Ethical Reasoning, Writing Intensive.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Fassihi",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "McVey",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Fassihi",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-WR-151": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-151",
+    "school": "CAS",
+    "department": "WR",
+    "number": "151",
+    "title": "Writing, Research, & Inquiry with Oral and/or Signed Expression",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g. CASWR 120) or transfer credit for CASWR 13TR or CAS WR16TR. - Topic-based seminar in critical reading, research, writing, and oral communication. Practice in sustained inquiry, including scholarly research and communication of findings to different audiences. Attention to argumentation, public speaking, prose style, and revision, informed by reflection and feedback, including conferences. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Writing, Research, and Inquiry, Oral and/or Signed Communication, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Walsh",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Myers",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Myers",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Morazzini",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Blumenthal",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Kolberg",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Kolberg",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Gapotchenko",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Giraldi",
+          "schedule": "MWF 8:00 am-8:50 am"
+        },
+        {
+          "instructor": "Hodin",
+          "schedule": "MWF 8:00 am-8:50 am"
+        },
+        {
+          "instructor": "Giraldi",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Hodin",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Snyder",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Giraldi",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Gapotchenko",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Snyder",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Gapotchenko",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Steinberg",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Zhao",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Milanese",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Issah",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Morazzini",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Dalton",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Zhao",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Kasztalska",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Issah",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "McDonough",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Dalton",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Simpson",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Milanese",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Kasztalska",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Issah",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Dalton",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Morazzini",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Vanaria",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Kasztalska",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Vanaria",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Bowman",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Shawn",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Walsh",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Bowman",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Bizup",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Shawn",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Oller",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Myers",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Barrett",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Oller",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Myers",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Barrett",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Meyer",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Myers",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Barrett",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Meyer",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WR-112": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-112",
+    "school": "CAS",
+    "department": "WR",
+    "number": "112",
+    "title": "Critical Literacies for ELL",
+    "description": "Undergraduate Prerequisites: CASWR 111, placement results, or transfer credit for WR 01TR. - Critical reading and analytical writing in response to various theme-based texts. Review of grammar and mechanics in context. Practice in the patterns of academic argumentation through multiple assignments of increasing complexity. Refinement of speaking skills through discussions and oral presentations. Effective Fall 2018, this course fulfills a single unit in the following BU Hub area: Global Citizenship and Intercultural Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Calandra",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Yoder",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Yoder",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Yoder",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Morazzini",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Fincke",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Simpson",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Steinberg",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Steinberg",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Simpson",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Kasztalska",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Kasztalska",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Sutherland",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Calandra",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Calandra",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Zhao",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Lynch",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Sutherland",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Shuckra",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Sun Han Chang",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Shuckra",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Sun Han Chang",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Shuckra",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Sun Han Chang",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Oller",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WR-153": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-153",
+    "school": "CAS",
+    "department": "WR",
+    "number": "153",
+    "title": "Writing, Research, & Inquiry with Creativity/Innovation",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g. CASWR 120) or transfer credit for CASWR 13TR or CAS WR16TR. - Topic-based seminar in critical reading, research, writing, creativity, and innovation. Practice in sustained inquiry, including scholarly research and communication of findings to different audiences. Attention to argumentation, prose style, creative process, and revision, informed by reflection and feedback, including conferences. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Creativity/Innovation, Writing, Research, and Inquiry, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Burg",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Panszczyk",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Panszczyk",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Hanselman",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Hanselman",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Culler",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Allenberg",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Barents",
+          "schedule": "MWF 8:00 am-8:50 am"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Tandon",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Krishnan",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "White",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Panszczyk",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Blumenthal",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Tandon",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Krishnan",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "White",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Panszczyk",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Shetty",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Blumenthal",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Westhues",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Krishnan",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Panszczyk",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Tandon",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Shetty",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Blumenthal",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Schaaf",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "White",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Schaaf",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "White",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Schaaf",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Tigges",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Bennett",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Rani",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Hansen",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Bennett",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Rani",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Hansen",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Bozek",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Smith",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Tall",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Rani",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Hansen",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Mattingly",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Bozek",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Culler",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Madsen Hardy",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Smith",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Tall",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Culler",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Mattingly",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Smith",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Tall",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Allenberg",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WR-212": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-212",
+    "school": "CAS",
+    "department": "WR",
+    "number": "212",
+    "title": "Translingual Writing",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g., CASWR 120). - Students analyze and produce writing that crosses, mixes, and plays with different languages, e.g. essays, poems; practice inclusive approaches to teaming; and apply translingual theory to help address social issues. Open to all, regardless of languages spoken, major, background. Effective Fall 2025, this course fulfills a single unit in each of the following BU Hub areas: Creativity/Innovation, Teamwork/Collaboration, Writing-Intensive Course.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Michaud",
+          "schedule": "MWF 10:10 am-11:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-WR-152": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-152",
+    "school": "CAS",
+    "department": "WR",
+    "number": "152",
+    "title": "Writing, Research, & Inquiry with Digital/Multimedia Expression",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g. CAS WR 120) or transfer credit for CASWR 13TR or CASWR 16TR. - Topic-based seminar in critical reading, research, writing, and digital/multimedia communication. Practice in sustained inquiry, including scholarly research and communication of findings to different audiences. Attention to argumentation, prose style, digital/multimedia communication, and revision, informed by reflection and feedback, including conferences. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression; Writing, Research, and Inquiry; Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Kinraide",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Kinraide",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Robertson",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Stevens",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Stevens",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Martinez",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Martinez",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Shetty",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Martinez",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Shetty",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Degener",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Martinez",
+          "schedule": "MWF 8:00 am-8:50 am"
+        },
+        {
+          "instructor": "Martinez",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "McVey",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Martinez",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Pasto",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Vahamikos",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Pasto",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "McVey",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Breen",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Blyler",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Pasto",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Blyler",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Laceste",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Breen",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "DiPaolo",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Sarkisian",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Laceste",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Breen",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Blyler",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "DiPaolo",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Fitts",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Bewley",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Bjornson",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Benke",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Fitts",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Bennett-Zendzian",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Fassihi",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Benke",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Burg",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Bennett-Zendzian",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Prentice",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Fassihi",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Burg",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Fitts",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Prentice",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Kent",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Bennett-Zendzian",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Degener",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Stevens",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Robertson",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Desilets",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Stevens",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Robertson",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Degener",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Degener",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WR-120": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-120",
+    "school": "CAS",
+    "department": "WR",
+    "number": "120",
+    "title": "First-Year Writing Seminar",
+    "description": "Undergraduate Prerequisites: CASWR 112, placement results, or transfer credit for WR 02TR (for English language learners only). - Topic-based seminar in critical reading and writing. Engagement with a variety of sources and practice in writing in a range of genres with particular attention to argumentation, prose style, and revision, informed by reflection and feedback, including individual conferences. Effective Fall 2018, this course fulfills a single unit in the following BU Hub area: First-Year Writing Seminar.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Barents",
+          "schedule": "MWF 8:00 am-8:50 am"
+        },
+        {
+          "instructor": "Tigges",
+          "schedule": "MWF 8:00 am-8:50 am"
+        },
+        {
+          "instructor": "Vanaria",
+          "schedule": "MWF 8:00 am-8:50 am"
+        },
+        {
+          "instructor": "Morazzini",
+          "schedule": "MWF 8:00 am-8:50 am"
+        },
+        {
+          "instructor": "Fassihi",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Michaud",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Hansen",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Snyder",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Sklar",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Laceste",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Desilets",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Shawn",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Bjornson",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Calandra",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Fassihi",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Benke",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Hansen",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Snyder",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Bennett",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Rani",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Bennett-Zendzian",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "DiPaolo",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Desilets",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Robertson",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Davidoff",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Calandra",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Bozek",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Hansen",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Bennett",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Prentice",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Rani",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Bennett-Zendzian",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Smith",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Snyder",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Michaud",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Breen",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "O'Mara",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Calandra",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Bozek",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Prentice",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Rani",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Morazzini",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Bennett-Zendzian",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Barrett",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Sklar",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Bennett",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Oller",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Simpson",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Milanese",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Barrett",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Oller",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Smith",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Westhues",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Robertson",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Lynch",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Myers",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Stevens",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Breen",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Davidoff",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Kinraide",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Westhues",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Barrett",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Oller",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Smith",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Prentice",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Lynch",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Kent",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Breen",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Meyer",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Murphy",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Fuller",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Bewley",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Fadhlina",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Lynch",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Snyder",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Barrett",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Davidoff",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Davidoff",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Gibbs",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Westhues",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Meyer",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Carberry",
+          "schedule": "MWF 4:40 pm-5:30 pm"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Fitts",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Tandon",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Hodin",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Giraldi",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Steinberg",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Bowman",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Clee",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Simpson",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Armstrong",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Fitts",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Giraldi",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Tandon",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Hodin",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "White",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Coffman",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Anderson",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Bowman",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Sarkisian",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Grippo",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Krishnan",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Issah",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Culler",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Barents",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Schaaf",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Giraldi",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Tall",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Tandon",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "White",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Vahamikos",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Kane",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Issah",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Bowman",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Shuckra",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Pasto",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Mattingly",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Shuckra",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Zhao",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Fitts",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Blyler",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Dalton",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "McDonough",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Drepanos",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Barber",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "White",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Quispe Coronel",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Krishnan",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Culler",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Stevens",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Zhao",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Shetty",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Schaaf",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Tall",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Blyler",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Dalton",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Hanselman",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Blumenthal",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Mattingly",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "DiPaolo",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Issah",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Pasto",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Krishnan",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Culler",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Drepanos",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Schaaf",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Tall",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Blyler",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Blumenthal",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Dalton",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Mattingly",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "DiPaolo",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Drepanos",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Pasto",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Degener",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Zatlin",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Degener",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        },
+        {
+          "instructor": "Renca",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Ward",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Armstrong",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Ward",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Steinberg",
+          "schedule": "MWF 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Calandra",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Lynch",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        },
+        {
+          "instructor": "Lakin-Schultz",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Simpson",
+          "schedule": "MWF 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Morazzini",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Westhues",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Simpson",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Grippo",
+          "schedule": "MWF 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Quispe Coronel",
+          "schedule": "TR 8:00 am-9:15 am"
+        },
+        {
+          "instructor": "Bjornson",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Kane",
+          "schedule": "TR 9:30 am-10:45 am"
+        },
+        {
+          "instructor": "Yoder",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "O'Mara",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Yoder",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "O'Mara",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Yoder",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "O'Mara",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Murphy",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Gibbs",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-200": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-200",
+    "school": "CAS",
+    "department": "WS",
+    "number": "200",
+    "title": "Thinking Queerly: An Introduction to LGBTQ Studies",
+    "description": "Explores historical and contemporary debates regarding LGBTQ identity, community, and politics through the relevant interdisciplinary (and often, competing) theories and research. Students gain skills in digital/multimedia expression through the development of a collaborative LGBTQ online magazine. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Digital/Multimedia Expression.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Cariani",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Connell",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WR-415": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-415",
+    "school": "CAS",
+    "department": "WR",
+    "number": "415",
+    "title": "Public Writing",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g. CASWR 120); Writing, Research, and Inquiry (e.g., CASWR 151, WR 152, or WR 153); and junior or senior standing. - Students learn about the growing call for scholars to communicate their research to the public, study and practice several public genres, and learn to \"translate\" academic knowledge for public audiences. Occasional evening events required. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, Writing- Intensive Course, Oral and/or Signed Communication.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Benke",
+          "schedule": "MWF 9:05 am-9:55 am"
+        },
+        {
+          "instructor": "Madsen Hardy",
+          "schedule": "MWF 10:10 am-11:00 am"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Shuckra",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Benke",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WR-320": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-wr-320",
+    "school": "CAS",
+    "department": "WR",
+    "number": "320",
+    "title": "Community Writing",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g. CASWR 120); Writing, Research, and Inquiry (e.g., CASWR 151, WR 152, or WR 153). Students explore concepts of community, creativity, and positionality; study and practice creative and metacognitive genres; and establish writing partnerships with a local organization as a form of community building and social action. Regular meetings with the community partner outside of class required. Effective Spring 2024, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, The Individual in Community, Creativity/Innovation.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Bozek",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Bennett",
+          "schedule": "W 2:30 pm-5:15 pm"
+        },
+        {
+          "instructor": "Bozek",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-101": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-101",
+    "school": "CAS",
+    "department": "WS",
+    "number": "101",
+    "title": "Gender and Sexuality: An Interdisciplinary Introduction",
+    "description": "This course is the introduction to women's, gender, and sexuality studies, that considers the origins, diversity, and expression of sex and gender. Topics include the evolutionary origin of sexes; evolution, development, and social construction of sex, gender, and sexuality; sexual difference, similarities and diversity in gendered bodies, brains, and behavior. This interdisciplinary introduction is the foundation for the minor in Women's, Gender, and Sexuality Studies. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Philosophical Inquiry and Life's Meanings, Scientific Inquiry I, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Miller",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "F 10:10 am-11:00 am"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "F 1:20 pm-2:15 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "F 1:20 pm-2:15 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "F 4:40 pm-5:30 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-297": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-297",
+    "school": "CAS",
+    "department": "WS",
+    "number": "297",
+    "title": "African American Women's History",
+    "description": "Survey of African American women's history from the slave trade to the present, investigating its critical role in shaping the meaning of race, gender, and sexuality during slavery, Jim Crow, and the civil rights era. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, Historical Consciousness, Social Inquiry I.",
+    "semesters": {}
+  },
+  "CAS-WS-240": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-240",
+    "school": "CAS",
+    "department": "WS",
+    "number": "240",
+    "title": "Sexuality and Social Life",
+    "description": "Introduction to sociological perspectives on sexuality. Historical and comparative analysis of sexuality, with a focus on the social and cultural institutions that shape sexuality in the contemporary U.S. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Critical Thinking. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Critical Thinking, Digital/Multimedia Expression.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Connell",
+          "schedule": "TR 5:00 pm-6:15 pm"
+        },
+        {
+          "instructor": "Connell",
+          "schedule": "F 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Connell",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Connell",
+          "schedule": "F 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-305": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-305",
+    "school": "CAS",
+    "department": "WS",
+    "number": "305",
+    "title": "Topics in Women's, Gender, & Sexuality Studies",
+    "description": "May be repeated for credit if topics are different.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "McEvoy",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-263": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-263",
+    "school": "CAS",
+    "department": "WS",
+    "number": "263",
+    "title": "The Behavioral Biology of Women",
+    "description": "An exploration of female behavioral biology focusing on evolutionary, physiological, and biosocial aspects of women's lives from puberty through pregnancy, birth, lactation, menopause, and aging. Examples are drawn from traditional and industrialized societies, and data from nonhuman primates are considered. Effective Spring 2019, this course fulfills a single unit in each of the following BU Hub areas: Scientific Inquiry I, Social Inquiry I, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Harwell",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        },
+        {
+          "instructor": "Harwell",
+          "schedule": "T 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Harwell",
+          "schedule": "M 12:20 pm-1:10 pm"
+        },
+        {
+          "instructor": "Harwell",
+          "schedule": "F 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Harwell",
+          "schedule": "F 1:25 pm-2:15 pm"
+        },
+        {
+          "instructor": "Harwell",
+          "schedule": "T 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Harwell",
+          "schedule": "F 9:05 am-9:55 am"
+        }
+      ]
+    }
+  },
+  "CAS-WS-302": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-302",
+    "school": "CAS",
+    "department": "WS",
+    "number": "302",
+    "title": "WGS Topics in the Social Science",
+    "description": "Topics in women's, gender, and sexuality studies relevant to the social sciences. May be repeated for credit as topics change.",
+    "semesters": {}
+  },
+  "CAS-WS-201": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-201",
+    "school": "CAS",
+    "department": "WS",
+    "number": "201",
+    "title": "Introduction to Trans Studies",
+    "description": "This course introduces students to the field of trans studies alongside the increasing precarity and hypervisibility of trans bodies in public life. Students become familiar with intersectional issues of trans representation, healthcare, cissexism, bathroom legislation, book bans, and more. Effective Fall 2025, this course fulfills a single unit in each of the following BU Hub areas: Creativity/Innovation, Digital/Multimedia Expression, The Individual in Community.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Cariani",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-241": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-241",
+    "school": "CAS",
+    "department": "WS",
+    "number": "241",
+    "title": "Sociology of Gender",
+    "description": "An introduction to the social construction of sex and gender with a focus on the economic, political, social, and cultural forces that shape gender relations. Examines gender as a social structure that patterns institutional inequalities and everyday interactions on society. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry II, The Individual in Community, Teamwork/Collaboration.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Miller",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "M 2:30 pm-3:20 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "M 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Miller",
+          "schedule": "M 4:40 pm-5:30 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-233": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-233",
+    "school": "CAS",
+    "department": "WS",
+    "number": "233",
+    "title": "The Evolutionary Biology of Human Variation",
+    "description": "Addresses human biological variation. An introduction to the fundamentals of comparative biology, evolutionary theory, and genetics and considers how research in these fields informs some of our most culturally-engaged identities: race, sex, gender, sexuality, and body type. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Scientific Inquiry I, Ethical Reasoning, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Durgavich",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        },
+        {
+          "instructor": "Durgavich",
+          "schedule": "T 3:35 pm-4:25 pm"
+        },
+        {
+          "instructor": "Durgavich",
+          "schedule": "T 4:40 pm-5:30 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-325": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-325",
+    "school": "CAS",
+    "department": "WS",
+    "number": "325",
+    "title": "Bombs and Bombshells: Gender, Armed Conflict, and Political Violence",
+    "description": "Undergraduate Prerequisites: sophomore, junior, or senior standing. - Delve into the world of Black Widows and Demon Lovers. Using empirical research, case studies, and drama, this course separates fact from fiction to examine gender and its intersections between recruitment, motivations, and conditions under which women behave violently. Effective Summer 2025 fulfills a single unit in each of the following BU Hub areas: Global Citizenship, Oral and/or Signed Communication, Teamwork/Collaboration.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "McEvoy",
+          "schedule": "R 3:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-327": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-327",
+    "school": "CAS",
+    "department": "WS",
+    "number": "327",
+    "title": "Immigrant Women in Literature: Found in Translation'",
+    "description": "This course explores literature about migration created by women primarily from Eastern Europe. We read autobiographical narratives that focus on the shaping of transcultural identity with an eye to the problem of translation as a linguistic, cultural, and personal phenomenon. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, Historical Consciousness, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Garcia De La Puente",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-317": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-317",
+    "school": "CAS",
+    "department": "WS",
+    "number": "317",
+    "title": "Gender and Crime",
+    "description": "Examines social forces shaping gender discrepancies in crime. Using a feminist lens, students explore how cultural ideologies about masculinity and femininity shape criminalization, victimization, and offending. Topics include the gendered contexts of crime and punishment, gender-based violence, and intimate labor. Effective Spring 2023 this course fulfills a single unit in each of the following BU Hub areas: Oral and/or Signed Communication, The Individual in Community, Teamwork/Collaboration.",
+    "semesters": {}
+  },
+  "CAS-WS-319": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-319",
+    "school": "CAS",
+    "department": "WS",
+    "number": "319",
+    "title": "Disability and Queerness in Speculative Fiction",
+    "description": "This course examines how LGBTQ2IA speculative fiction engages with disability and other intersecting frameworks of difference to present alternate, parallel, or invented worlds. This course provides opportunities for students to strengthen ethical reasoning, cultural analysis, and aesthetic exploration. Effective Fall 2025, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Ethical Reasoning.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Cariani",
+          "schedule": "M 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-329": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-329",
+    "school": "CAS",
+    "department": "WS",
+    "number": "329",
+    "title": "LGBTQI Representation in Film",
+    "description": "Undergraduate Prerequisites: sophomore, junior, or senior standing. - Queer films challenge norms and undermine categories of gender and sex. Drawing on scholarship from a variety of disciplines the course explores sexual identity and representation in relation to history and other constituting experiences of race, class, gender, and nationality.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "McEvoy",
+          "schedule": "W 6:30 pm-9:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-326": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-326",
+    "school": "CAS",
+    "department": "WS",
+    "number": "326",
+    "title": "Arts of Gender",
+    "description": "Undergraduate Prerequisites: at least one prior literature course, or CASWS 101, or junior or senior standing. - Examines representations of gender and sexuality in diverse art forms, including drama, dance, film, and literature, and how art reflects historical constructions of gender. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, The Individual in Community.",
+    "semesters": {}
+  },
+  "CAS-WS-330": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-330",
+    "school": "CAS",
+    "department": "WS",
+    "number": "330",
+    "title": "Transforming Life: Anthropology of Gender and Medical Technologies",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120); recommend CAS AN1 01 and AN102 - Seminar anthropologically compares the role of science and medicine in society and troubles what is natural and moral, e.g., about gender, person hood, kinship, and community, using case studies of new reproductive technologies in Asia, the Middle East, and North America. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Ethical Reasoning, Global Citizenship and Intercultural Literacy. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Ethical Reasoning, Global Citizenship and Intercultural Literacy, Writing- Intensive Course. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, The Individual in Community, Writing- Intensive Course.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Kizildag",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-335": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-335",
+    "school": "CAS",
+    "department": "WS",
+    "number": "335",
+    "title": "Sociology of Race, Class & Gender",
+    "description": "Undergraduate Prerequisites: At least one prior 100- or 200-level sociology course, or CAS WS 101/1 02. - No one of us is one thing, one identity, nor motivated by one singular interest, nor privileged or subjugated by one singular form of power, but how do those multiple forms of ourselves affect how we are advantaged, disadvantaged, viewed, and understood by the social world' Our social world, is, by default, a vast web of social intersections between and across groups with shared, overlapping, and conflicting identities. Race, class and gender affect nearly all of our lived experiences and greatly complicate and nuance concepts of diversity and difference. Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, The Individual in Community, Historical Consciousness.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Grundy",
+          "schedule": "T 12:30 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-345": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-345",
+    "school": "CAS",
+    "department": "WS",
+    "number": "345",
+    "title": "Shariah Law",
+    "description": "Shariah Law looks behind the stereotypes and headlines--despotic rulers, barbaric punishments, women's oppression--to understand the origins, history, and structure of Islamic law. Explores its implementation in various times and places, modern transformations, and contemporary debates over legal reform. Effective Spring 2025, this course fulfills a single unit in each of the following BU Hub areas: Oral and/or Signed Communication, Ethical Reasoning, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-WS-333": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-333",
+    "school": "CAS",
+    "department": "WS",
+    "number": "333",
+    "title": "Queering Health",
+    "description": "This course is about the unique physical and mental health needs, health disparities, and resiliency within the LGBTQ community. Students will learn about the psychology of sexual orientation and gender diversity, intersectionality in LGBTQ communities, gender identity and sexual orientation development models, queer families and relationships, minority stress, hetero/cis-sexism, and other relevant topics. Students will also learn about LGBTQ affirming therapies, healthcare, public policy, and legislation. This course will take a constructively critical lens to medicalized/pathologizing constructions of sexual and gender diversity and examine topics within historical and modern social context. This course will explore strategies for advocacy, improving the healthcare experience of LGBTQ people, and addressing barriers to accessing healthcare from local, national, and global perspectives. Effective Fall 2023, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Social Inquiry II.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Peters",
+          "schedule": "MW 2:30 pm-4:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-377": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-377",
+    "school": "CAS",
+    "department": "WS",
+    "number": "377",
+    "title": "Gender and Sexuality in Judaism",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120). - Explores the role of gender and sexuality in Judaism and Jewish experience, historically and in the present. Subjects include constructions of masculinity and femininity, attitudes toward (and uses of) the body and sexuality, gendered nature of religious practice and authority. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Historical Consciousness, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Klepper",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-347": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-347",
+    "school": "CAS",
+    "department": "WS",
+    "number": "347",
+    "title": "Feminist Inquiry",
+    "description": "Undergraduate Prerequisites: sophomore, junior, or senior standing. - A survey of feminist theories and development of strands of feminist inquiry in the academy, movements, and politics. Considers the commonalities and contrast in gender relations across cultures and tensions between major feminist schools of thought. Effective Fall 2024 fulfills a single unit in each of the following BU Hub areas: Creativity/Innovation, Oral and/or Signed Communication, Social Inquiry I.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "McEvoy",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-375": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-375",
+    "school": "CAS",
+    "department": "WS",
+    "number": "375",
+    "title": "Growing Up in Korea",
+    "description": "Examining memoirs, biographies, prose fiction, poetry, films, television dramas, and graphic narratives asking: how have Korean women recounted women’s lives through media? What roles have gender and sexuality played in stories of ‘growing up' from the late 1800s to today? Effective Spring 2019, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Yang",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-352": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-352",
+    "school": "CAS",
+    "department": "WS",
+    "number": "352",
+    "title": "American Masculinities",
+    "description": "Undergraduate Prerequisites: one 100- or 200-level course in either sociology or women's, gender, & sexuality. - This course will explore masculinity: as a historical, social construct and site of power and violence; as a facet of identity and system of oppression; as style, myth, and representation; as something perpetually in \"crisis\" and in need of recuperation; as a process that helps and harms; as a set of ideals, practices, and traditions; and as system that cuts across race, ethnicity, sexuality, social class, nation, geography and place, age, and other lines of difference. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, Social Inquiry I, Critical Thinking.",
+    "semesters": {}
+  },
+  "CAS-WS-380": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-380",
+    "school": "CAS",
+    "department": "WS",
+    "number": "380",
+    "title": "Gender and Identity in Contemporary Middle Eastern Film",
+    "description": "An exploration of representations of gender and identity in contemporary Middle Eastern films by male and female directors reflecting on the impact of modernization, globalization, war and trauma through different visual genres. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Digital/Multimedia Expression.",
+    "semesters": {}
+  },
+  "CAS-WS-420": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-420",
+    "school": "CAS",
+    "department": "WS",
+    "number": "420",
+    "title": "Queer Theory",
+    "description": "Surveys major texts and arguments in queer theory from Butler's Gender Trouble to contemporary discussions of cisnormativity, homonationalism, affect, pinkwashing, crip theory, and queer-of-color critique. Explores different uses of queer theory in legal debates, literary analysis, and cultural criticism. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Philosophical Inquiry and Life's Meanings, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Cariani",
+          "schedule": "W 3:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-395": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-395",
+    "school": "CAS",
+    "department": "WS",
+    "number": "395",
+    "title": "Inhuman Films: Genders, Animals, Machines",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (e.g., WR 120). - This course explores what happens to the \"human\" at the intersection of feminist theory and cinematic representation. How and why do films assign humanity to some figures and withhold it from others on the basis of race, gender, \"ability,\" etc.' Effective Fall 2023, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Digital/Multimedia Expression, Aesthetic Exploration.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Desilets",
+          "schedule": "MWF 1:25 pm-2:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-400": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-400",
+    "school": "CAS",
+    "department": "WS",
+    "number": "400",
+    "title": "Gender and Healthcare",
+    "description": "Undergraduate Prerequisites: CASWR 120 or equivalent. - Focuses on strengthening students' knowledge, skills, and ability to construct a critical appraisal of all the determinants, distribution, causes, mechanisms, systems, and consequences of health inequities related to gender including how gender influences and is influenced by healthcare systems. Effective Summer 2020, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Peters",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-396": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-396",
+    "school": "CAS",
+    "department": "WS",
+    "number": "396",
+    "title": "Philosophy of Gender and Sexuality",
+    "description": "Analyzes gender and sexuality from an intersectional perspective. Focus on metaphysics, epistemology, and semantics to understand gender and sexuality as they exist within interlocking systems of oppression including racism, sexism, transphobia, homophobia, and fatphobia. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Philosophical Inquiry and Life's Meanings, The Individual in Community, Critical Thinking.",
+    "semesters": {}
+  },
+  "CAS-WS-393": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-393",
+    "school": "CAS",
+    "department": "WS",
+    "number": "393",
+    "title": "Technoculture and Horizons of Gender and Race",
+    "description": "Undergraduate Prerequisites: one previous literature course or junior or senior standing. - Explores new media theory, postmodernist thought, social media, and video games to confront gender, race, and sexuality. Through critical reading, writing, and hands-on digital technology use, students consider how race, sexuality, and gender live in virtual worlds. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Digital/Multimedia Expression.",
+    "semesters": {}
+  },
+  "CAS-WS-382": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-382",
+    "school": "CAS",
+    "department": "WS",
+    "number": "382",
+    "title": "Women's Literary Cultures",
+    "description": "Undergraduate Prerequisites: one previous literature course or junior or senior standing. - Writings by women in diverse literary forms, including drama, poetry and prose. How does women's literary culture reflect historical constructions of gender and sexuality' How do writers engage with new literary forms, like the lyric, political treatise, or the novel' Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Aesthetic Exploration.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Murphy",
+          "schedule": "MWF 10:10 am-11:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-WS-430": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-430",
+    "school": "CAS",
+    "department": "WS",
+    "number": "430",
+    "title": "Global Maternal & Child Health",
+    "description": "Undergraduate Prerequisites: senior standing. - Provides a global perspective on maternal and child health. Major topics include early life influences on later life health, maternity care practices worldwide, and the role of both human evolutionary history and sociopolitical structures in shaping health outcomes for women and children.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Dunham",
+          "schedule": "MW 10:10 am-11:55 am"
+        }
+      ]
+    }
+  },
+  "CAS-WS-398": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-398",
+    "school": "CAS",
+    "department": "WS",
+    "number": "398",
+    "title": "Feminist Political Theory",
+    "description": "Introduces students to key texts, problems, and debates in western feminist political theory. Students study major feminist thinkers, and explore diverse approaches to crucial topics in the field: such as 'white feminism,' marriage, disability, sex, and pornography.",
+    "semesters": {}
+  },
+  "CAS-WS-432": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-432",
+    "school": "CAS",
+    "department": "WS",
+    "number": "432",
+    "title": "Gender, Sexuality, and Buddhism",
+    "description": "Examines gender and sexuality in various Buddhist cultures from a broad range of time periods such as ancient India, medieval China, and modern America. Topics include: family, the body, lust, abortion, and menstruation. Effective Spring 2024, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, Aesthetic Exploration, Critical Thinking.",
+    "semesters": {}
+  },
+  "CAS-WS-431": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-431",
+    "school": "CAS",
+    "department": "WS",
+    "number": "431",
+    "title": "Seminar: Genders, Sexualities, and Youth Cultures",
+    "description": "Undergraduate Prerequisites: senior standing or consent of instructor. - Investigates the social construction of gender and sexuality in adolescence. Engaging critical approaches to youth cultures, the course examines the structural conditions that shape gender and sexuality norms and the ways youth navigate and redefine their social worlds. Effective Fall 2023 this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Social Inquiry II, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Miller",
+          "schedule": "W 2:30 pm-5:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-450": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-450",
+    "school": "CAS",
+    "department": "WS",
+    "number": "450",
+    "title": "Internships: Women, Gender, and Social Change",
+    "description": "Undergraduate Prerequisites: junior or senior standing; or two prior WGS electives; or consent of i nstructor. - A seminar which introduces students to the practices/ideas of social change organizations through local internships and weekly discussions related to class, race, sexuality, women and gender.",
+    "semesters": {}
+  },
+  "CAS-WS-456": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-456",
+    "school": "CAS",
+    "department": "WS",
+    "number": "456",
+    "title": "Neurobiology of Sex and Aggression",
+    "description": "Examines neurobiological and genetic factors that influence sex and violence. Students review primary literature from the past century that highlights major scientific discoveries that have reconceptualized our understanding of the origins of sexual-determination, -attraction and - aggression. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: Oral and/or Signed Communication, Historical Consciousness, Scientific Inquiry II.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Muscedere",
+          "schedule": "M 8:00 am-10:45 am"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "",
+          "schedule": "M 8:00 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-WS-458": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-458",
+    "school": "CAS",
+    "department": "WS",
+    "number": "458",
+    "title": "The Nonbinary Nineteenth Century",
+    "description": "Undergraduate prerequisite: First Year Writing Seminar (e.g., CASWR 100 or WR 120). - Examines fictional and non fictional works from nineteenth-century France on themes of sexual and gender identity, contextualized through contemporary queer, trans, and feminist theory.",
+    "semesters": {}
+  },
+  "CAS-WS-451": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-451",
+    "school": "CAS",
+    "department": "WS",
+    "number": "451",
+    "title": "Fashion as History",
+    "description": "This seminar treats clothing and other products of material culture as historical documents. Explores what clothing can tell us about key developments in the modern period relating to trade and commerce, empire, gender, class, industry, revolution, nation-building, identity politics, and globalization. Effective Fall 2019, this course fulfills a single unit in the following BU Hub area: Historical Consciousness, Global Citizenship and Intercultural Literacy, Critical Thinking.",
+    "semesters": {}
+  },
+  "CAS-WS-442": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-442",
+    "school": "CAS",
+    "department": "WS",
+    "number": "442",
+    "title": "Philosophy and Feminism",
+    "description": "Undergraduate pre-requisites: two courses in philosophy or consent of instructor. - An advanced survey course of historical and contemporary philosophical approaches to feminism. Topics include: methodology, ethics, epistemology, metaphysics, black feminist thought, decolonial feminism, global feminism, philosophy of gender, and queer and trans philosophy.",
+    "semesters": {}
+  },
+  "CAS-WS-452": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-452",
+    "school": "CAS",
+    "department": "WS",
+    "number": "452",
+    "title": "Contemporary Debates in Sexualities Research",
+    "description": "Undergraduate Prerequisites: CASSO 241 or CASWS 200, First Year Writing Seminar (e.g., CASWR 100 or WR 120) - Engages sociological debates about sexual identities, politics, and practices. Students consider how sexualities are expressed and regulated through various institutions and how they intersect with race, class, gender, citizenship, and other domains of inequality. Effective Spring 2024, this course fulfills a single unit in each of the following BU HUB areas: Writing-Intensive, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-WS-434": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-434",
+    "school": "CAS",
+    "department": "WS",
+    "number": "434",
+    "title": "Monarchy in Modern Britain",
+    "description": "Seminar probing seminal moments in the history of modern British sovereignty, when the politics of the court intersected with the politics of the people. Particular consideration is given to how monarchy has survived as an institution. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, Global Citizenship and Intercultural Literacy, Critical Thinking.",
+    "semesters": {}
+  },
+  "CAS-WS-453": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-453",
+    "school": "CAS",
+    "department": "WS",
+    "number": "453",
+    "title": "Topics in Religion and Sexuality",
+    "description": "Exploration of key topics and themes in the study of religion and sexuality, especially as they intersect with gender, race, and politics. Historical periods and religious contexts vary according to instructor. Effective Spring 2023, this course fulfills a single unit in each of the following BU Hub areas: Ethical Reasoning, Historical Consciousness, Creativity/Innovation.",
+    "semesters": {}
+  },
+  "CAS-XL-100": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-100",
+    "school": "CAS",
+    "department": "XL",
+    "number": "100",
+    "title": "Leaving Home: Explorations in World Literature",
+    "description": "Growing up. Moving to the big city. Wisdom quest. Immigration. Tourism. How have the world's great literatures portrayed and shaped these experiences? How have literary works themselves found new worlds through translation and adaptation? Counts for credit toward all WLL majors. Carries humanities divisional credit in CAS. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Schwartz",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-WS-465": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-465",
+    "school": "CAS",
+    "department": "WS",
+    "number": "465",
+    "title": "Intersectionalities: Theories, Methods, and Praxis",
+    "description": "Undergraduate pre-requisites: junior standing or consent of instructor. - \"Intersectionality,\" is one of the prominent contributions made by critical race feminist scholars that now broadly extend across disciplines. This course takes stock of the multiple ways that intersectional scholars and activists conceptualize intersectionality in relation to sociological theory, research problems, design, and praxis.",
+    "semesters": {}
+  },
+  "CAS-WS-460": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-460",
+    "school": "CAS",
+    "department": "WS",
+    "number": "460",
+    "title": "Topics in LGBTQ History",
+    "description": "Undergrad prerequisites: First Year Writing Seminar (e.g., CASWR 100 or WR 120). - Seminar examines topics in the history of LGBTQ (lesbian, gay, bisexual, transgender, and queer) people and cultural or political movements. May be repeated for credit if topics vary. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, Oral and Signed Communication, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-WS-480": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-480",
+    "school": "CAS",
+    "department": "WS",
+    "number": "480",
+    "title": "Japanese Women Writers",
+    "description": "Classic texts by Japanese women, including the \"Tale of Genji\" and \"The Pillow Book,\" and their modern legacy, read alongside important philosophical and theoretical texts in queer and feminist thought. Lectures and texts in English. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, Philosophical Inquiry and Life's Meanings, Critical Thinking.",
+    "semesters": {}
+  },
+  "CAS-WS-479": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-ws-479",
+    "school": "CAS",
+    "department": "WS",
+    "number": "479",
+    "title": "Fatal Women and Dangerous Bodies",
+    "description": "Prerequisites: First Year Writing Seminar (e.g., CASWR 100 or WR 120). - Examines depictions of the femme fatale and fears of female sexuality in realist, naturalist and decadent French fictions. Effective Fall 2025, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy, Writing-Intensive Course.",
+    "semesters": {}
+  },
+  "CAS-XL-222": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-222",
+    "school": "CAS",
+    "department": "XL",
+    "number": "222",
+    "title": "Introduction to Western Literatures",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120). - Introduces basic methods of comparative literary study through close readings of influential texts of the Western tradition from antiquity to present. Topics include genre, translation, appropriation, interpretation, theories of literary production and effect. All works read in English. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy, Writing-Intensive Course.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Corrigan",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Schwartz",
+          "schedule": "MWF 2:30 pm-3:20 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-223": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-223",
+    "school": "CAS",
+    "department": "XL",
+    "number": "223",
+    "title": "Introduction to Middle Eastern Literatures",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120). - Introduces basic methods of comparative literary study through close readings of some of the most influential texts of Arabic, Persian, Turkish, and Hebrew literature. Readings may include The Arabian Nights, Shahnameh, lyric poetry, and novels from the twentieth century. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy, Writing-Intensive Course.",
+    "semesters": {}
+  },
+  "CAS-XL-224": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-224",
+    "school": "CAS",
+    "department": "XL",
+    "number": "224",
+    "title": "Introduction to East Asian Literatures",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120). - Explores why and how to compare literatures and cultures and envisions the place of East Asia's traditions in World Literature. Embarks on theoretical reflection and close reading of Chinese, Japanese, and Korean texts from three millennia. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy, Writing-Intensive Course.",
+    "semesters": {}
+  },
+  "CAS-XL-260": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-260",
+    "school": "CAS",
+    "department": "XL",
+    "number": "260",
+    "title": "Gateway to Asian Cultures",
+    "description": "Panoramic introduction to the cultures of East and South Asia in comparative perspective (China, Japan, Korea, Vietnam, India). Examines shared foundations, transformative inflection points, sites, peoples, and ideologies over the past two millennia through primary texts and media. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Yeh",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-281": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-281",
+    "school": "CAS",
+    "department": "XL",
+    "number": "281",
+    "title": "Representations of the Holocaust in Literature and Film",
+    "description": "How can we understand the impact of the Holocaust and its ongoing legacies? Holocaust representation in literature, film and memorials, including discussions of bystander complicity and societal responsibilities, testimonial and fictive works by Wiesel and Levi, documentaries and feature films. Effective Fall 2019, this course fulfills a single unit in the following BU Hub areas: Historical Consciousness, Ethical Reasoning.",
+    "semesters": {}
+  },
+  "CAS-XL-230": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-230",
+    "school": "CAS",
+    "department": "XL",
+    "number": "230",
+    "title": "Topics in Big Fat Books",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., CASWR 100 or WR 120) - Enters deeply into the world of one literary work and explores its reverberations across national and disciplinary boundaries. Topics for Fall 2025 & Spring 2026: TBD. Previous Topics: Homer's Iliad and Odyssey, Marcel Proust's Swann's Way. Death in Venice. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Writing-Intensive Course.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Micallef",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        },
+        {
+          "instructor": "Waters",
+          "schedule": "MWF 11:15 am-12:05 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-225": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-225",
+    "school": "CAS",
+    "department": "XL",
+    "number": "225",
+    "title": "Introduction to South Asian Literatures",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120). - Introduces basic methods of comparative literary study through close readings of some of the most influential texts of Indian and other South Asian literatures. Readings may include Shakuntala, The Ramayana, bhakti and Sufi literatures. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy, Writing-Intensive Course.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Parnami",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-325": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-325",
+    "school": "CAS",
+    "department": "XL",
+    "number": "325",
+    "title": "Global Modernist Fiction",
+    "description": "A comparative study of five modernist authors from different world cultures: Faulkner, Kafka, Chang, Rushdie, and Murakami. Examines experiments in narrative technique as differently situated responses to the major events and legacy of the twentieth century. Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Philosophical Inquiry and Life's Meanings, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Liu",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-244": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-244",
+    "school": "CAS",
+    "department": "XL",
+    "number": "244",
+    "title": "Greek Drama in Translation",
+    "description": "The history and development of ancient Greek theater; study of important plays in the genres of tragedy, comedy, and satyr drama by Aeschylus, Sophocles, Euripides, Aristophanes, and Menander. Cannot be taken for credit in addition to CAS CL 324. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Ethical Reasoning, Teamwork/Collaboration.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Klein",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Esposito",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-236": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-236",
+    "school": "CAS",
+    "department": "XL",
+    "number": "236",
+    "title": "Jewish Literature",
+    "description": "How do changing notions of ethnicity and race, religion, and gender, as well as geographical place define Jewish family and community? Topics include immigration, diaspora, and national culture; patriotism, antisemitism, and multiculturalism; Jewish identities and gender; conversion, assimilation, and acculturation. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, Aesthetic Exploration.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Gillman",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-XL-284": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-284",
+    "school": "CAS",
+    "department": "XL",
+    "number": "284",
+    "title": "War in Arab Literature and Film (in English translation)",
+    "description": "How do Arab writers and filmmakers depict the region’s defining wars? Comparison to nonfiction and to artworks by Israeli and American artists from the \"other side.\" All readings in English; knowledge of Arabic or Middle Eastern history is welcome, but none is assumed. Effective Fall 2024, this course fulfills a single unit in each of the following BU HUB areas: Aesthetic Exploration, Creativity/Innovation, Philosophical Inquiry and Life's Meanings.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Litvin",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-XL-327": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-327",
+    "school": "CAS",
+    "department": "XL",
+    "number": "327",
+    "title": "Immigrant Women in Literature: Found in Translation'",
+    "description": "This course explores literature about migration created by women primarily from Eastern Europe. We read autobiographical narratives that focus on the shaping of transcultural identity with an eye to the problem of translation as a linguistic, cultural, and personal phenomenon. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, Historical Consciousness, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Garcia De La Puente",
+          "schedule": "TR 11:00 am-12:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-332": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-332",
+    "school": "CAS",
+    "department": "XL",
+    "number": "332",
+    "title": "Introduction History, Humanities, and Social Sciences Research in the Digital Age: Tools and Methods",
+    "description": "Course 1 in two-semester-sequence (Fall: HI 332/XL 332; Spring: HI 333). Introduces principles and tools of digital research in history, the humanities, and social sciences. Through project-based learning, students combine skills in digital literacy, media creation, humanistic and social sciences inquiry. Effective Fall 2025, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, Research and Information Literacy, Social Inquiry I.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Menegon",
+          "schedule": "TR 3:30 pm-4:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-335": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-335",
+    "school": "CAS",
+    "department": "XL",
+    "number": "335",
+    "title": "Around the World in 40 Fairy Tales",
+    "description": "Undergraduate prerequisites: First-Year Writing Seminar (e.g., CASWR 100 or 120), or equivalent. - Traces how fairy tales influence each other within and across cultures and time periods and are adapted to changing socio-historical contexts. Students consider and write about a range of interpretational approaches and renderings in literature, the arts, and media. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas: Social Inquiry I, Writing-Intensive Course.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Hoecherl-Alden",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-XL-342": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-342",
+    "school": "CAS",
+    "department": "XL",
+    "number": "342",
+    "title": "Modern Travel Writing and the Muslim World",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120). - How have modern Muslim travelers written about places and people they saw abroad, and how have Western travelers in the Muslim lands described their travels in \"the East\"? Readings include Zeyneb Hanoum, Tahtawi, Mark Twain, Malcolm X, Nawal Saadawi. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy, Writing-Intensive Course. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, Oral and/or Signed Communication, Teamwork/Collaboration.",
+    "semesters": {}
+  },
+  "CAS-XL-368": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-368",
+    "school": "CAS",
+    "department": "XL",
+    "number": "368",
+    "title": "Religion and Film",
+    "description": "Religions and films are world-building engines. They create -- and re-create -- a visioning of society as a world of justice, of lived myth, of fantasy, of ideology: a world we may long to live in or a world we wish to avoid at all costs. This course explores such worlds by examining the ways in which religious beliefs, practices and people are portrayed in popular film from the 1960s to the present. Effective Spring 2025, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Social Inquiry I, Teamwork/Collaboration.",
+    "semesters": {}
+  },
+  "CAS-XL-343": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-343",
+    "school": "CAS",
+    "department": "XL",
+    "number": "343",
+    "title": "Alexander the Great in the East",
+    "description": "Undergraduate Prerequisites: First-Year Writing (WR 120 or equivalent) - Study of the various narratives about Alexander the Great, also known as Sikandar or Iskandar, as conqueror, philosopher-king, and hero, in medieval Middle Eastern and Asian literatures. Modern filmic representations of the historical figure are also compared. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy. Effective Fall 2021, this course fulfills a single unit in each of the following BU Hub areas: Writing- Intensive Course, Global Citizenship and Intercultural Literacy, Aesthetic Exploration. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Creativity/Innovation, Global Citizenship and Intercultural Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Sharma",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-344": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-344",
+    "school": "CAS",
+    "department": "XL",
+    "number": "344",
+    "title": "Global Shakespeares",
+    "description": "Why do contemporary writers parrot and parody \"Shakespeare,\" and how much of this activity is about Shakespeare at all? This seminar provides an introduction to reading and writing about Shakespeare's plays. But it also takes a step back to consider Shakespeare as a phenomenon, inspiring adapters around the world. Beyond learning about particular offshoots and adaptations, the deeper point is to explore how playwrights think about their sources, their audiences, and their art. Effective Summer 2021, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, Aesthetic Exploration, Creativity/Innovation.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Litvin",
+          "schedule": "TR 12:30 pm-1:45 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-341": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-341",
+    "school": "CAS",
+    "department": "XL",
+    "number": "341",
+    "title": "Medieval Travel Writing and the Muslim World",
+    "description": "Undergraduate prerequisites: CASWR 120 or 150. - How did medieval and early modern Muslim travelers describe the places they visited and people they encountered, and how did Western travelers describe their travels in the Middle East and Asia? Readings include Ibn Battuta, Marco Polo, Evliya Celebi, and Lady Mary Wortley Montagu. Effective Fall 2024, this course fulfills a single unit in each of the following BU Hub areas: Creativity/Innovation, Global Citizenship and Intercultural Literacy, Historical Consciousness.",
+    "semesters": {}
+  },
+  "CAS-XL-377": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-377",
+    "school": "CAS",
+    "department": "XL",
+    "number": "377",
+    "title": "Global Asian Literature",
+    "description": "Undergraduate Prerequisites: CAS WR 120, First-Year Writing Seminar. - This course explores 20th-and 21st-century ethnic Asian writers whose literary works help us question the paradigm of national literature and appreciate the power of border-crossing literature. Main topics include colonialism, racism, post-colonial politics, migration, World War II, and wars in post-1945 Asia. Effective Fall 2024, this course fulfills a single unit in each of the following BU HUB areas: Aesthetic Exploration, Writing-Intensive Course.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Yang",
+          "schedule": "TR 9:30 am-10:45 am"
+        }
+      ]
+    }
+  },
+  "CAS-XL-387": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-387",
+    "school": "CAS",
+    "department": "XL",
+    "number": "387",
+    "title": "The Holocaust Through Film",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., WR 100 or WR 120). - An examination of film using the Holocaust as its central topic. What are the political and cultural effects when genocide is represented through film? Can feature films portray history, and if so, what are the consequences for an informed society? Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, Global Citizenship and Intercultural Literacy, Writing- Intensive Course.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Harrowitz",
+          "schedule": "TR 11:00 am-12:15 pm"
+        },
+        {
+          "instructor": "Amihay",
+          "schedule": "MWF 10:10 am-11:00 am"
+        }
+      ],
+      "SPRG 2026": [
+        {
+          "instructor": "Amihay",
+          "schedule": "MWF 10:10 am-11:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-XL-397": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-397",
+    "school": "CAS",
+    "department": "XL",
+    "number": "397",
+    "title": "World Cities: Istanbul",
+    "description": "An examination of Istanbul in the global imaginary as it transformed from the Capital of the Ottoman Empire to the cultural capital of the Republic of Turkey through critical analysis of visual and literary texts. Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, Historical Consciousness, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Micallef",
+          "schedule": "TR 2:00 pm-3:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-402": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-402",
+    "school": "CAS",
+    "department": "XL",
+    "number": "402",
+    "title": "Senior Independent Work",
+    "description": "Senior independent work.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "",
+          "schedule": "ARR 12:00 am-12:00 am"
+        }
+      ]
+    }
+  },
+  "CAS-XL-398": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-398",
+    "school": "CAS",
+    "department": "XL",
+    "number": "398",
+    "title": "World Cities: Tokyo",
+    "description": "Explores the past and present of the vibrant city of Tokyo through literature and visual culture. Includes hand-on experiences mapping literary spaces. Reading and discussion in English. Effective Fall 2020, this course fulfills a single unit in each of the following BU Hub areas: Digital/Multimedia Expression, Historical Consciousness, Research and Information Literacy.",
+    "semesters": {}
+  },
+  "CAS-XL-380": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-380",
+    "school": "CAS",
+    "department": "XL",
+    "number": "380",
+    "title": "Gender and Identity in Contemporary Middle Eastern Film",
+    "description": "An exploration of representations of gender and identity in contemporary Middle Eastern films by male and female directors reflecting on the impact of modernization, globalization, war and trauma through different visual genres. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Digital/Multimedia Expression.",
+    "semesters": {}
+  },
+  "CAS-XL-381": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-381",
+    "school": "CAS",
+    "department": "XL",
+    "number": "381",
+    "title": "Topics in Gender and Literature (in English translation)",
+    "description": "Undergraduate Prerequisites: First-Year Writing Seminar (CASWR 120 or equivalent) - Topics vary. May be repeated for credit if topic is different. Previous Topics: Gender and Genre in the Works of Natsume Soseki, Courtesans in World Literature. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Aesthetic Exploration, Creativity/Innovation.",
+    "semesters": {}
+  },
+  "CAS-XL-401": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-401",
+    "school": "CAS",
+    "department": "XL",
+    "number": "401",
+    "title": "Senior Independent Work",
+    "description": "Senior independent work.",
+    "semesters": {}
+  },
+  "CAS-XL-420": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-420",
+    "school": "CAS",
+    "department": "XL",
+    "number": "420",
+    "title": "Queer Theory",
+    "description": "Surveys major texts and arguments in queer theory from Butler's Gender Trouble to contemporary discussions of cisnormativity, homonationalism, affect, pinkwashing, crip theory, and queer-of-color critique. Explores different uses of queer theory in legal debates, literary analysis, and cultural criticism. Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Philosophical Inquiry and Life's Meanings, Critical Thinking.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Cariani",
+          "schedule": "W 3:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-491": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-491",
+    "school": "CAS",
+    "department": "XL",
+    "number": "491",
+    "title": "Directed Study: Comparative Literature",
+    "description": "Application form available in the department.",
+    "semesters": {}
+  },
+  "CAS-XL-525": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-525",
+    "school": "CAS",
+    "department": "XL",
+    "number": "525",
+    "title": "Judith Butler",
+    "description": "Undergraduate prerequisites: two previous XL, WS, or PH courses; or consent of instructor. Graduate prerequisites: graduate standing. - An intensive study of Judith Butler's philosophical thought and social theory from the 1990s to the present, with an emphasis on the continuities and discontinuities between Butler's early work on gender performativity and more recent writings on racial justice, war, and violence. Fall 2025, this course fulfills a single unit in each of the following BU Hub areas: Critical Thinking, Philosophical Inquiry and Life's Meanings, The Individual in Community.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Liu",
+          "schedule": "R 3:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-530": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-530",
+    "school": "CAS",
+    "department": "XL",
+    "number": "530",
+    "title": "Marxist Cultural Criticism",
+    "description": "An introduction to Marxist cultural criticism that examines the transformation of concepts in classic Marxism (Marx, Lukacs, Althusser, Adorno, and Gramsci) into contemporary debates about race, gender, sexuality, colonialism, modernity, and language (Said, Zizek, Spivak, and others). Effective Spring 2021, this course fulfills a single unit in each of the following BU Hub areas: The Individual in Community, Philosophical Inquiry and Life's Meanings, Critical Thinking.",
+    "semesters": {
+      "SPRG 2026": [
+        {
+          "instructor": "Liu",
+          "schedule": "T 3:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-441": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-441",
+    "school": "CAS",
+    "department": "XL",
+    "number": "441",
+    "title": "1001 Nights in the World Literary Imagination",
+    "description": "Undergraduate Prerequisites: two literature courses or consent of instructor and First Year Writing Seminar (e.g., CASWR 100 or WR 120). - What is The Thousand and One Nights? How has this ever-expanding collection appealed to its diverse audiences? Focus on the Nights' structure and themes, notable translations and offshoots in western literature and art, and later appropriations by Arab and Muslim writers. Effective Fall 2018, this course fulfills a single unit in each of the following BU Hub areas: Aesthetic Exploration, Global Citizenship and Intercultural Literacy, Writing-Intensive Course.",
+    "semesters": {}
+  },
+  "CAS-XL-479": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-479",
+    "school": "CAS",
+    "department": "XL",
+    "number": "479",
+    "title": "WLL Senior Seminar",
+    "description": "Undergraduate Prerequisites: First Year Writing Seminar (e.g., CASWR 100 or WR 120) and senior standing majors in WLL, or consent of instructor. - Through discussions of intercultural reading and translation, bibliographic assignments, student presentations, workshops, and work with a faculty language mentor, seniors majoring in WLL use this course to develop their final project: a substantial scholarly paper, translation, or creative work in a foreign language. Effective Fall 2019, this course fulfills a single unit in each of the following BU Hub areas: Writing-Intensive Course, Oral and/or Signed Communication, Research and Information Literacy.",
+    "semesters": {
+      "FALL 2025": [
+        {
+          "instructor": "Liu",
+          "schedule": "T 3:30 pm-6:15 pm"
+        }
+      ]
+    }
+  },
+  "CAS-XL-459": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-459",
+    "school": "CAS",
+    "department": "XL",
+    "number": "459",
+    "title": "Primo Levi Within Holocaust Literature",
+    "description": "A study of Primo Levi's writings and scientific, literary, theological, and philosophical approaches to the Holocaust. Other theorists (Arendt, Wiesel, and Muller-Hill) and other survivors' testimonies (Delbo, Borowski, Fink) are read in conjunction with Levi's works. Also offered as CAS LI 459 and RN 459. Effective Spring 2020, this course fulfills a single unit in each of the following BU Hub areas: Historical Consciousness, Ethical Reasoning.",
+    "semesters": {}
+  },
+  "CAS-XL-492": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-492",
+    "school": "CAS",
+    "department": "XL",
+    "number": "492",
+    "title": "Directed Study: Comparative Literature",
+    "description": "Application form available in the department.",
+    "semesters": {}
+  },
+  "CAS-XL-541": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-541",
+    "school": "CAS",
+    "department": "XL",
+    "number": "541",
+    "title": "Translation Today",
+    "description": "Weekly lectures and discussions with prominent literary translators from Boston and elsewhere. Students engage with a variety of languages and several genres: poetry, drama, essay, fiction, and more. Focus on concrete, practical translation issues arising from the speakers' work. Effective Spring 2022, this course fulfills a single unit in each of the following BU Hub areas: Global Citizenship and Intercultural Literacy, The Individual in Community, Creativity/Innovation.",
+    "semesters": {}
+  },
+  "CAS-XL-550": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-550",
+    "school": "CAS",
+    "department": "XL",
+    "number": "550",
+    "title": "Topics in Literary Criticism",
+    "description": "Undergraduate Prerequisites: two literature courses. - Topics vary from semester to semester. May be repeated for credit if topic changes. Topic for Spring 2023: This course is an introduction to Marxist cultural criticism that examines the transformation of concepts from classic Marxism (Marx, Lukacs, Althusser, Adorno, and Gramsci) into contemporary debates about race, gender, sexuality, colonialism, modernity, and language.",
+    "semesters": {}
+  },
+  "CAS-XL-540": {
+    "url": "https://www.bu.edu/academics/cas/courses/cas-xl-540",
+    "school": "CAS",
+    "department": "XL",
+    "number": "540",
+    "title": "Translation Seminar",
+    "description": "Prerequisites: proficiency in a second language. - Translation seminar where students produce substantial literary translations into English from their language of choice with the guidance of the instructor and language-specific mentors. Students hone their translation skills, read, and discuss articles about practical issues of translation.",
+    "semesters": {}
+  }
+}
