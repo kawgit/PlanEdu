@@ -1,4 +1,4 @@
-fimport React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Container, Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader } from '@mantine/core';
 import { IconSend, IconRobot, IconUser } from '@tabler/icons-react';
 
