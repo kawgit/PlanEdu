@@ -20,5 +20,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@tabler/icons-react": "^3.35.0",
+    "react-icons": "^5.5.0"
+  }
 }
