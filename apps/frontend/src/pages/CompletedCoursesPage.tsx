@@ -295,7 +295,7 @@ const CompletedCoursesPage: React.FC = () => {
             </Text>
           </Box>
         </Group>
-        <Group gap="sm">
+        <Group gap="sm" grow>
           <Button
             leftSection={<IconUpload size={18} />}
             onClick={() => setShowUploadForm(!showUploadForm)}
