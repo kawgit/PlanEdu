@@ -4,10 +4,14 @@ import cors from 'cors';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import multer from 'multer';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 import sql from './db';
 import { calculateCSMajorCompletion, calculateMathCSMajorCompletion } from './majorCompletion';
 import { calculateHubCompletion } from './hubCompletion';
 import recommendRouter from './routes/recommend';
+
+const execAsync = promisify(exec);
 
 const app = express();
 const port = 3001;
@@ -48,6 +52,29 @@ app.use('/api', recommendRouter);
 // Existing API endpoint
 app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the backend!' });
+});
+
+// Test endpoint to call test.py
+app.post('/api/test', async (req, res) => {
+  try {
+    const { stdout, stderr } = await execAsync('python3 src/test.py', {
+      cwd: __dirname + '/..',
+    });
+    
+    res.json({ 
+      success: true,
+      output: stdout,
+      error: stderr || null
+    });
+  } catch (error: any) {
+    console.error('Error executing test.py:', error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message,
+      output: error.stdout || null,
+      stderr: error.stderr || null
+    });
+  }
 });
 
 

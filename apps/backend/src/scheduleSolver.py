@@ -1,36 +1,74 @@
-# scheduleSolver.py
 # pip install ortools
-
 from ortools.sat.python import cp_model
 from collections import defaultdict
 from typing import Dict, List, Any, Optional, Tuple, Set
 
 
+# -------------------- Objective Manager (exact lexicographic in 1 pass) --------------------
+class ObjectiveManager:
+    def __init__(self, scale: int = 1000, tiers: List[str] = None):
+        self._SCALE = int(scale)
+        self.S = lambda v: int(round(float(v) * self._SCALE))
+        self.tiers = tiers or ["bookmarks", "degree", "comfort", "custom"]
+        self.terms: Dict[str, List[Tuple[cp_model.IntVar, int]]] = {t: [] for t in self.tiers}
+
+    def add(self, tier: str, var: cp_model.IntVar, weight: float):
+        if tier not in self.terms:
+            self.terms[tier] = []
+        w = self.S(weight)
+        if w != 0:
+            self.terms[tier].append((var, w))
+
+    def _ub(self, tier: str) -> int:
+        # Since vars are 0/1, an upper bound on |sum c_i * x_i| is sum |c_i|
+        return sum(abs(c) for (_, c) in self.terms.get(tier, []))
+
+    def bigM_weights(self) -> Dict[str, int]:
+        # Exact lexicographic: W_t > sum of UBs of all lower tiers
+        Ws, acc = {}, 0
+        for t in reversed(self.tiers):
+            Ws[t] = 1 + acc
+            acc += self._ub(t)
+        return Ws
+
+    def objective(self) -> cp_model.LinearExpr:
+        Ws = self.bigM_weights()
+        return sum(Ws[t] * sum(c * v for (v, c) in self.terms[t]) for t in self.tiers)
+
+    def values_by_tier(self, solver: cp_model.CpSolver) -> Dict[str, int]:
+        return {t: sum(c * solver.Value(v) for (v, c) in self.terms[t]) for t in self.tiers}
+
+    @property
+    def scale(self) -> int:
+        return self._SCALE
+
+
+# ------------------------------------- Schedule Solver -------------------------------------
 class ScheduleSolver:
     """
-    CP-SAT wrapper for class/section scheduling with NL->JSON constraints.
+    Simplified CP-SAT schedule solver.
 
-    Data contracts (adapt to your schema):
+    Data contracts (adapt as needed):
       relations: List[dict] with keys:
         - rid: str
         - class_id: str
         - semester: str
-        - days: List[str]         # ["Mon","Tue","Wed","Thu","Fri"]
-        - start: int              # minutes from 00:00
-        - end: int                # minutes from 00:00
+        - days: List[str]          # ["Mon","Tue","Wed","Thu","Fri"]
+        - start: int               # minutes from midnight
+        - end: int
         - instructor_id: Optional[str]
         - building_id: Optional[str]
-        - rating: Optional[float] # normalized [0..1] if available
-      conflicts: List[Tuple[str,str]]  # overlapping rids (same semester)
-
-      groups: Dict with (example):
-        - "A","B","C","D_eligible": Set[str]  # class_ids per group
-        - "CS320","CS330","CS332","CS350","CS351": str class_id (optional)
+        - rating: Optional[float]  # [0..1]
+      conflicts: List[Tuple[str,str]]   # overlapping rids (same semester)
+      groups: Dict:
+        - "A","B","C","D_eligible": Set[str]
+        - (optional) any named sets you reference
       hubs: Dict:
         - "requirements": Dict[tag, int]
         - "classes_by_tag": Dict[tag, Set[class_id]]
     """
 
+    # --------------------------- ctor & core model ---------------------------
     def __init__(
         self,
         relations: List[Dict[str, Any]],
@@ -40,77 +78,52 @@ class ScheduleSolver:
         semesters: List[str],
         bookmarks: Set[str],
         k: int = 4,
+        tiers: List[str] = None,
+        scale: int = 1000,
     ):
         self.model = cp_model.CpModel()
         self.relations = relations
         self.conflicts = conflicts
-        self.groups = groups
-        self.hubs = hubs
+        self.groups = groups or {}
+        self.hubs = hubs or {"requirements": {}, "classes_by_tag": {}}
         self.semesters = semesters
-        self.bookmarks = set(bookmarks)
-        self.k = k
+        self.bookmarks = set(bookmarks or [])
+        self.k = int(k)
 
-        # Integer scaling for soft weights (avoid float expressions)
-        self._SCALE = 1000
-        self._S = lambda v: int(round(float(v) * self._SCALE))
-
-        # Vars
-        self.z: Dict[str, cp_model.IntVar] = {}  # section pick
-        self.x: Dict[str, cp_model.IntVar] = {}  # class chosen
-
-        # Indexes
+        # Vars & indexes
+        self.z: Dict[str, cp_model.IntVar] = {}  # section vars
+        self.x: Dict[str, cp_model.IntVar] = {}  # class vars (lazy)
         self.class_to_rids: Dict[str, List[str]] = defaultdict(list)
         self.semester_to_rids: Dict[str, List[str]] = defaultdict(list)
         self.rid_to_relation: Dict[str, Dict[str, Any]] = {}
         self.class_ids: Set[str] = set()
 
-        # Objective term storage (grouped, as (BoolVar, int_coeff) pairs)
-        self.objective_groups: Dict[str, List[Tuple[cp_model.IntVar, int]]] = {
-            "bookmarks": [],
-            "degree_progress": [],
-            "comfort": [],
-            "custom": [],
-        }
+        # Objectives
+        self.obj = ObjectiveManager(scale=scale, tiers=tiers or ["bookmarks", "degree", "comfort", "custom"])
 
-        # Lexicographic tiers (optional)
-        self.lexi_tiers: List[str] = []
-
-        # Build core variables/constraints
         self._build_variables()
         self._add_core_constraints()
 
-        # Constraint registry (kind -> handler)
+        # Kind registry: explicit ones that are not just filters
         self.registry = {
-            # Selection & exclusion
             "include_course": self._apply_include_course,
             "exclude_course": self._apply_exclude_course,
             "include_section": self._apply_include_section,
             "exclude_section": self._apply_exclude_section,
             "include_instructor": self._apply_include_instructor,
             "exclude_instructor": self._apply_exclude_instructor,
-            # Time/day/windows
-            "allowed_days": self._apply_allowed_days,
-            "disallowed_days": self._apply_disallowed_days,
-            "earliest_start": self._apply_earliest_start,
-            "latest_end": self._apply_latest_end,
-            "block_time_window": self._apply_block_time_window,
-            # Load & pacing
+            "section_filter": self._apply_section_filter,  # generic time/day/instructor filter
             "max_courses_per_semester": self._apply_max_courses_per_semester,
             "min_courses_per_semester": self._apply_min_courses_per_semester,
-            # Degree & hubs
             "require_group_counts": self._apply_require_group_counts,
             "hub_targets": self._apply_hub_targets,
-            # Ordering
             "enforce_ordering": self._apply_enforce_ordering,
-            # QoL
             "free_day": self._apply_free_day,
-            # Objective shaping
             "bookmarked_bonus": self._apply_bookmarked_bonus,
             "professor_rating_weight": self._apply_professor_rating_weight,
-            "lexicographic_priority": self._apply_lexi_priority,
+            "lexicographic_priority": self._apply_lexi_priority,  # optional; sets tier order
+            # You can add more kinds here; many can map to section_filter.
         }
-
-    # ------------------------- Build & Core -------------------------
 
     def _build_variables(self):
         for r in self.relations:
@@ -123,21 +136,17 @@ class ScheduleSolver:
             self.class_ids.add(cid)
             self.z[rid] = self.model.NewBoolVar(f"z_{rid}")
 
-        for cid in self.class_ids:
-            self.x[cid] = self.model.NewBoolVar(f"x_{cid}")
-
-        # Link: x_c == OR(z_r) and <= 1 section per class
+        # Link class var <-> section vars lazily via _x() but add "≤1 section per class" now
         for cid, rids in self.class_to_rids.items():
-            # x_c <= sum(z_r)
-            self.model.Add(sum(self.z[rid] for rid in rids) >= self.x[cid])
-            # each z_r -> x_c
+            # create x lazily to allow references to classes with no sections
+            xcid = self._x(cid)  # ensures existence and lock=0 if no sections
+            self.model.Add(sum(self.z[rid] for rid in rids) >= xcid)
             for rid in rids:
-                self.model.Add(self.z[rid] <= self.x[cid])
-            # at most one section
+                self.model.Add(self.z[rid] <= xcid)
             self.model.Add(sum(self.z[rid] for rid in rids) <= 1)
 
     def _add_core_constraints(self):
-        # No-overlap pairs
+        # No overlaps (precomputed conflict pairs)
         for rid1, rid2 in self.conflicts:
             self.model.Add(self.z[rid1] + self.z[rid2] <= 1)
         # Default per-semester cap
@@ -146,24 +155,56 @@ class ScheduleSolver:
             if rids:
                 self.model.Add(sum(self.z[r] for r in rids) <= self.k)
 
-    # Safe accessor: returns 0 if class has no variable (not in relations)
-    def _x_var(self, cid: str):
-        return self.x[cid] if cid in self.x else 0
+        # Default objective: favor bookmarks if user gives none later
+        for cid in self.bookmarks:
+            self.obj.add("bookmarks", self._x(cid), 1.0)
 
-    # Objective utils
-    def _add_term(self, group: str, var: cp_model.IntVar, coeff_int: int):
-        if coeff_int != 0:
-            self.objective_groups[group].append((var, coeff_int))
+    # Lazy class var creation; lock to 0 if class has no sections
+    def _x(self, cid: str) -> cp_model.IntVar:
+        if cid not in self.x:
+            self.x[cid] = self.model.NewBoolVar(f"x_{cid}")
+            if cid not in self.class_to_rids:
+                # no sections exist; this class cannot be taken
+                self.model.Add(self.x[cid] == 0)
+        return self.x[cid]
 
-    def _group_expr(self, group: str):
-        pairs = self.objective_groups[group]
-        return sum(coeff * var for (var, coeff) in pairs) if pairs else 0
+    # --------------------------- Utility helpers ---------------------------
+    @staticmethod
+    def _hhmm_to_minutes(hhmm: Optional[str]) -> Optional[int]:
+        if hhmm is None:
+            return None
+        h, m = hhmm.split(":")
+        return int(h) * 60 + int(m)
 
-    def _group_value(self, solver: cp_model.CpSolver, group: str) -> int:
-        return sum(coeff * solver.Value(var) for (var, coeff) in self.objective_groups[group])
+    def over_sections(self, predicate, *, mode="hard", weight=1.0, tier="comfort"):
+        for rid, r in self.rid_to_relation.items():
+            if predicate(r):
+                if mode == "hard":
+                    self.model.Add(self.z[rid] == 0)
+                else:
+                    self.obj.add(tier, self.z[rid], -float(weight))
 
-    # ------------------------- API -------------------------
+    def over_classes(self, predicate, *, mode="hard", weight=1.0, tier="degree"):
+        for cid in self.class_ids:
+            if predicate(cid):
+                if mode == "hard":
+                    self.model.Add(self._x(cid) == 0)
+                else:
+                    self.obj.add(tier, self._x(cid), float(weight))
 
+    # OR helper for free-day & similar
+    def _or_var(self, lits: List[cp_model.IntVar], name: str) -> cp_model.IntVar:
+        v = self.model.NewBoolVar(name)
+        if not lits:
+            self.model.Add(v == 0)
+            return v
+        # v == OR(lits)
+        self.model.AddBoolOr(lits + [v.Not()])
+        for lit in lits:
+            self.model.AddImplication(lit, v)
+        return v
+
+    # ----------------------------- Public API -----------------------------
     def add_constraints(self, constraints: List[Dict[str, Any]]):
         for c in constraints:
             kind = c.get("kind")
@@ -171,107 +212,37 @@ class ScheduleSolver:
                 raise ValueError(f"Unknown constraint kind: {kind}")
             self.registry[kind](c)
 
-    def solve(
-        self,
-        time_limit_sec: Optional[int] = 5,
-        maximize: bool = True,
-        use_lexicographic: bool = True,
-    ) -> Dict[str, Any]:
+    def solve(self, time_limit_sec: int = 5, maximize: bool = True) -> Dict[str, Any]:
         solver = cp_model.CpSolver()
-        if time_limit_sec:
-            solver.parameters.max_time_in_seconds = float(time_limit_sec)
+        solver.parameters.max_time_in_seconds = float(time_limit_sec)
         solver.parameters.num_search_workers = 8
-
-        if self.lexi_tiers and use_lexicographic:
-            # Only proceed if at least one tier actually has terms
-            if not any(len(self.objective_groups.get(t, [])) for t in self.lexi_tiers):
-                return self._single_pass_solve(solver, maximize)
-
-            best_values: Dict[str, int] = {}
-
-            for tier in self.lexi_tiers:
-                pairs = self.objective_groups.get(tier, [])
-                if not pairs:
-                    continue  # nothing to optimize in this tier
-
-                # Build an IntLinearExpr from pairs (coeff * var)
-                expr = sum(coeff * var for (var, coeff) in pairs)
-
-                if maximize:
-                    self.model.Maximize(expr)
-                else:
-                    self.model.Minimize(expr)
-
-                status = solver.Solve(self.model)
-                if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-                    return {"status": "INFEASIBLE", "explain": f"failed at tier {tier}"}
-
-                # Compute integer objective value explicitly (avoid ObjectiveValue float)
-                tier_val = sum(coeff * solver.Value(var) for (var, coeff) in pairs)
-                best_values[tier] = int(tier_val)
-
-                # Lock-in this tier’s value for subsequent tiers
-                if maximize:
-                    self.model.Add(expr >= int(tier_val))
-                else:
-                    self.model.Add(expr <= int(tier_val))
-
-            return self._extract_solution(solver, "OPTIMAL_OR_FEASIBLE", best_values)
-
-        # Single-pass objective: sum all groups
-        all_pairs: List[Tuple[cp_model.IntVar, int]] = []
-        for g in self.objective_groups.values():
-            all_pairs.extend(g)
-        if not all_pairs:
-            # Default objective: maximize bookmark coverage
-            for cid in self.bookmarks:
-                self._add_term("bookmarks", self._x_var(cid), self._S(1.0))
-            all_pairs = self.objective_groups["bookmarks"]
-        expr = sum(coeff * var for (var, coeff) in all_pairs)
+        # Single-pass exact lexicographic
+        expr = self.obj.objective()
         if maximize:
             self.model.Maximize(expr)
         else:
             self.model.Minimize(expr)
-        return self._single_pass_solve(solver, maximize)
-
-    def _single_pass_solve(self, solver: cp_model.CpSolver, maximize: bool) -> Dict[str, Any]:
         status = solver.Solve(self.model)
         if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             return {"status": "INFEASIBLE"}
-        return self._extract_solution(
-            solver, "OPTIMAL" if status == cp_model.OPTIMAL else "FEASIBLE", {}
-        )
-
-    def _extract_solution(
-        self, solver: cp_model.CpSolver, status_label: str, lexibest: Dict[str, int]
-    ) -> Dict[str, Any]:
-        chosen_rids = [rid for rid, var in self.z.items() if solver.Value(var) == 1]
-        chosen_classes = [cid for cid, var in self.x.items() if solver.Value(var) == 1]
-        scores = {name: self._group_value(solver, name) for name in self.objective_groups}
         return {
-            "status": status_label,
-            "chosen_sections": chosen_rids,
-            "chosen_classes": chosen_classes,
-            "objective_scores": scores,
-            "scale": self._SCALE,
-            "lexi_bounds": lexibest,
+            "status": "OPTIMAL" if status == cp_model.OPTIMAL else "FEASIBLE",
+            "chosen_sections": [rid for rid, var in self.z.items() if solver.Value(var) == 1],
+            "chosen_classes": [cid for cid, var in self.x.items() if solver.Value(var) == 1],
+            "objective_scores": self.obj.values_by_tier(solver),
+            "scale": self.obj.scale,
         }
 
-    # ------------------------- Handlers -------------------------
-
+    # --------------------------- Handlers (tiny) ---------------------------
     # Selection / exclusion
     def _apply_include_course(self, c: Dict[str, Any]):
         for cid in c["payload"]["course_ids"]:
-            if cid not in self.x:
-                # Explicitly make infeasible to surface the issue (no section exists)
-                self.model.Add(0 == 1)
-            else:
-                self.model.Add(self.x[cid] == 1)
+            # If no sections exist, _x(cid) is locked 0 → infeasible as intended
+            self.model.Add(self._x(cid) == 1)
 
     def _apply_exclude_course(self, c: Dict[str, Any]):
         for cid in c["payload"]["course_ids"]:
-            if cid in self.x:
-                self.model.Add(self.x[cid] == 0)
+            self.model.Add(self._x(cid) == 0)
 
     def _apply_include_section(self, c: Dict[str, Any]):
         for rid in c["payload"]["section_ids"]:
@@ -282,94 +253,55 @@ class ScheduleSolver:
             self.model.Add(self.z[rid] == 0)
 
     def _apply_include_instructor(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
+        mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
         insts = set(c["payload"]["instructor_ids"])
         rids = [rid for rid, r in self.rid_to_relation.items() if r.get("instructor_id") in insts]
-        if not rids:
-            return
         if mode == "hard":
-            self.model.Add(sum(self.z[r] for r in rids) >= 1)
+            if rids:
+                self.model.Add(sum(self.z[r] for r in rids) >= 1)
         else:
             for rid in rids:
-                self._add_term("comfort", self.z[rid], self._S(weight))
+                self.obj.add("comfort", self.z[rid], w)
 
     def _apply_exclude_instructor(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
+        mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
         insts = set(c["payload"]["instructor_ids"])
         rids = [rid for rid, r in self.rid_to_relation.items() if r.get("instructor_id") in insts]
-        if not rids:
-            return
         if mode == "hard":
             for rid in rids:
                 self.model.Add(self.z[rid] == 0)
         else:
             for rid in rids:
-                self._add_term("comfort", self.z[rid], -self._S(weight))
+                self.obj.add("comfort", self.z[rid], -w)
 
-    # Time, day, windows
-    def _apply_allowed_days(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
-        allowed = set(c["payload"]["days"])
-        for rid, r in self.rid_to_relation.items():
-            meets = set(r["days"])
-            if not meets.issubset(allowed):
-                if mode == "hard":
-                    self.model.Add(self.z[rid] == 0)
-                else:
-                    self._add_term("comfort", self.z[rid], -self._S(weight))
+    # Generic section filter (collapses earliest/latest/allowed/disallowed/overlap)
+    def _apply_section_filter(self, c: Dict[str, Any]):
+        p = c["payload"]; mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
+        days_any = set(p.get("days_any", []))
+        inst_any = set(p.get("instructors_any", []))
+        start_lt = self._hhmm_to_minutes(p.get("start_lt"))
+        end_gt = self._hhmm_to_minutes(p.get("end_gt"))
+        overlaps = [
+            (self._hhmm_to_minutes(o["start"]), self._hhmm_to_minutes(o["end"]), set(o.get("days", [])))
+            for o in p.get("overlap", [])
+        ]
 
-    def _apply_disallowed_days(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
-        banned = set(c["payload"]["days"])
-        for rid, r in self.rid_to_relation.items():
-            if any(d in banned for d in r["days"]):
-                if mode == "hard":
-                    self.model.Add(self.z[rid] == 0)
-                else:
-                    self._add_term("comfort", self.z[rid], -self._S(weight))
+        def pred(r):
+            if days_any and not (set(r["days"]) & days_any):
+                return False
+            if inst_any and r.get("instructor_id") not in inst_any:
+                return False
+            bad = False
+            if start_lt is not None and r["start"] < start_lt:
+                bad = True
+            if end_gt is not None and r["end"] > end_gt:
+                bad = True
+            for a, b, D in overlaps:
+                if (not D or set(r["days"]) & D) and not (r["end"] <= a or b <= r["start"]):
+                    bad = True
+            return bad
 
-    def _apply_earliest_start(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
-        tmin = self._hhmm_to_minutes(c["payload"]["time"])
-        for rid, r in self.rid_to_relation.items():
-            if r["start"] < tmin:
-                if mode == "hard":
-                    self.model.Add(self.z[rid] == 0)
-                else:
-                    self._add_term("comfort", self.z[rid], -self._S(weight))
-
-    def _apply_latest_end(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
-        tmax = self._hhmm_to_minutes(c["payload"]["time"])
-        for rid, r in self.rid_to_relation.items():
-            if r["end"] > tmax:
-                if mode == "hard":
-                    self.model.Add(self.z[rid] == 0)
-                else:
-                    self._add_term("comfort", self.z[rid], -self._S(weight))
-
-    def _apply_block_time_window(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
-        start = self._hhmm_to_minutes(c["payload"]["start"])
-        end = self._hhmm_to_minutes(c["payload"]["end"])
-        days = set(c["payload"].get("days", ["Mon", "Tue", "Wed", "Thu", "Fri"]))
-
-        def overlap(a_start, a_end, b_start, b_end) -> bool:
-            return not (a_end <= b_start or b_end <= a_start)
-
-        for rid, r in self.rid_to_relation.items():
-            if any(d in days for d in r["days"]) and overlap(r["start"], r["end"], start, end):
-                if mode == "hard":
-                    self.model.Add(self.z[rid] == 0)
-                else:
-                    self._add_term("comfort", self.z[rid], -self._S(weight))
+        self.over_sections(pred, mode=mode, weight=w, tier="comfort")
 
     # Load & pacing
     def _apply_max_courses_per_semester(self, c: Dict[str, Any]):
@@ -388,210 +320,87 @@ class ScheduleSolver:
             if rids:
                 self.model.Add(sum(self.z[r] for r in rids) >= m)
 
-    # Degree & hubs
+    # Degree & hubs (data-driven)
     def _apply_require_group_counts(self, c: Dict[str, Any]):
         p = c["payload"]
-        A = self.groups.get("A", set())
-        B = self.groups.get("B", set())
-        Cg = self.groups.get("C", set())
-        D_elig = self.groups.get("D_eligible", set())
-
-        if "A" in p:
-            self.model.Add(sum(self._x_var(cid) for cid in A) == int(p["A"]))
-        if "B_min" in p:
-            self.model.Add(sum(self._x_var(cid) for cid in B) >= int(p["B_min"]))
-        if "C_min" in p:
-            self.model.Add(sum(self._x_var(cid) for cid in Cg) >= int(p["C_min"]))
+        A = self.groups.get("A", set()); B = self.groups.get("B", set())
+        Cg = self.groups.get("C", set()); D = self.groups.get("D_eligible", set())
+        if "A" in p:       self.model.Add(sum(self._x(cid) for cid in A) == int(p["A"]))
+        if "B_min" in p:   self.model.Add(sum(self._x(cid) for cid in B) >= int(p["B_min"]))
+        if "C_min" in p:   self.model.Add(sum(self._x(cid) for cid in Cg) >= int(p["C_min"]))
         if "AD_total_min" in p:
-            self.model.Add(
-                sum(self._x_var(cid) for cid in (A | B | Cg | D_elig)) >= int(p["AD_total_min"])
-            )
+            self.model.Add(sum(self._x(cid) for cid in (A | B | Cg | D)) >= int(p["AD_total_min"]))
 
-        # Special rule (350/351 with 320/332)
-        c350 = self.groups.get("CS350")
-        c351 = self.groups.get("CS351")
-        c320 = self.groups.get("CS320")
-        c332 = self.groups.get("CS332")
-        # Only add if identifiers exist in mapping
+        # Example special rule (350/351 with 320/332) if present
+        c350 = self.groups.get("CS350"); c351 = self.groups.get("CS351")
+        c320 = self.groups.get("CS320"); c332 = self.groups.get("CS332")
         if all(v is not None for v in [c350, c351, c320, c332]):
-            self.model.Add(
-                self._x_var(c350) + self._x_var(c351) <= self._x_var(c320) + self._x_var(c332) + 1
-            )
+            self.model.Add(self._x(c350) + self._x(c351) <= self._x(c320) + self._x(c332) + 1)
 
     def _apply_hub_targets(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
-        req_map: Dict[str, int] = c["payload"]
-        for tag, need in req_map.items():
-            classes_with_tag = self.hubs.get("classes_by_tag", {}).get(tag, set())
+        mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
+        req: Dict[str, int] = c["payload"]
+        by_tag: Dict[str, Set[str]] = self.hubs.get("classes_by_tag", {})
+        for tag, need in req.items():
+            S = [self._x(cid) for cid in by_tag.get(tag, set())]
             if mode == "hard":
-                self.model.Add(sum(self._x_var(cid) for cid in classes_with_tag) >= int(need))
+                self.model.Add(sum(S) >= int(need))
             else:
-                for cid in classes_with_tag:
-                    self._add_term("degree_progress", self._x_var(cid), self._S(weight))
+                for v in S:
+                    self.obj.add("degree", v, w)
 
-    # Ordering / prerequisites (simple linearization across semesters)
+    # Ordering / prerequisites across semesters
     def _apply_enforce_ordering(self, c: Dict[str, Any]):
-        before = c["payload"]["before"]
-        after = c["payload"]["after"]
-        sem_order = {s: i for i, s in enumerate(sorted(set(self.semesters)))}
-        before_rids = self.class_to_rids.get(before, [])
-        after_rids = self.class_to_rids.get(after, [])
-        for rid_b in before_rids:
-            sb = self.rid_to_relation[rid_b]["semester"]
-            for rid_a in after_rids:
-                sa = self.rid_to_relation[rid_a]["semester"]
-                if sem_order[sa] <= sem_order[sb]:
-                    self.model.Add(self.z[rid_b] + self.z[rid_a] <= 1)
+        before = c["payload"]["before"]; after = c["payload"]["after"]
+        sem_idx = {s: i for i, s in enumerate(sorted(set(self.semesters)))}
+        for rb in self.class_to_rids.get(before, []):
+            sb = self.rid_to_relation[rb]["semester"]
+            for ra in self.class_to_rids.get(after, []):
+                sa = self.rid_to_relation[ra]["semester"]
+                if sem_idx[sa] <= sem_idx[sb]:
+                    self.model.Add(self.z[rb] + self.z[ra] <= 1)
 
-    # QoL: Free day (per semester, among listed days)
+    # QoL: free day
     def _apply_free_day(self, c: Dict[str, Any]):
-        mode = c.get("mode", "hard")
-        weight = float(c.get("weight", 1.0))
+        mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
         days = c["payload"].get("days", ["Mon", "Tue", "Wed", "Thu", "Fri"])
         count = int(c["payload"].get("count", 1))
-
         for s in self.semesters:
-            rids_s = self.semester_to_rids.get(s, [])
             free_vars = []
+            rids_s = self.semester_to_rids.get(s, [])
             for d in days:
-                z_on_day = [self.z[rid] for rid in rids_s if d in self.rid_to_relation[rid]["days"]]
-                day_used = self.model.NewBoolVar(f"day_used_{s}_{d}")
-                if z_on_day:
-                    self.model.Add(sum(z_on_day) >= day_used)
-                    for v in z_on_day:
-                        self.model.Add(day_used >= v)
-                else:
-                    self.model.Add(day_used == 0)
-                free_day = self.model.NewBoolVar(f"free_day_{s}_{d}")
-                self.model.Add(free_day + day_used == 1)
-                free_vars.append(free_day)
-
+                lits = [self.z[rid] for rid in rids_s if d in self.rid_to_relation[rid]["days"]]
+                used = self._or_var(lits, f"used_{s}_{d}")
+                free = self.model.NewBoolVar(f"free_{s}_{d}")
+                self.model.Add(free + used == 1)
+                free_vars.append(free)
             if mode == "hard":
                 self.model.Add(sum(free_vars) >= count)
             else:
                 for v in free_vars:
-                    self._add_term("comfort", v, self._S(weight))
+                    self.obj.add("comfort", v, w)
 
     # Objective shaping
     def _apply_bookmarked_bonus(self, c: Dict[str, Any]):
         bonus = float(c["payload"].get("bonus", 1.0))
         for cid in c["payload"]["course_ids"]:
-            self._add_term("bookmarks", self._x_var(cid), self._S(bonus))
+            self.obj.add("bookmarks", self._x(cid), bonus)
 
     def _apply_professor_rating_weight(self, c: Dict[str, Any]):
         alpha = float(c["payload"].get("alpha", 1.0))
         for rid, r in self.rid_to_relation.items():
             rating = r.get("rating", None)
             if rating is not None:
-                self._add_term("comfort", self.z[rid], self._S(alpha * float(rating)))
+                self.obj.add("comfort", self.z[rid], alpha * float(rating))
 
     def _apply_lexi_priority(self, c: Dict[str, Any]):
-        self.lexi_tiers = list(c["payload"].get("tiers", []))
-
-    # ------------------------- Utils -------------------------
-
-    @staticmethod
-    def _hhmm_to_minutes(hhmm: str) -> int:
-        h, m = hhmm.split(":")
-        return int(h) * 60 + int(m)
-
-
-# ------------------------- Feasible Toy Example -------------------------
-
-if __name__ == "__main__":
-    # 1 semester, 3 courses, no conflicts, k=2
-    relations = [
-        {
-            "rid": "r_cs320_TTh_14",
-            "class_id": "CAS CS 320",
-            "semester": "2026SP",
-            "days": ["Tue", "Thu"],
-            "start": 14 * 60 + 0,
-            "end": 15 * 60 + 15,
-            "instructor_id": "Kim,Ana",
-            "building_id": "CAS",
-            "rating": 0.6,
-        },
-        {
-            "rid": "r_cs237_MW_10",
-            "class_id": "CAS CS 237",
-            "semester": "2026SP",
-            "days": ["Mon", "Wed"],
-            "start": 10 * 60 + 0,
-            "end": 11 * 60 + 15,
-            "instructor_id": "Doe,Alex",
-            "building_id": "CAS",
-            "rating": 0.9,
-        },
-        {
-            "rid": "r_cs330_TTh_11",
-            "class_id": "CAS CS 330",
-            "semester": "2026SP",
-            "days": ["Tue", "Thu"],
-            "start": 11 * 60 + 0,
-            "end": 12 * 60 + 15,
-            "instructor_id": "Zed,Bob",
-            "building_id": "ENG",
-            "rating": 0.7,
-        },
-    ]
-    conflicts: List[Tuple[str, str]] = []  # no overlaps in this toy
-
-    groups = {
-        "A": {"CAS CS 330"},         # treat CS330 as Group A
-        "B": {"CAS CS 237"},         # CS237 as Group B
-        "C": {"CAS CS 320"},         # CS320 as Group C
-        "D_eligible": set(),
-        "CS320": "CAS CS 320",
-        "CS330": "CAS CS 330",
-        "CS332": "CAS CS 332",
-        "CS350": "CAS CS 350",
-        "CS351": "CAS CS 351",
-    }
-
-    hubs = {"requirements": {}, "classes_by_tag": {}}
-
-    semesters = ["2026SP"]
-    bookmarks = {"CAS CS 237", "CAS CS 320"}  # user prefers 237 & 320
-    k = 2
-
-    solver = ScheduleSolver(relations, conflicts, groups, hubs, semesters, bookmarks, k)
-
-    constraints = [
-        # Group counts matched to toy data (feasible)
-        {
-            "id": "c_req",
-            "kind": "require_group_counts",
-            "mode": "hard",
-            "payload": {"A": 1, "B_min": 1, "C_min": 0, "AD_total_min": 2},
-        },
-        # Cap per semester (redundant with default, explicit here)
-        {"id": "c_k", "kind": "max_courses_per_semester", "mode": "hard", "payload": {"k": 2}},
-        # Example day rule
-        {"id": "c_no_fri", "kind": "disallowed_days", "mode": "hard", "payload": {"days": ["Fri"]}},
-        # Soft comfort: avoid starting too early
-        {
-            "id": "c_start_after_9",
-            "kind": "earliest_start",
-            "mode": "soft",
-            "weight": 1.0,
-            "payload": {"time": "09:00"},
-        },
-        # Soft: reward bookmarked classes
-        {
-            "id": "c_bookmarks",
-            "kind": "bookmarked_bonus",
-            "mode": "soft",
-            "weight": 1.0,
-            "payload": {"course_ids": ["CAS CS 237", "CAS CS 320"], "bonus": 2.0},
-        },
-        # Optional: professor rating weight
-        {"id": "c_rating", "kind": "professor_rating_weight", "mode": "soft", "payload": {"alpha": 0.5}},
-        # Lexicographic: maximize bookmarks then comfort
-        {"id": "c_lexi", "kind": "lexicographic_priority", "payload": {"tiers": ["bookmarks", "comfort"]}},
-    ]
-
-    solver.add_constraints(constraints)
-    result = solver.solve(time_limit_sec=3, use_lexicographic=True)
-    print(result)
+        tiers = list(c["payload"].get("tiers", []))
+        if tiers:
+            # Reinitialize objective manager with new tier order, preserving existing terms
+            old_terms = self.obj.terms
+            self.obj = ObjectiveManager(scale=self.obj.scale, tiers=tiers)
+            # Re-add old terms in the new tier order where possible
+            for t, pairs in old_terms.items():
+                nt = t if t in self.obj.terms else "custom"
+                for (v, w) in pairs:
+                    self.obj.terms[nt].append((v, w))

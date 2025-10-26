@@ -60,28 +60,44 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderPageProps> = ({ bookmarks = [
     
     setIsGenerating(true);
     
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    // Mock AI-generated schedule based on user prompt and bookmarked classes
-    const mockSchedule: GeneratedSchedule = {
-      semester: 'Fall 2024',
-      classes: bookmarks.slice(0, 4), // Take first 4 classes
-      totalCredits: 15,
-      conflicts: [
-        'Some classes may have overlapping time slots',
-        'Consider checking class schedules for conflicts'
-      ],
-      recommendations: [
-        'Great balance of courses from your bookmarks',
-        'Consider adding a Hub course to fulfill general education requirements',
-        'Check prerequisites for advanced courses',
-        'Total credit load (15) is optimal for first semester'
-      ]
-    };
-    
-    setGeneratedSchedule(mockSchedule);
-    setIsGenerating(false);
+    try {
+      // Call the backend endpoint
+      const response = await fetch('http://localhost:3001/api/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      const result = await response.json();
+      console.log('Backend response:', result);
+      
+      // Simulate AI processing time
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Mock AI-generated schedule based on user prompt and bookmarked classes
+      const mockSchedule: GeneratedSchedule = {
+        semester: 'Fall 2024',
+        classes: bookmarks.slice(0, 4), // Take first 4 classes
+        totalCredits: 15,
+        conflicts: [
+          'Some classes may have overlapping time slots',
+          'Consider checking class schedules for conflicts'
+        ],
+        recommendations: [
+          'Great balance of courses from your bookmarks',
+          'Consider adding a Hub course to fulfill general education requirements',
+          'Check prerequisites for advanced courses',
+          'Total credit load (15) is optimal for first semester'
+        ]
+      };
+      
+      setGeneratedSchedule(mockSchedule);
+    } catch (error) {
+      console.error('Error calling backend:', error);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
