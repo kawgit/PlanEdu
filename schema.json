@@ -1,541 +1,631 @@
 [
-    {
-      "kind": "table",
-      "table": "Bookmark",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
+  {
+    "kind": "table",
+    "table": "Bookmark",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "userId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "classId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "Bookmark_pkey",
+        "definition": "CREATE UNIQUE INDEX \"Bookmark_pkey\" ON public.\"Bookmark\" USING btree (id)"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "userId"
+        ],
+        "constraint": "bookmark_user_fk",
+        "references": {
+          "table": "Users",
+          "schema": "public"
         },
-        {
-          "name": "userId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
+        "delete_rule": "CASCADE",
+        "update_rule": "CASCADE"
+      },
+      {
+        "columns": [
+          "classId"
+        ],
+        "constraint": "bookmark_class_fk",
+        "references": {
+          "table": "Class",
+          "schema": "public"
         },
-        {
-          "name": "classId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "Bookmark_pkey",
-          "definition": "CREATE UNIQUE INDEX \"Bookmark_pkey\" ON public.\"Bookmark\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": [
-        {
-          "columns": [
-            "userId"
-          ],
-          "constraint": "bookmark_user_fk",
-          "references": {
-            "table": "Users",
-            "schema": "public"
-          },
-          "delete_rule": "CASCADE",
-          "update_rule": "CASCADE"
+        "delete_rule": "CASCADE",
+        "update_rule": "CASCADE"
+      }
+    ]
+  },
+  {
+    "kind": "table",
+    "table": "Class",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "school",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      },
+      {
+        "name": "department",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      },
+      {
+        "name": "number",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "Class_pkey",
+        "definition": "CREATE UNIQUE INDEX \"Class_pkey\" ON public.\"Class\" USING btree (id)"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": []
+  },
+  {
+    "kind": "table",
+    "table": "ClassToHubRequirement",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "classId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "hubRequirementId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "ClassToHubRequirement_pkey",
+        "definition": "CREATE UNIQUE INDEX \"ClassToHubRequirement_pkey\" ON public.\"ClassToHubRequirement\" USING btree (id)"
+      },
+      {
+        "name": "cthr_class_hub_unique",
+        "definition": "CREATE UNIQUE INDEX cthr_class_hub_unique ON public.\"ClassToHubRequirement\" USING btree (\"classId\", \"hubRequirementId\")"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "classId"
+        ],
+        "constraint": "cthr_class_fk",
+        "references": {
+          "table": "Class",
+          "schema": "public"
         },
-        {
-          "columns": [
-            "classId"
-          ],
-          "constraint": "bookmark_class_fk",
-          "references": {
-            "table": "Class",
-            "schema": "public"
-          },
-          "delete_rule": "CASCADE",
-          "update_rule": "CASCADE"
-        }
-      ]
-    },
-    {
-      "kind": "table",
-      "table": "Class",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
+        "delete_rule": "CASCADE",
+        "update_rule": "CASCADE"
+      },
+      {
+        "columns": [
+          "hubRequirementId"
+        ],
+        "constraint": "cthr_hubRequirement_fk",
+        "references": {
+          "table": "HubRequirement",
+          "schema": "public"
         },
-        {
-          "name": "school",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
+        "delete_rule": "CASCADE",
+        "update_rule": "CASCADE"
+      }
+    ]
+  },
+  {
+    "kind": "table",
+    "table": "ClassToSlot",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "classId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "slotId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "teacher",
+        "type": "text",
+        "default": null,
+        "nullable": true,
+        "udt_name": "text"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "ClassToSlot_pkey",
+        "definition": "CREATE UNIQUE INDEX \"ClassToSlot_pkey\" ON public.\"ClassToSlot\" USING btree (id)"
+      },
+      {
+        "name": "cts_class_slot_teacher_unique",
+        "definition": "CREATE UNIQUE INDEX cts_class_slot_teacher_unique ON public.\"ClassToSlot\" USING btree (\"classId\", teacher, \"slotId\")"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "classId"
+        ],
+        "constraint": "classToSlot_class_fk",
+        "references": {
+          "table": "Class",
+          "schema": "public"
         },
-        {
-          "name": "department",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
+        "delete_rule": "CASCADE",
+        "update_rule": "CASCADE"
+      },
+      {
+        "columns": [
+          "slotId"
+        ],
+        "constraint": "classToSlot_slot_fk",
+        "references": {
+          "table": "Slot",
+          "schema": "public"
         },
-        {
-          "name": "number",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION"
+      }
+    ]
+  },
+  {
+    "kind": "table",
+    "table": "HubRequirement",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "HubRequirement_pkey",
+        "definition": "CREATE UNIQUE INDEX \"HubRequirement_pkey\" ON public.\"HubRequirement\" USING btree (id)"
+      },
+      {
+        "name": "unique_hub_name",
+        "definition": "CREATE UNIQUE INDEX unique_hub_name ON public.\"HubRequirement\" USING btree (name)"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": []
+  },
+  {
+    "kind": "table",
+    "table": "Schedule",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      },
+      {
+        "name": "userId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "Schedule_pkey",
+        "definition": "CREATE UNIQUE INDEX \"Schedule_pkey\" ON public.\"Schedule\" USING btree (id)"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "userId"
+        ],
+        "constraint": "userId_constraint",
+        "references": {
+          "table": "Users",
+          "schema": "public"
         },
-        {
-          "name": "title",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION"
+      }
+    ]
+  },
+  {
+    "kind": "table",
+    "table": "ScheduleToClassToSlot",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "scheduleId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "classToSlotId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "ScheduleToClassToSlot_pkey",
+        "definition": "CREATE UNIQUE INDEX \"ScheduleToClassToSlot_pkey\" ON public.\"ScheduleToClassToSlot\" USING btree (id)"
+      },
+      {
+        "name": "stcts_schedule_cts_unique",
+        "definition": "CREATE UNIQUE INDEX stcts_schedule_cts_unique ON public.\"ScheduleToClassToSlot\" USING btree (\"scheduleId\", \"classToSlotId\")"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint": "stcts_schedule_fk",
+        "references": {
+          "table": "Schedule",
+          "schema": "public"
         },
-        {
-          "name": "description",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "Class_pkey",
-          "definition": "CREATE UNIQUE INDEX \"Class_pkey\" ON public.\"Class\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": []
-    },
-    {
-      "kind": "table",
-      "table": "ClassToHubRequirement",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "constraint": "stcts_classToSlot_fk",
+        "references": {
+          "table": "ClassToSlot",
+          "schema": "public"
         },
-        {
-          "name": "classId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
+        "delete_rule": "NO ACTION",
+        "update_rule": "NO ACTION"
+      }
+    ]
+  },
+  {
+    "kind": "table",
+    "table": "Slot",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "season",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      },
+      {
+        "name": "year",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "days",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      },
+      {
+        "name": "startTime",
+        "type": "time without time zone",
+        "default": null,
+        "nullable": false,
+        "udt_name": "time"
+      },
+      {
+        "name": "endTime",
+        "type": "time without time zone",
+        "default": null,
+        "nullable": false,
+        "udt_name": "time"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "Slot_pkey",
+        "definition": "CREATE UNIQUE INDEX \"Slot_pkey\" ON public.\"Slot\" USING btree (id)"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": []
+  },
+  {
+    "kind": "table",
+    "table": "UserCompletedClass",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "userId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "classId",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "grade",
+        "type": "text",
+        "default": null,
+        "nullable": true,
+        "udt_name": "text"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "UserCompletedClass_pkey",
+        "definition": "CREATE UNIQUE INDEX \"UserCompletedClass_pkey\" ON public.\"UserCompletedClass\" USING btree (id)"
+      },
+      {
+        "name": "ucc_user_class_unique",
+        "definition": "CREATE UNIQUE INDEX ucc_user_class_unique ON public.\"UserCompletedClass\" USING btree (\"userId\", \"classId\")"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "columns": [
+          "userId"
+        ],
+        "constraint": "ucc_user_fk",
+        "references": {
+          "table": "Users",
+          "schema": "public"
         },
-        {
-          "name": "hubRequirementId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "ClassToHubRequirement_pkey",
-          "definition": "CREATE UNIQUE INDEX \"ClassToHubRequirement_pkey\" ON public.\"ClassToHubRequirement\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": [
-        {
-          "columns": [
-            "classId"
-          ],
-          "constraint": "cthr_class_fk",
-          "references": {
-            "table": "Class",
-            "schema": "public"
-          },
-          "delete_rule": "CASCADE",
-          "update_rule": "CASCADE"
+        "delete_rule": "CASCADE",
+        "update_rule": "CASCADE"
+      },
+      {
+        "columns": [
+          "classId"
+        ],
+        "constraint": "ucc_class_fk",
+        "references": {
+          "table": "Class",
+          "schema": "public"
         },
-        {
-          "columns": [
-            "hubRequirementId"
-          ],
-          "constraint": "cthr_hubRequirement_fk",
-          "references": {
-            "table": "HubRequirement",
-            "schema": "public"
-          },
-          "delete_rule": "CASCADE",
-          "update_rule": "CASCADE"
-        }
-      ]
-    },
-    {
-      "kind": "table",
-      "table": "ClassToSlot",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "classId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "slotId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "teacher",
-          "type": "text",
-          "default": null,
-          "nullable": true,
-          "udt_name": "text"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "ClassToSlot_pkey",
-          "definition": "CREATE UNIQUE INDEX \"ClassToSlot_pkey\" ON public.\"ClassToSlot\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": [
-        {
-          "columns": [
-            "classId"
-          ],
-          "constraint": "classToSlot_class_fk",
-          "references": {
-            "table": "Class",
-            "schema": "public"
-          },
-          "delete_rule": "CASCADE",
-          "update_rule": "CASCADE"
-        },
-        {
-          "columns": [
-            "slotId"
-          ],
-          "constraint": "classToSlot_slot_fk",
-          "references": {
-            "table": "Slot",
-            "schema": "public"
-          },
-          "delete_rule": "NO ACTION",
-          "update_rule": "NO ACTION"
-        }
-      ]
-    },
-    {
-      "kind": "table",
-      "table": "HubRequirement",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "name",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "HubRequirement_pkey",
-          "definition": "CREATE UNIQUE INDEX \"HubRequirement_pkey\" ON public.\"HubRequirement\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": []
-    },
-    {
-      "kind": "table",
-      "table": "Schedule",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "name",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
-        },
-        {
-          "name": "userId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "Schedule_pkey",
-          "definition": "CREATE UNIQUE INDEX \"Schedule_pkey\" ON public.\"Schedule\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": [
-        {
-          "columns": [
-            "userId"
-          ],
-          "constraint": "userId_constraint",
-          "references": {
-            "table": "Users",
-            "schema": "public"
-          },
-          "delete_rule": "NO ACTION",
-          "update_rule": "NO ACTION"
-        }
-      ]
-    },
-    {
-      "kind": "table",
-      "table": "ScheduleToClassToSlot",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "scheduleId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "classToSlotId",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "ScheduleToClassToSlot_pkey",
-          "definition": "CREATE UNIQUE INDEX \"ScheduleToClassToSlot_pkey\" ON public.\"ScheduleToClassToSlot\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": [
-        {
-          "columns": [
-            "id"
-          ],
-          "constraint": "stcts_schedule_fk",
-          "references": {
-            "table": "Schedule",
-            "schema": "public"
-          },
-          "delete_rule": "NO ACTION",
-          "update_rule": "NO ACTION"
-        },
-        {
-          "columns": [
-            "id"
-          ],
-          "constraint": "stcts_classToSlot_fk",
-          "references": {
-            "table": "ClassToSlot",
-            "schema": "public"
-          },
-          "delete_rule": "NO ACTION",
-          "update_rule": "NO ACTION"
-        }
-      ]
-    },
-    {
-      "kind": "table",
-      "table": "Slot",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "season",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
-        },
-        {
-          "name": "year",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "days",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
-        },
-        {
-          "name": "startTime",
-          "type": "time without time zone",
-          "default": null,
-          "nullable": false,
-          "udt_name": "time"
-        },
-        {
-          "name": "endTime",
-          "type": "time without time zone",
-          "default": null,
-          "nullable": false,
-          "udt_name": "time"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "Slot_pkey",
-          "definition": "CREATE UNIQUE INDEX \"Slot_pkey\" ON public.\"Slot\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": []
-    },
-    {
-      "kind": "table",
-      "table": "Users",
-      "schema": "public",
-      "columns": [
-        {
-          "name": "id",
-          "type": "integer",
-          "default": null,
-          "nullable": false,
-          "udt_name": "int4"
-        },
-        {
-          "name": "google_id",
-          "type": "text",
-          "default": null,
-          "nullable": false,
-          "udt_name": "text"
-        },
-        {
-          "name": "major",
-          "type": "text",
-          "default": null,
-          "nullable": true,
-          "udt_name": "text"
-        },
-        {
-          "name": "minor",
-          "type": "text",
-          "default": null,
-          "nullable": true,
-          "udt_name": "text"
-        },
-        {
-          "name": "target_graduation",
-          "type": "date",
-          "default": null,
-          "nullable": true,
-          "udt_name": "date"
-        },
-        {
-          "name": "incoming_credits",
-          "type": "integer",
-          "default": null,
-          "nullable": true,
-          "udt_name": "int4"
-        },
-        {
-          "name": "interests",
-          "type": "text",
-          "default": null,
-          "nullable": true,
-          "udt_name": "text"
-        },
-        {
-          "name": "study_abroad_interest",
-          "type": "text",
-          "default": null,
-          "nullable": true,
-          "udt_name": "text"
-        },
-        {
-          "name": "preferred_course_load",
-          "type": "text",
-          "default": null,
-          "nullable": true,
-          "udt_name": "text"
-        }
-      ],
-      "indexes": [
-        {
-          "name": "Users_pkey",
-          "definition": "CREATE UNIQUE INDEX \"Users_pkey\" ON public.\"Users\" USING btree (id)"
-        }
-      ],
-      "primary_key": [
-        "id"
-      ],
-      "foreign_keys": []
-    }
-  ]
+        "delete_rule": "CASCADE",
+        "update_rule": "CASCADE"
+      }
+    ]
+  },
+  {
+    "kind": "table",
+    "table": "Users",
+    "schema": "public",
+    "columns": [
+      {
+        "name": "id",
+        "type": "integer",
+        "default": null,
+        "nullable": false,
+        "udt_name": "int4"
+      },
+      {
+        "name": "google_id",
+        "type": "text",
+        "default": null,
+        "nullable": false,
+        "udt_name": "text"
+      },
+      {
+        "name": "major",
+        "type": "text",
+        "default": null,
+        "nullable": true,
+        "udt_name": "text"
+      },
+      {
+        "name": "minor",
+        "type": "text",
+        "default": null,
+        "nullable": true,
+        "udt_name": "text"
+      },
+      {
+        "name": "target_graduation",
+        "type": "date",
+        "default": null,
+        "nullable": true,
+        "udt_name": "date"
+      },
+      {
+        "name": "incoming_credits",
+        "type": "integer",
+        "default": null,
+        "nullable": true,
+        "udt_name": "int4"
+      },
+      {
+        "name": "interests",
+        "type": "text",
+        "default": null,
+        "nullable": true,
+        "udt_name": "text"
+      },
+      {
+        "name": "study_abroad_interest",
+        "type": "text",
+        "default": null,
+        "nullable": true,
+        "udt_name": "text"
+      },
+      {
+        "name": "preferred_course_load",
+        "type": "text",
+        "default": null,
+        "nullable": true,
+        "udt_name": "text"
+      }
+    ],
+    "indexes": [
+      {
+        "name": "Users_pkey",
+        "definition": "CREATE UNIQUE INDEX \"Users_pkey\" ON public.\"Users\" USING btree (id)"
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": []
+  }
+]
