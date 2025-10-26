@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, UnstyledButton, Text, useMantineTheme } from '@mantine/core';
-import { IconHome, IconSettings, IconCards, IconBookmark, IconCalendar, IconCertificate, IconMessageCircle } from '@tabler/icons-react';
+import { IconUser, IconCards, IconBookmark, IconCalendar, IconCertificate, IconMessageCircle } from '@tabler/icons-react';
 import { TabName } from '../App';
 
 interface NavigationProps {
@@ -86,16 +86,10 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
         }}
       >
         <NavItem
-          icon={<IconHome size={24} stroke={1.5} />}
-          label="Home"
-          active={activeTab === 'home'}
-          onClick={() => setActiveTab('home')}
-        />
-        <NavItem
-          icon={<IconSettings size={24} stroke={1.5} />}
-          label="Preferences"
-          active={activeTab === 'preferences'}
-          onClick={() => setActiveTab('preferences')}
+          icon={<IconUser size={24} stroke={1.5} />}
+          label="Profile"
+          active={activeTab === 'profile'}
+          onClick={() => setActiveTab('profile')}
         />
         <NavItem
           icon={<IconCertificate size={24} stroke={1.5} />}
