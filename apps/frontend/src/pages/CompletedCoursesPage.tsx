@@ -286,24 +286,34 @@ const CompletedCoursesPage: React.FC = () => {
       </Card>
 
       {/* Action Buttons */}
-      <Group mb="lg" gap="sm">
-        <Button
-          leftSection={<IconUpload size={18} />}
-          onClick={() => setShowUploadForm(!showUploadForm)}
-          color="green"
-          variant="light"
-        >
-          {showUploadForm ? 'Hide Upload' : 'Upload Transcript'}
-        </Button>
-        <Button
-          leftSection={<IconPlus size={18} />}
-          onClick={() => setShowAddForm(!showAddForm)}
-          color="bu-red"
-          variant="light"
-        >
-          {showAddForm ? 'Cancel' : 'Add Manually'}
-        </Button>
-      </Group>
+      <Card shadow="md" p="lg" radius="md" withBorder mb="lg">
+        <Group justify="space-between" align="flex-start" mb="md">
+          <Box>
+            <Title order={4} mb="xs">Add Completed Courses</Title>
+            <Text size="sm" c="dimmed">
+              Upload your transcript or manually add courses you've already completed
+            </Text>
+          </Box>
+        </Group>
+        <Group gap="sm">
+          <Button
+            leftSection={<IconUpload size={18} />}
+            onClick={() => setShowUploadForm(!showUploadForm)}
+            color="green"
+            variant="light"
+          >
+            {showUploadForm ? 'Hide Upload' : 'Upload Transcript'}
+          </Button>
+          <Button
+            leftSection={<IconPlus size={18} />}
+            onClick={() => setShowAddForm(!showAddForm)}
+            color="bu-red"
+            variant="light"
+          >
+            {showAddForm ? 'Cancel' : 'Add Manually'}
+          </Button>
+        </Group>
+      </Card>
 
       {/* Upload Form */}
       {showUploadForm && (
