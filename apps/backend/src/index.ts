@@ -224,7 +224,7 @@ app.get('/api/departments', async (req, res) => {
 // Gemini AI chat endpoint (streaming)
 app.post('/api/gemini/chat', async (req, res) => {
   try {
-    const { question, classes, userProfile, completedCourses } = req.body;
+    const { question, classes, userProfile, completedCourses, bookmarks } = req.body;
 
     if (!question) {
       return res.status(400).json({ error: 'Question is required' });
@@ -235,7 +235,7 @@ app.post('/api/gemini/chat', async (req, res) => {
     }
 
     // Build context from user profile and completed courses
-    let context = `You are a helpful BU (Boston University) course advisor. You have access to the student's profile information and completed courses to provide personalized advice.\n\n`;
+    let context = `You are a helpful BU (Boston University) course advisor. You have access to the student's profile information, completed courses, and bookmarked classes to provide personalized advice.\n\n`;
     
     // Add user profile information if available
     if (userProfile) {
@@ -275,6 +275,19 @@ app.post('/api/gemini/chat', async (req, res) => {
       context += `\n`;
     }
     
+    // Add bookmarked classes if available
+    if (bookmarks && bookmarks.length > 0) {
+      context += `BOOKMARKED CLASSES (${bookmarks.length} classes the student is interested in):\n`;
+      bookmarks.forEach((course: any) => {
+        const code = `${course.school}-${course.department}-${course.number}`;
+        context += `- ${code}: ${course.title}\n`;
+        if (course.description) {
+          context += `  Description: ${course.description}\n`;
+        }
+      });
+      context += `\n`;
+    }
+    
     // Build context from filtered classes
     if (classes && classes.length > 0) {
       context += `AVAILABLE CLASSES IN CURRENT FILTER (${classes.length} classes):\n`;
@@ -288,11 +301,12 @@ app.post('/api/gemini/chat', async (req, res) => {
     
     context += `\nSTUDENT QUESTION: ${question}\n\n`;
     context += `INSTRUCTIONS:\n`;
-    context += `- Provide a helpful, personalized answer based on the student's profile and completed courses\n`;
+    context += `- Provide a helpful, personalized answer based on the student's profile, completed courses, and bookmarked classes\n`;
+    context += `- If the student has bookmarked classes, you can reference them in your answers when relevant\n`;
     context += `- If recommending courses, explain why they're a good fit for this specific student\n`;
     context += `- Consider prerequisites and whether the student has taken required courses\n`;
     context += `- If the student has already completed a course they're asking about, mention that\n`;
-    context += `- Use the student's major, minor, and interests to tailor your recommendations\n`;
+    context += `- Use the student's major, minor, interests, and bookmarked classes to tailor your recommendations\n`;
     context += `- Be encouraging and supportive in your responses\n`;
 
     // Set headers for streaming

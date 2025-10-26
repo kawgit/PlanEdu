@@ -187,6 +187,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
           classes: filteredClasses,
           userProfile: userProfile,
           completedCourses: completedCourses,
+          bookmarks: bookmarks,
         }),
       });
       
@@ -455,7 +456,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
               </Text>
             )}
           </Text>
-          {(userProfile || completedCourses.length > 0) && (
+          {(userProfile || completedCourses.length > 0 || bookmarks.length > 0) && (
             <Group gap="xs" mt="xs">
               <Badge color="green" size="sm" variant="light">
                 ✓ Profile Information Available
@@ -463,6 +464,11 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
               {completedCourses.length > 0 && (
                 <Badge color="blue" size="sm" variant="light">
                   {completedCourses.length} Completed Course{completedCourses.length !== 1 ? 's' : ''}
+                </Badge>
+              )}
+              {bookmarks.length > 0 && (
+                <Badge color="red" size="sm" variant="light">
+                  {bookmarks.length} Bookmarked Class{bookmarks.length !== 1 ? 'es' : ''}
                 </Badge>
               )}
             </Group>
@@ -481,9 +487,9 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                 <Text c="dimmed" size="sm" mb="xs">
                   Ask about course recommendations, requirements, or anything else about the filtered classes
                 </Text>
-                {(userProfile || completedCourses.length > 0) && (
+                {(userProfile || completedCourses.length > 0 || bookmarks.length > 0) && (
                   <Text c="green" size="sm" fw={500} mt="md">
-                    💡 The advisor can see your profile and completed courses for personalized advice
+                    💡 The advisor can see your profile{completedCourses.length > 0 && ', completed courses'}{bookmarks.length > 0 && ', and bookmarked classes'} for personalized advice
                   </Text>
                 )}
               </Box>
