@@ -6,6 +6,7 @@ import { notifications } from '@mantine/notifications';
 import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses } from '../utils/auth';
 import TranscriptUpload from '../components/TranscriptUpload';
 import CSMajorProgress from '../components/CSMajorProgress';
+import MathCSMajorProgress from '../components/MathCSMajorProgress';
 import { useDebouncedValue } from '@mantine/hooks';
 
 const ProfilePage: React.FC = () => {
@@ -236,6 +237,7 @@ const ProfilePage: React.FC = () => {
               placeholder="Select your major"
               data={[
                 'Computer Science',
+                'Math and CS',
                 'Business Administration',
                 'Biology',
                 'Psychology',
@@ -451,13 +453,16 @@ const ProfilePage: React.FC = () => {
             </Card>
           </Stack>
 
-          {/* CS Major Progress Dial */}
+          {/* Major Progress Components */}
           {major === 'Computer Science' && (
             <CSMajorProgress refreshTrigger={refreshTrigger} />
           )}
-          {major !== 'Computer Science' && major && (
+          {major === 'Math and CS' && (
+            <MathCSMajorProgress refreshTrigger={refreshTrigger} />
+          )}
+          {major !== 'Computer Science' && major !== 'Math and CS' && major && (
             <Alert icon={<IconInfoCircle size={16} />} title="Major Progress" color="blue" mb="lg">
-              Currently, major progress tracking is only available for Computer Science majors. 
+              Currently, major progress tracking is available for Computer Science and Math and CS majors. 
               Your major is set to: <strong>{major}</strong>
             </Alert>
           )}
