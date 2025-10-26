@@ -816,25 +816,25 @@ app.post('/api/transcript/upload', upload.single('transcript'), async (req, res)
     // Use Gemini Vision to extract course information
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
     
-    const prompt = `You are an expert at parsing Boston University academic transcripts. Analyze this transcript and extract ALL completed courses with grades.
+    const prompt = `You are an expert at parsing Boston University academic transcripts. Analyze this transcript and extract ALL courses, including both completed courses with grades AND currently in-progress courses.
 
 IMPORTANT RULES:
-1. ONLY include courses that have a grade (A, A-, B+, B, B-, C+, C, etc.)
-2. DO NOT include courses without grades (current/in-progress courses)
-3. DO NOT include courses listed under "Fall 2025" or future terms with no grades
-4. Include ALL courses from "Test Credit" section (these are AP credits)
-5. Include ALL courses from completed semesters (those with grades)
+1. Include courses that have a grade (A, A-, B+, B, B-, C+, C, etc.) - these are completed courses
+2. ALSO include courses without grades if they are currently in progress (e.g., courses in the current semester)
+3. Include ALL courses from "Test Credit" section (these are AP credits) - these typically have no grades
+4. Include ALL courses from completed semesters (those with grades)
+5. Include courses from the current semester that are in progress (no grades yet)
 
 For each course, identify:
 1. School: The school code (e.g., "CAS", "ENG", "COM")
 2. Department: The department code (e.g., "CS", "MA", "PY")
 3. Number: The course number as a string (e.g., "111", "123", "504")
-4. Grade: Letter grade (A, A-, B+, B, etc.) or P for Pass. Use null if no grade.
+4. Grade: Letter grade (A, A-, B+, B, etc.) or P for Pass for completed courses. Use null for courses without grades (in-progress or test credits).
 
 BU TRANSCRIPT STRUCTURE:
-- Test Credits appear first (these are AP/Transfer credits)
+- Test Credits appear first (these are AP/Transfer credits) - these have no grades
 - Then completed semesters with grades
-- Current semester courses have NO grades - DO NOT INCLUDE THESE
+- Current semester courses have NO grades but should be INCLUDED
 
 Examples:
 - "CASCS 111" → school: "CAS", department: "CS", number: "111"
