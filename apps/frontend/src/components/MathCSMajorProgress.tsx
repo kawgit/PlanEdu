@@ -201,7 +201,7 @@ const MathCSMajorProgress: React.FC<MathCSMajorProgressProps> = ({ refreshTrigge
     'red';
 
   return (
-    <Card shadow="md" p="lg" radius="md" withBorder mb="xl">
+    <Card shadow="md" p="lg" radius="md" withBorder mb="xl" style={{ height: '100%' }}>
       <Title order={4} mb="md">
         <Group gap="xs">
           <IconMath size={24} />

@@ -432,12 +432,10 @@ const ProfilePage: React.FC = () => {
         </form>
       </Modal>
 
-      {/* Two Column Layout: Progress Dial + Completed Courses */}
-      <Grid gutter="lg">
-        {/* Left Column: CS Major Progress Dial */}
-        <Grid.Col span={{ base: 12, md: 5 }}>
-          {/* Stats Cards */}
-          <Stack gap="md" mb="lg">
+      {/* Stats Cards */}
+      <Stack gap="md" mb="xl">
+        <Grid gutter="md">
+          <Grid.Col span={{ base: 12, sm: 6 }}>
             <Card shadow="sm" p="md" radius="md" withBorder>
               <Group gap="xs">
                 <IconSchool size={20} color="#CC0000" />
@@ -445,6 +443,8 @@ const ProfilePage: React.FC = () => {
               </Group>
               <Text size="xl" fw={700} mt="xs">{courses.length}</Text>
             </Card>
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, sm: 6 }}>
             <Card shadow="sm" p="md" radius="md" withBorder>
               <Group gap="xs">
                 <IconTrophy size={20} color="#CC0000" />
@@ -452,9 +452,14 @@ const ProfilePage: React.FC = () => {
               </Group>
               <Text size="xl" fw={700} mt="xs">{getTotalCredits()}</Text>
             </Card>
-          </Stack>
+          </Grid.Col>
+        </Grid>
+      </Stack>
 
-          {/* Major Progress Components */}
+      {/* Two Column Layout: Major Requirements and Hub Requirements */}
+      <Grid gutter="lg" mb="xl">
+        {/* Left Column: Major Requirements */}
+        <Grid.Col span={{ base: 12, md: 6 }}>
           {major === 'Computer Science' && (
             <CSMajorProgress refreshTrigger={refreshTrigger} />
           )}
@@ -462,21 +467,38 @@ const ProfilePage: React.FC = () => {
             <MathCSMajorProgress refreshTrigger={refreshTrigger} />
           )}
           {major !== 'Computer Science' && major !== 'Math and CS' && major && (
-            <Alert icon={<IconInfoCircle size={16} />} title="Major Progress" color="blue" mb="lg">
-              Currently, major progress tracking is available for Computer Science and Math and CS majors. 
-              Your major is set to: <strong>{major}</strong>
-            </Alert>
+            <Card shadow="md" p="lg" radius="md" withBorder style={{ height: '100%' }}>
+              <Alert icon={<IconInfoCircle size={16} />} title="Major Progress" color="blue">
+                Currently, major progress tracking is available for Computer Science and Math and CS majors. 
+                Your major is set to: <strong>{major}</strong>
+              </Alert>
+            </Card>
           )}
-          
-          {/* Hub Progress - Always show */}
-          <Box mt="lg">
-            <HubProgress refreshTrigger={refreshTrigger} />
-          </Box>
+          {!major && (
+            <Card shadow="md" p="lg" radius="md" withBorder style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Text size="sm" c="dimmed" ta="center">
+                Set your major above to see major progress tracking
+              </Text>
+            </Card>
+          )}
         </Grid.Col>
 
-        {/* Right Column: Completed Courses List */}
-        <Grid.Col span={{ base: 12, md: 7 }}>
-          <Title order={4} mb="md">Completed Courses</Title>
+        {/* Right Column: Hub Requirements */}
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <HubProgress refreshTrigger={refreshTrigger} />
+        </Grid.Col>
+      </Grid>
+
+      {/* Completed Courses List - Scrollable */}
+      <Box>
+        <Title order={3} mb="md">Completed Courses</Title>
+        <Box 
+          style={{ 
+            maxHeight: '600px', 
+            overflowY: 'auto',
+            paddingRight: '8px'
+          }}
+        >
           {loading ? (
             <Card shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
               <Text c="dimmed">Loading courses...</Text>
@@ -560,8 +582,8 @@ const ProfilePage: React.FC = () => {
               ))}
             </Stack>
           )}
-        </Grid.Col>
-      </Grid>
+        </Box>
+      </Box>
     </Container>
   );
 };

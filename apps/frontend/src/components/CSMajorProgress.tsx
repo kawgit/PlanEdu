@@ -191,7 +191,7 @@ const CSMajorProgress: React.FC<CSMajorProgressProps> = ({ refreshTrigger }) => 
     'red';
 
   return (
-    <Card shadow="md" p="lg" radius="md" withBorder mb="xl">
+    <Card shadow="md" p="lg" radius="md" withBorder mb="xl" style={{ height: '100%' }}>
       <Title order={4} mb="md">CS Major Progress</Title>
       
       {/* Overall Progress - Dial Display */}

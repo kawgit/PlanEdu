@@ -147,7 +147,7 @@ const HubProgress: React.FC<HubProgressProps> = ({ refreshTrigger }) => {
   const progressColor = progress.percentage >= 100 ? 'green' : 'bu-red';
 
   return (
-    <Card shadow="md" p="lg" radius="md" withBorder>
+    <Card shadow="md" p="lg" radius="md" withBorder style={{ height: '100%' }}>
       <Title order={4} mb="md" c="bu-red">
         <Group gap="xs">
           <IconWorld size={24} />
