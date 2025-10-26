@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import multer from 'multer';
 import sql from './db';
 import { calculateCSMajorCompletion, calculateMathCSMajorCompletion } from './majorCompletion';
+import { calculateHubCompletion } from './hubCompletion';
 
 const app = express();
 const port = 3001;
@@ -1189,6 +1190,39 @@ app.get('/api/user/math-cs-major-completion', async (req, res) => {
     console.error('Error calculating Math and CS major completion:', error);
     res.status(500).json({ 
       error: 'Failed to calculate Math and CS major completion',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Calculate Hub completion percentage
+app.get('/api/user/hub-completion', async (req, res) => {
+  try {
+    const { googleId } = req.query;
+    
+    if (!googleId) {
+      return res.status(400).json({ error: 'googleId is required' });
+    }
+
+    // Get user ID from google ID
+    const users = await sql`
+      SELECT id FROM "Users" WHERE google_id = ${googleId}
+    `;
+
+    if (users.length === 0 || !users[0]) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userId = users[0].id;
+    
+    // Calculate hub completion percentage
+    const result = await calculateHubCompletion(userId);
+    
+    res.json(result);
+  } catch (error) {
+    console.error('Error calculating hub completion:', error);
+    res.status(500).json({ 
+      error: 'Failed to calculate hub completion',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
