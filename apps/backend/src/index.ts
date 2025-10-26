@@ -767,41 +767,34 @@ IMPORTANT RULES:
 5. Include ALL courses from completed semesters (those with grades)
 
 For each course, identify:
-1. Course Code: Extract the department code and number (e.g., "CASCS 111", "CASMA 123")
-   - Format as one string with space: "CASCS 111" not "CAS CS 111"
-   - For test credits, use the code listed (e.g., "CASCS 101")
-2. Course Title: The full course name
-3. Grade: Letter grade (A, A-, B+, B, etc.) or AP score. Use null if no grade.
-4. Credits: Numeric value (usually 4.0)
-5. Semester: The term when taken (e.g., "Fall 2024", "Spring 2025", "Test Credit")
-6. Course Type: 
-   - "AP" for courses in the "Test Credit" section or with AP exam names
-   - "BU" for Boston University courses with grades
-   - "Transfer" for transfer credits
-   - "Other" for anything else
+1. School: The school code (e.g., "CAS", "ENG", "COM")
+2. Department: The department code (e.g., "CS", "MA", "PY")
+3. Number: The course number as a string (e.g., "111", "123", "504")
+4. Grade: Letter grade (A, A-, B+, B, etc.) or P for Pass. Use null if no grade.
 
 BU TRANSCRIPT STRUCTURE:
 - Test Credits appear first (these are AP/Transfer credits)
 - Then completed semesters with grades
 - Current semester courses have NO grades - DO NOT INCLUDE THESE
 
+Examples:
+- "CASCS 111" → school: "CAS", department: "CS", number: "111"
+- "ENGEK 125" → school: "ENG", department: "EK", number: "125"
+- "COMCM 211" → school: "COM", department: "CM", number: "211"
+
 Return ONLY valid JSON array:
 [
   {
-    "courseCode": "CASCS 111",
-    "courseTitle": "Intro Computer Science 1",
-    "grade": "A",
-    "credits": 4.0,
-    "semesterTaken": "Test Credit",
-    "courseType": "AP"
+    "school": "CAS",
+    "department": "CS",
+    "number": "111",
+    "grade": "A"
   },
   {
-    "courseCode": "CASCS 112",
-    "courseTitle": "Intro Computer Science 2",
-    "grade": "B",
-    "credits": 4.0,
-    "semesterTaken": "Fall 2024",
-    "courseType": "BU"
+    "school": "CAS",
+    "department": "CS",
+    "number": "112",
+    "grade": "B"
   }
 ]
 
@@ -849,31 +842,46 @@ ONLY return the JSON array, no markdown, no explanation, no additional text.`;
 
     for (const course of courses) {
       try {
+        // First, look up the class in the Class table
+        const classes = await sql`
+          SELECT id FROM "Class" 
+          WHERE school = ${course.school} 
+            AND department = ${course.department} 
+            AND number = ${course.number}
+          LIMIT 1
+        `;
+
+        if (classes.length === 0 || !classes[0]) {
+          console.log(`Course not found in database: ${course.school}${course.department} ${course.number}`);
+          errors.push({ 
+            course: `${course.school}${course.department} ${course.number}`, 
+            error: 'Course not found in database' 
+          });
+          continue;
+        }
+
+        const classId = classes[0].id;
+
+        // Insert into UserCompletedClass
         const result = await sql`
-          INSERT INTO "UserCompletedCourse" 
-          ("userId", "courseCode", "courseTitle", "grade", "credits", "semesterTaken", "courseType")
+          INSERT INTO "UserCompletedClass" 
+          ("userId", "classId", "grade")
           VALUES (
             ${userId},
-            ${course.courseCode || 'Unknown'},
-            ${course.courseTitle || 'Unknown Course'},
-            ${course.grade || null},
-            ${course.credits || null},
-            ${course.semesterTaken || null},
-            ${course.courseType || 'Other'}
+            ${classId},
+            ${course.grade || null}
           )
-          ON CONFLICT ("userId", "courseCode") DO UPDATE
-          SET 
-            "courseTitle" = EXCLUDED."courseTitle",
-            "grade" = EXCLUDED."grade",
-            "credits" = EXCLUDED."credits",
-            "semesterTaken" = EXCLUDED."semesterTaken",
-            "courseType" = EXCLUDED."courseType"
+          ON CONFLICT ("userId", "classId") DO UPDATE
+          SET grade = EXCLUDED.grade
           RETURNING *
         `;
         insertedCourses.push(result[0]);
       } catch (error: any) {
         console.error('Error inserting course:', course, error);
-        errors.push({ course: course.courseCode, error: error.message });
+        errors.push({ 
+          course: `${course.school || ''}${course.department || ''} ${course.number || ''}`, 
+          error: error.message 
+        });
       }
     }
 
