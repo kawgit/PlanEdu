@@ -307,7 +307,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
                   </Group>
                   {currentClass.score && (
                     <Badge variant="light" color="green">
-                      {Math.round(currentClass.score)}% Match
+                      {Math.min(100, Math.round(currentClass.score))}% Match
                     </Badge>
                   )}
                 </Group>
