@@ -10,6 +10,15 @@
  * - Group D (Advanced Topics): Remaining courses to reach 15 total
  */
 
+/**
+ * Math and CS Major Completion Calculator
+ * 
+ * Requirements:
+ * - Lower Division: 8 specific requirements
+ * - Upper Division: 5 specific requirements
+ * - Special rules for CS 131/MA 293 and MA 581 double-counting
+ */
+
 export interface CompletedCourse {
   school: string;
   department: string;
@@ -337,6 +346,469 @@ export function calculateCSMajorCompletion(
     validCourses,
     invalidCourses,
     missingRequirements
+  };
+}
+
+// Math and CS Major Interfaces
+export interface MathCSMajorCompletionResult {
+  percentage: number;
+  totalRequired: number;
+  totalCompleted: number;
+  lowerDivision: LowerDivisionProgress;
+  upperDivision: UpperDivisionProgress;
+  validCourses: CompletedCourse[];
+  invalidCourses: Array<{ course: CompletedCourse; reason: string }>;
+  missingRequirements: string[];
+  specialRules: SpecialRulesStatus;
+}
+
+export interface LowerDivisionProgress {
+  required: number;
+  completed: number;
+  requirements: Array<{
+    name: string;
+    description: string;
+    completed: boolean;
+    courses: string[];
+    completedCourses: string[];
+  }>;
+}
+
+export interface UpperDivisionProgress {
+  required: number;
+  completed: number;
+  requirements: Array<{
+    name: string;
+    description: string;
+    completed: boolean;
+    courses: string[];
+    completedCourses: string[];
+  }>;
+}
+
+export interface SpecialRulesStatus {
+  cs131Used: boolean;
+  ma293Used: boolean;
+  ma581Used: boolean;
+  ma581DoubleCounted: boolean;
+  warnings: string[];
+}
+
+// Math and CS Major Course Requirements
+const LOWER_DIVISION_REQUIREMENTS = [
+  {
+    name: 'Intro CS Sequence',
+    description: '(CS 111 AND CS 112) OR equivalent',
+    courses: ['CS 111', 'CS 112']
+  },
+  {
+    name: 'Computer Systems',
+    description: 'CS 210',
+    courses: ['CS 210']
+  },
+  {
+    name: 'Calculus I & II',
+    description: '(MA 123 AND MA 124) OR MA 127 OR MA 129 OR equivalent',
+    courses: ['MA 123', 'MA 124', 'MA 127', 'MA 129']
+  },
+  {
+    name: 'Multivariate Calculus',
+    description: '(Take 1 of) MA 225 OR MA 230',
+    courses: ['MA 225', 'MA 230']
+  },
+  {
+    name: 'Linear Algebra',
+    description: '(Take 1 of) MA 242 OR MA 442',
+    courses: ['MA 242', 'MA 442']
+  },
+  {
+    name: 'Discrete Math',
+    description: '(Take 1 of) MA 293 OR CS 131',
+    courses: ['MA 293', 'CS 131']
+  },
+  {
+    name: 'Abstract Algebra',
+    description: 'MA 294',
+    courses: ['MA 294']
+  },
+  {
+    name: 'Probability',
+    description: '(Take 1 of) MA 581 OR CS 237',
+    courses: ['MA 581', 'CS 237']
+  }
+];
+
+const UPPER_DIVISION_REQUIREMENTS = [
+  {
+    name: 'Algorithms',
+    description: 'CS 330',
+    courses: ['CS 330']
+  },
+  {
+    name: 'Core CS Paradigms',
+    description: '(Take 2 of) CS 320, CS 332, CS 350',
+    courses: ['CS 320', 'CS 332', 'CS 350']
+  },
+  {
+    name: 'Advanced CS',
+    description: '2 additional CS courses at level 400 or above',
+    courses: ['CS 400+']
+  },
+  {
+    name: 'MA Sequence',
+    description: '(Take 1 two-course sequence from the following list)',
+    courses: ['MA 531', 'MA 532', 'MA 541', 'MA 542', 'MA 555', 'MA 556', 'MA 569', 'MA 570', 'MA 581', 'MA 582', 'MA 583']
+  },
+  {
+    name: 'Advanced MA',
+    description: '2 additional MA courses at level 200 or above',
+    courses: ['MA 200+']
+  }
+];
+
+const MA_SEQUENCE_OPTIONS = [
+  ['MA 531', 'MA 532'],
+  ['MA 541', 'MA 542'],
+  ['MA 555', 'MA 556'],
+  ['MA 569', 'MA 570'],
+  ['MA 581', 'MA 582', 'MA 583'] // Any two of these three
+];
+
+/**
+ * Calculate Math and CS major completion percentage
+ */
+export function calculateMathCSMajorCompletion(
+  completedCourses: CompletedCourse[]
+): MathCSMajorCompletionResult {
+  const validCourses: CompletedCourse[] = [];
+  const invalidCourses: Array<{ course: CompletedCourse; reason: string }> = [];
+  
+  // Filter courses
+  for (const course of completedCourses) {
+    const courseCode = formatCourse(course);
+    
+    // Check if Metropolitan College
+    if (isMetropolitanCollege(course)) {
+      invalidCourses.push({
+        course,
+        reason: 'Metropolitan College courses do not count toward Math and CS major'
+      });
+      continue;
+    }
+    
+    // Check if passing grade
+    if (!isPassingGrade(course.grade)) {
+      invalidCourses.push({
+        course,
+        reason: `Grade ${course.grade || 'N/A'} is below C minimum requirement`
+      });
+      continue;
+    }
+    
+    validCourses.push(course);
+  }
+  
+  // Track which courses have been counted
+  const countedCourses = new Set<string>();
+  
+  // Initialize progress tracking
+  const lowerDivision: LowerDivisionProgress = {
+    required: LOWER_DIVISION_REQUIREMENTS.length,
+    completed: 0,
+    requirements: LOWER_DIVISION_REQUIREMENTS.map(req => ({
+      ...req,
+      completed: false,
+      completedCourses: []
+    }))
+  };
+  
+  const upperDivision: UpperDivisionProgress = {
+    required: UPPER_DIVISION_REQUIREMENTS.length,
+    completed: 0,
+    requirements: UPPER_DIVISION_REQUIREMENTS.map(req => ({
+      ...req,
+      completed: false,
+      completedCourses: []
+    }))
+  };
+  
+  const specialRules: SpecialRulesStatus = {
+    cs131Used: false,
+    ma293Used: false,
+    ma581Used: false,
+    ma581DoubleCounted: false,
+    warnings: []
+  };
+  
+  // Process Lower Division Requirements
+  for (let i = 0; i < lowerDivision.requirements.length; i++) {
+    const req = lowerDivision.requirements[i];
+    if (!req) continue;
+    
+    if (req.name === 'Intro CS Sequence') {
+      // Must have both CS 111 AND CS 112
+      const hasCS111 = validCourses.some(c => formatCourse(c) === 'CS 111');
+      const hasCS112 = validCourses.some(c => formatCourse(c) === 'CS 112');
+      
+      if (hasCS111 && hasCS112) {
+        req.completed = true;
+        req.completedCourses = ['CS 111', 'CS 112'];
+        lowerDivision.completed++;
+        countedCourses.add('CS 111');
+        countedCourses.add('CS 112');
+      }
+    } else if (req.name === 'Calculus I & II') {
+      // Must have (MA 123 AND MA 124) OR MA 127 OR MA 129
+      const hasMA123 = validCourses.some(c => formatCourse(c) === 'MA 123');
+      const hasMA124 = validCourses.some(c => formatCourse(c) === 'MA 124');
+      const hasMA127 = validCourses.some(c => formatCourse(c) === 'MA 127');
+      const hasMA129 = validCourses.some(c => formatCourse(c) === 'MA 129');
+      
+      if ((hasMA123 && hasMA124) || hasMA127 || hasMA129) {
+        req.completed = true;
+        if (hasMA123 && hasMA124) {
+          req.completedCourses = ['MA 123', 'MA 124'];
+          countedCourses.add('MA 123');
+          countedCourses.add('MA 124');
+        } else if (hasMA127) {
+          req.completedCourses = ['MA 127'];
+          countedCourses.add('MA 127');
+        } else if (hasMA129) {
+          req.completedCourses = ['MA 129'];
+          countedCourses.add('MA 129');
+        }
+        lowerDivision.completed++;
+      }
+    } else if (req.name === 'Multivariate Calculus') {
+      // Must have MA 225 OR MA 230
+      const hasMA225 = validCourses.some(c => formatCourse(c) === 'MA 225');
+      const hasMA230 = validCourses.some(c => formatCourse(c) === 'MA 230');
+      
+      if (hasMA225 || hasMA230) {
+        req.completed = true;
+        if (hasMA225) {
+          req.completedCourses = ['MA 225'];
+          countedCourses.add('MA 225');
+        } else {
+          req.completedCourses = ['MA 230'];
+          countedCourses.add('MA 230');
+        }
+        lowerDivision.completed++;
+      }
+    } else if (req.name === 'Linear Algebra') {
+      // Must have MA 242 OR MA 442
+      const hasMA242 = validCourses.some(c => formatCourse(c) === 'MA 242');
+      const hasMA442 = validCourses.some(c => formatCourse(c) === 'MA 442');
+      
+      if (hasMA242 || hasMA442) {
+        req.completed = true;
+        if (hasMA242) {
+          req.completedCourses = ['MA 242'];
+          countedCourses.add('MA 242');
+        } else {
+          req.completedCourses = ['MA 442'];
+          countedCourses.add('MA 442');
+        }
+        lowerDivision.completed++;
+      }
+    } else if (req.name === 'Discrete Math') {
+      // Must have MA 293 OR CS 131
+      const hasMA293 = validCourses.some(c => formatCourse(c) === 'MA 293');
+      const hasCS131 = validCourses.some(c => formatCourse(c) === 'CS 131');
+      
+      if (hasMA293 || hasCS131) {
+        req.completed = true;
+        if (hasMA293) {
+          req.completedCourses = ['MA 293'];
+          countedCourses.add('MA 293');
+          specialRules.ma293Used = true;
+        } else {
+          req.completedCourses = ['CS 131'];
+          countedCourses.add('CS 131');
+          specialRules.cs131Used = true;
+        }
+        lowerDivision.completed++;
+      }
+    } else if (req.name === 'Probability') {
+      // Must have MA 581 OR CS 237
+      const hasMA581 = validCourses.some(c => formatCourse(c) === 'MA 581');
+      const hasCS237 = validCourses.some(c => formatCourse(c) === 'CS 237');
+      
+      if (hasMA581 || hasCS237) {
+        req.completed = true;
+        if (hasMA581) {
+          req.completedCourses = ['MA 581'];
+          countedCourses.add('MA 581');
+          specialRules.ma581Used = true;
+        } else {
+          req.completedCourses = ['CS 237'];
+          countedCourses.add('CS 237');
+        }
+        lowerDivision.completed++;
+      }
+    } else {
+      // Single course requirements (Computer Systems, Abstract Algebra)
+      const courseCode = req.courses[0];
+      if (!courseCode) continue;
+      
+      const hasCourse = validCourses.some(c => formatCourse(c) === courseCode);
+      
+      if (hasCourse) {
+        req.completed = true;
+        req.completedCourses = [courseCode];
+        countedCourses.add(courseCode);
+        lowerDivision.completed++;
+      }
+    }
+  }
+  
+  // Process Upper Division Requirements
+  for (let i = 0; i < upperDivision.requirements.length; i++) {
+    const req = upperDivision.requirements[i];
+    if (!req) continue;
+    
+    if (req.name === 'Algorithms') {
+      // Must have CS 330
+      const hasCS330 = validCourses.some(c => formatCourse(c) === 'CS 330');
+      
+      if (hasCS330) {
+        req.completed = true;
+        req.completedCourses = ['CS 330'];
+        countedCourses.add('CS 330');
+        upperDivision.completed++;
+      }
+    } else if (req.name === 'Core CS Paradigms') {
+      // Must have 2 of CS 320, CS 332, CS 350
+      const hasCS320 = validCourses.some(c => formatCourse(c) === 'CS 320');
+      const hasCS332 = validCourses.some(c => formatCourse(c) === 'CS 332');
+      const hasCS350 = validCourses.some(c => formatCourse(c) === 'CS 350');
+      
+      const completedParadigms = [];
+      if (hasCS320) completedParadigms.push('CS 320');
+      if (hasCS332) completedParadigms.push('CS 332');
+      if (hasCS350) completedParadigms.push('CS 350');
+      
+      if (completedParadigms.length >= 2) {
+        req.completed = true;
+        req.completedCourses = completedParadigms.slice(0, 2); // Take first 2
+        completedParadigms.slice(0, 2).forEach(course => countedCourses.add(course));
+        upperDivision.completed++;
+      }
+    } else if (req.name === 'Advanced CS') {
+      // 2 additional CS courses at level 400 or above
+      const advancedCSCourses = validCourses.filter(c => 
+        c.department === 'CS' && 
+        c.number >= 400 && 
+        !countedCourses.has(formatCourse(c))
+      );
+      
+      if (advancedCSCourses.length >= 2) {
+        req.completed = true;
+        req.completedCourses = advancedCSCourses.slice(0, 2).map(c => formatCourse(c));
+        advancedCSCourses.slice(0, 2).forEach(c => countedCourses.add(formatCourse(c)));
+        upperDivision.completed++;
+      }
+    } else if (req.name === 'MA Sequence') {
+      // Must have one complete sequence from the options
+      let sequenceCompleted = false;
+      
+      for (const sequence of MA_SEQUENCE_OPTIONS) {
+        if (sequence.length === 2) {
+          // Two-course sequences
+          const hasFirst = validCourses.some(c => formatCourse(c) === sequence[0]);
+          const hasSecond = validCourses.some(c => formatCourse(c) === sequence[1]);
+          
+          if (hasFirst && hasSecond) {
+            req.completed = true;
+            req.completedCourses = sequence;
+            sequence.forEach(course => countedCourses.add(course));
+            upperDivision.completed++;
+            sequenceCompleted = true;
+            break;
+          }
+        } else {
+          // Three-course sequence (any two of MA 581, MA 582, MA 583)
+          const hasMA581 = validCourses.some(c => formatCourse(c) === 'MA 581');
+          const hasMA582 = validCourses.some(c => formatCourse(c) === 'MA 582');
+          const hasMA583 = validCourses.some(c => formatCourse(c) === 'MA 583');
+          
+          const completedCourses = [];
+          if (hasMA581) completedCourses.push('MA 581');
+          if (hasMA582) completedCourses.push('MA 582');
+          if (hasMA583) completedCourses.push('MA 583');
+          
+          if (completedCourses.length >= 2) {
+            req.completed = true;
+            req.completedCourses = completedCourses.slice(0, 2);
+            completedCourses.slice(0, 2).forEach(course => countedCourses.add(course));
+            upperDivision.completed++;
+            sequenceCompleted = true;
+            break;
+          }
+        }
+      }
+    } else if (req.name === 'Advanced MA') {
+      // 2 additional MA courses at level 200 or above
+      const advancedMACourses = validCourses.filter(c => 
+        c.department === 'MA' && 
+        c.number >= 200 && 
+        !countedCourses.has(formatCourse(c))
+      );
+      
+      if (advancedMACourses.length >= 2) {
+        req.completed = true;
+        req.completedCourses = advancedMACourses.slice(0, 2).map(c => formatCourse(c));
+        advancedMACourses.slice(0, 2).forEach(c => countedCourses.add(formatCourse(c)));
+        upperDivision.completed++;
+      }
+    }
+  }
+  
+  // Apply Special Rules
+  if (specialRules.cs131Used && specialRules.ma293Used) {
+    specialRules.warnings.push('CS 131/MA 293 Exclusion Rule: If CS 131 is used for Lower Division requirement #6, then MA 293 cannot be used to help satisfy Upper Division requirement #5');
+  }
+  
+  if (specialRules.ma581Used) {
+    // Check if MA 581 is also used in MA Sequence
+    const maSequenceReq = upperDivision.requirements.find(req => req.name === 'MA Sequence');
+    if (maSequenceReq && maSequenceReq.completedCourses.includes('MA 581')) {
+      specialRules.ma581DoubleCounted = true;
+    }
+  }
+  
+  // Calculate total completion
+  const totalCompleted = lowerDivision.completed + upperDivision.completed;
+  const totalRequired = lowerDivision.required + upperDivision.required;
+  const percentage = Math.round((totalCompleted / totalRequired) * 100);
+  
+  // Determine missing requirements
+  const missingRequirements: string[] = [];
+  
+  // Lower Division missing requirements
+  lowerDivision.requirements.forEach(req => {
+    if (!req.completed) {
+      missingRequirements.push(`${req.name}: ${req.description}`);
+    }
+  });
+  
+  // Upper Division missing requirements
+  upperDivision.requirements.forEach(req => {
+    if (!req.completed) {
+      missingRequirements.push(`${req.name}: ${req.description}`);
+    }
+  });
+  
+  return {
+    percentage,
+    totalRequired,
+    totalCompleted,
+    lowerDivision,
+    upperDivision,
+    validCourses,
+    invalidCourses,
+    missingRequirements,
+    specialRules
   };
 }
 
