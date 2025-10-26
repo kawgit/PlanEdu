@@ -117,3 +117,86 @@ export const saveUserPreferences = async (preferences: {
   return response.json();
 };
 
+/**
+ * Fetch user's bookmarked classes from database
+ */
+export const fetchUserBookmarks = async () => {
+  const googleId = getUserGoogleId();
+  
+  if (!googleId) {
+    throw new Error('User not logged in');
+  }
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const response = await fetch(`${backendUrl}/api/user/bookmarks?googleId=${googleId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch bookmarks');
+  }
+
+  return response.json();
+};
+
+/**
+ * Add a class to user's bookmarks
+ */
+export const addBookmark = async (classId: number) => {
+  const googleId = getUserGoogleId();
+  
+  if (!googleId) {
+    throw new Error('User not logged in');
+  }
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const response = await fetch(`${backendUrl}/api/user/bookmark`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      googleId,
+      classId,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to add bookmark');
+  }
+
+  return response.json();
+};
+
+/**
+ * Remove a class from user's bookmarks
+ */
+export const removeBookmark = async (classId: number) => {
+  const googleId = getUserGoogleId();
+  
+  if (!googleId) {
+    throw new Error('User not logged in');
+  }
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const response = await fetch(`${backendUrl}/api/user/bookmark`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      googleId,
+      classId,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to remove bookmark');
+  }
+
+  return response.json();
+};
+

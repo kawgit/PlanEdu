@@ -6,13 +6,13 @@ import { TabName } from '../App';
 interface BookmarksPageProps {
   setActiveTab?: (tab: TabName) => void;
   bookmarks?: Array<any>;
-  removeBookmark?: (code: string) => void;
+  removeBookmark?: (classId: number) => void;
 }
 
 const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks = [], removeBookmark }) => {
 
   // Sort bookmarks by numeric class number ascending
-  const sorted = [...bookmarks].sort((a, b) => extractClassNumber(a.code) - extractClassNumber(b.code));
+  const sorted = [...bookmarks].sort((a, b) => extractClassNumber(a.number) - extractClassNumber(b.number));
 
   return (
     <Container size="md" p="lg">
@@ -69,7 +69,7 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks =
           >
             <Group justify="space-between" mb="xs">
               <Title order={4} c="bu-red">
-                {course.code}
+                {course.school}-{course.department}-{course.number}
               </Title>
               <Group gap="xs">
                 <ActionIcon
@@ -103,8 +103,9 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks =
                       },
                     },
                   }}
+                  onClick={() => removeBookmark && removeBookmark(course.id)}
                 >
-                  <IconBookmarkOff size={18} onClick={() => removeBookmark && removeBookmark(course.code)} />
+                  <IconBookmarkOff size={18} />
                 </ActionIcon>
               </Group>
             </Group>
@@ -115,19 +116,16 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks =
 
             <Group gap="md" mb="md">
               <Text size="sm" c="dimmed">
-                Prereqs: {course.prereqs}
-              </Text>
-              <Text size="sm" c="dimmed">
-                • {course.credits} credits
+                {course.description ? course.description.substring(0, 100) + '...' : 'No description available'}
               </Text>
             </Group>
 
             <Group gap="xs">
-              <Badge color="green" variant="light">
-                RMP Rating: {course.rating}/5
-              </Badge>
               <Badge color="blue" variant="light">
-                Available
+                {course.school} - {course.department}
+              </Badge>
+              <Badge color="green" variant="light">
+                Bookmarked
               </Badge>
             </Group>
           </Card>

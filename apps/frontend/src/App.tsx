@@ -6,7 +6,7 @@ import SignInPage from './pages/SignInPage';
 import PreferencesPage from './pages/PreferencesPage';
 import QuestionsPage from './pages/QuestionsPage';
 import ClassSwiperPage from './pages/ClassSwiperPage';
-import { fetchUserFromDB } from './utils/auth';
+import { fetchUserBookmarks, addBookmark as addBookmarkAPI, removeBookmark as removeBookmarkAPI } from './utils/auth';
 import BookmarksPage from './pages/BookmarksPage';
 import ScheduleBuilderPage from './pages/ScheduleBuilderPage';
 
@@ -14,34 +14,23 @@ export type TabName = 'home' | 'signin' | 'preferences' | 'questions' | 'swiper'
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabName>('signin');
-  // Shared bookmarks state (simple local state - can be replaced with context or persisted storage)
-  const [bookmarks, setBookmarks] = useState<Array<any>>(() => {
-    try {
-      const raw = localStorage.getItem('bookmarks');
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      return [];
-    }
-  });
+  // Shared bookmarks state - loaded from database
+  const [bookmarks, setBookmarks] = useState<Array<any>>([]);
 
-  const [userPreferences, setUserPreferences] = useState<any>({});
-
-  // load saved user preferences when app mounts
+  // Load bookmarks from database
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const data = await fetchUserFromDB();
-        if (mounted && data) {
-          // data may include preference fields used by PreferencesPage
-          setUserPreferences({
-            interests: data.interests || null,
-            major: data.major || null,
-            preferred_course_load: data.preferred_course_load || null,
-          });
+        const bookmarksData = await fetchUserBookmarks();
+        if (mounted) {
+          setBookmarks(bookmarksData);
         }
       } catch (e) {
         // ignore - user may not be logged in
+        if (mounted) {
+          setBookmarks([]);
+        }
       }
     })();
     return () => {
@@ -49,24 +38,26 @@ const App: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
+  const addBookmark = async (course: any) => {
     try {
-      localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-    } catch (e) {
-      // ignore
+      await addBookmarkAPI(course.id);
+      // Refresh bookmarks from database
+      const updatedBookmarks = await fetchUserBookmarks();
+      setBookmarks(updatedBookmarks);
+    } catch (error) {
+      console.error('Failed to add bookmark:', error);
     }
-  }, [bookmarks]);
-
-  const addBookmark = (course: any) => {
-    setBookmarks((prev) => {
-      // avoid duplicates based on code
-      if (prev.find((c) => c.code === course.code)) return prev;
-      return [...prev, course];
-    });
   };
 
-  const removeBookmark = (code: string) => {
-    setBookmarks((prev) => prev.filter((c) => c.code !== code));
+  const removeBookmark = async (classId: number) => {
+    try {
+      await removeBookmarkAPI(classId);
+      // Refresh bookmarks from database
+      const updatedBookmarks = await fetchUserBookmarks();
+      setBookmarks(updatedBookmarks);
+    } catch (error) {
+      console.error('Failed to remove bookmark:', error);
+    }
   };
 
   const renderPage = () => {
@@ -80,11 +71,11 @@ const App: React.FC = () => {
       case 'questions':
         return <QuestionsPage />;
       case 'swiper':
-        return <ClassSwiperPage addBookmark={addBookmark} preferences={userPreferences} />;
+        return <ClassSwiperPage addBookmark={addBookmark} />;
       case 'bookmarks':
         return <BookmarksPage setActiveTab={setActiveTab} bookmarks={bookmarks} removeBookmark={removeBookmark} />;
       case 'schedule-builder':
-        return <ScheduleBuilderPage />;
+        return <ScheduleBuilderPage bookmarks={bookmarks} />;
       default:
         return <SignInPage setActiveTab={setActiveTab} />;
     }

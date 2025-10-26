@@ -448,6 +448,98 @@ app.get('/api/user/interactions', async (req, res) => {
   }
 });
 
+// Get user's bookmarked classes
+app.get('/api/user/bookmarks', async (req, res) => {
+  try {
+    const { googleId } = req.query;
+    
+    if (!googleId) {
+      return res.status(400).json({ error: 'googleId is required' });
+    }
+    
+    const bookmarks = await sql`
+      SELECT c.*, b.created_at as bookmarked_at
+      FROM "Bookmark" b
+      JOIN "Users" u ON u.id = b.user_id
+      JOIN "Class" c ON c.id = b.class_id
+      WHERE u.google_id = ${googleId}
+      ORDER BY b.created_at DESC
+    `;
+    
+    res.json(bookmarks);
+  } catch (error) {
+    console.error('Error fetching bookmarks:', error);
+    res.status(500).json({ error: 'Failed to fetch bookmarks' });
+  }
+});
+
+// Add a bookmark
+app.post('/api/user/bookmark', async (req, res) => {
+  try {
+    const { googleId, classId } = req.body;
+    
+    if (!googleId || !classId) {
+      return res.status(400).json({ error: 'googleId and classId are required' });
+    }
+    
+    // Get user ID from google_id
+    const users = await sql`
+      SELECT id FROM "Users" WHERE google_id = ${googleId}
+    `;
+    
+    if (users.length === 0 || !users[0]) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const userId = users[0].id;
+    
+    // Insert bookmark (will ignore on conflict)
+    await sql`
+      INSERT INTO "Bookmark" (user_id, class_id)
+      VALUES (${userId}, ${classId})
+      ON CONFLICT (user_id, class_id) DO NOTHING
+    `;
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error adding bookmark:', error);
+    res.status(500).json({ error: 'Failed to add bookmark' });
+  }
+});
+
+// Remove a bookmark
+app.delete('/api/user/bookmark', async (req, res) => {
+  try {
+    const { googleId, classId } = req.body;
+    
+    if (!googleId || !classId) {
+      return res.status(400).json({ error: 'googleId and classId are required' });
+    }
+    
+    // Get user ID from google_id
+    const users = await sql`
+      SELECT id FROM "Users" WHERE google_id = ${googleId}
+    `;
+    
+    if (users.length === 0 || !users[0]) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const userId = users[0].id;
+    
+    // Delete bookmark
+    await sql`
+      DELETE FROM "Bookmark" 
+      WHERE user_id = ${userId} AND class_id = ${classId}
+    `;
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error removing bookmark:', error);
+    res.status(500).json({ error: 'Failed to remove bookmark' });
+  }
+});
+
 // Google OAuth authentication endpoint
 app.post('/auth/google', async (req, res) => {
   try {

@@ -32,11 +32,12 @@ import {
 } from '@tabler/icons-react';
 
 interface BookmarkedClass {
-  code: string;
+  id: number;
+  school: string;
+  department: string;
+  number: number;
   title: string;
-  prereqs: string;
-  rating: number;
-  credits: number;
+  description?: string;
   time?: string;
   professor?: string;
 }
@@ -49,70 +50,16 @@ interface GeneratedSchedule {
   recommendations: string[];
 }
 
-const ScheduleBuilderPage: React.FC = () => {
+interface ScheduleBuilderPageProps {
+  bookmarks?: BookmarkedClass[];
+}
+
+const ScheduleBuilderPage: React.FC<ScheduleBuilderPageProps> = ({ bookmarks = [] }) => {
   const [userPrompt, setUserPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedSchedule, setGeneratedSchedule] = useState<GeneratedSchedule | null>(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
-  const [selectedBookmarks, setSelectedBookmarks] = useState<string[]>([]);
-
-  // Mock bookmarked classes (in real app, this would come from state/API)
-  const bookmarkedClasses: BookmarkedClass[] = [
-    {
-      code: 'CS 111',
-      title: 'Intro to Computer Science',
-      prereqs: 'None',
-      rating: 4.5,
-      credits: 4,
-      time: 'MWF 10:00 AM',
-      professor: 'Dr. Smith'
-    },
-    {
-      code: 'WR 100',
-      title: 'Writing Seminar',
-      prereqs: 'None',
-      rating: 4.2,
-      credits: 4,
-      time: 'TR 2:00 PM',
-      professor: 'Prof. Johnson'
-    },
-    {
-      code: 'MA 123',
-      title: 'Calculus I',
-      prereqs: 'High School Math',
-      rating: 3.8,
-      credits: 4,
-      time: 'MWF 11:00 AM',
-      professor: 'Dr. Brown'
-    },
-    {
-      code: 'PH 101',
-      title: 'Physics I',
-      prereqs: 'MA 123',
-      rating: 4.1,
-      credits: 4,
-      time: 'TR 9:00 AM',
-      professor: 'Dr. Wilson'
-    },
-    {
-      code: 'PS 101',
-      title: 'Intro to Psychology',
-      prereqs: 'None',
-      rating: 4.3,
-      credits: 3,
-      time: 'MW 1:00 PM',
-      professor: 'Dr. Davis'
-    },
-    {
-      code: 'EC 101',
-      title: 'Microeconomics',
-      prereqs: 'None',
-      rating: 3.9,
-      credits: 3,
-      time: 'TR 11:00 AM',
-      professor: 'Prof. Miller'
-    }
-  ];
+  const [selectedBookmarks, setSelectedBookmarks] = useState<number[]>([]);
 
   const handleGenerateSchedule = async () => {
     if (!userPrompt.trim()) return;
@@ -125,16 +72,16 @@ const ScheduleBuilderPage: React.FC = () => {
     // Mock AI-generated schedule based on user prompt and bookmarked classes
     const mockSchedule: GeneratedSchedule = {
       semester: 'Fall 2024',
-      classes: bookmarkedClasses.slice(0, 4), // Take first 4 classes
+      classes: bookmarks.slice(0, 4), // Take first 4 classes
       totalCredits: 15,
       conflicts: [
-        'CS 111 and MA 123 have overlapping time slots (MWF 10:00-11:00 AM)',
-        'Consider taking MA 123 in a different time slot'
+        'Some classes may have overlapping time slots',
+        'Consider checking class schedules for conflicts'
       ],
       recommendations: [
-        'Great balance of STEM and liberal arts courses',
+        'Great balance of courses from your bookmarks',
         'Consider adding a Hub course to fulfill general education requirements',
-        'Physics I requires Calculus I as prerequisite - good sequencing',
+        'Check prerequisites for advanced courses',
         'Total credit load (15) is optimal for first semester'
       ]
     };
@@ -143,11 +90,11 @@ const ScheduleBuilderPage: React.FC = () => {
     setIsGenerating(false);
   };
 
-  const toggleBookmarkSelection = (classCode: string) => {
+  const toggleBookmarkSelection = (classId: number) => {
     setSelectedBookmarks(prev => 
-      prev.includes(classCode) 
-        ? prev.filter(code => code !== classCode)
-        : [...prev, classCode]
+      prev.includes(classId) 
+        ? prev.filter(id => id !== classId)
+        : [...prev, classId]
     );
   };
 
@@ -255,47 +202,47 @@ const ScheduleBuilderPage: React.FC = () => {
                   size="xs"
                   onClick={() => setShowBookmarks(!showBookmarks)}
                 >
-                  {showBookmarks ? 'Hide' : 'Show'} ({bookmarkedClasses.length})
+                  {showBookmarks ? 'Hide' : 'Show'} ({bookmarks.length})
                 </Button>
               </Group>
               
               {showBookmarks && (
                 <ScrollArea.Autosize mah={300}>
                   <Stack gap="sm">
-                    {bookmarkedClasses.map((course, index) => (
+                    {bookmarks.map((course, index) => (
                       <Paper
                         key={index}
                         p="sm"
                         radius="md"
                         style={{
-                          border: selectedBookmarks.includes(course.code) 
+                          border: selectedBookmarks.includes(course.id) 
                             ? '2px solid #CC0000' 
                             : '1px solid #e9ecef',
-                          backgroundColor: selectedBookmarks.includes(course.code) 
+                          backgroundColor: selectedBookmarks.includes(course.id) 
                             ? '#fff5f5' 
                             : '#fff',
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
                         }}
-                        onClick={() => toggleBookmarkSelection(course.code)}
+                        onClick={() => toggleBookmarkSelection(course.id)}
                       >
                         <Group justify="space-between">
                           <Box>
                             <Text fw={600} size="sm" c="bu-red">
-                              {course.code}
+                              {course.school}-{course.department}-{course.number}
                             </Text>
                             <Text size="xs" c="dark">
                               {course.title}
                             </Text>
                             <Text size="xs" c="dimmed">
-                              {course.credits} credits • Rating: {course.rating}/5
+                              {course.school} - {course.department}
                             </Text>
                           </Box>
                           <ActionIcon
                             variant="subtle"
-                            color={selectedBookmarks.includes(course.code) ? 'red' : 'gray'}
+                            color={selectedBookmarks.includes(course.id) ? 'red' : 'gray'}
                           >
-                            {selectedBookmarks.includes(course.code) ? (
+                            {selectedBookmarks.includes(course.id) ? (
                               <IconCheck size={16} />
                             ) : (
                               <IconX size={16} />
@@ -376,10 +323,10 @@ const ScheduleBuilderPage: React.FC = () => {
                     >
                       <Group justify="space-between" mb="xs">
                         <Text fw={600} c="bu-red" size="sm">
-                          {course.code}
+                          {course.school}-{course.department}-{course.number}
                         </Text>
                         <Badge color="blue" variant="light" size="sm">
-                          {course.credits} credits
+                          {course.school}
                         </Badge>
                       </Group>
                       <Text size="sm" c="dark" mb="xs">
