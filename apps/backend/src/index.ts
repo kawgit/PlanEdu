@@ -11,6 +11,10 @@ import { calculateCSMajorCompletion, calculateMathCSMajorCompletion } from './ma
 import { calculateHubCompletion } from './hubCompletion';
 import recommendRouter from './routes/recommend';
 import userEmbeddingRouter from './routes/userEmbedding';
+import swipeInteractionRouter from './routes/swipeInteraction';
+import recommendationsRouter from './routes/recommendations';
+import scheduleRouter from './routes/schedule';
+import { runPythonScript } from './utils/runPython';
 
 const execAsync = promisify(exec);
 
@@ -50,6 +54,9 @@ app.use(express.json());
 // Routes
 app.use('/api', recommendRouter);
 app.use('/api/user', userEmbeddingRouter);
+app.use('/api/swipe', swipeInteractionRouter);
+app.use('/api/recommendations', recommendationsRouter);
+app.use('/api/schedule', scheduleRouter);
 
 // Existing API endpoint
 app.get('/api', (req, res) => {
@@ -589,7 +596,8 @@ function calculateRelevanceScore(course: any, user: any): number {
   return Math.max(0, score);
 }
 
-// Get personalized course recommendations
+// Get personalized course recommendations for swiper
+// Uses intelligent hybrid scoring: 60% similarity + 30% hub coverage + 10% diversity
 app.get('/api/recommendations', async (req, res) => {
   try {
     const { googleId, limit = '20' } = req.query;
@@ -598,9 +606,11 @@ app.get('/api/recommendations', async (req, res) => {
       return res.status(400).json({ error: 'googleId is required' });
     }
 
-    // Get user and their preferences
+    console.log(`Fetching recommendations for swiper: ${googleId}`);
+
+    // Get user and check if they have an embedding
     const users = await sql`
-      SELECT * FROM "Users" WHERE google_id = ${googleId}
+      SELECT id, major, embedding FROM "Users" WHERE google_id = ${googleId}
     `;
     
     if (users.length === 0 || !users[0]) {
@@ -609,94 +619,166 @@ app.get('/api/recommendations', async (req, res) => {
     
     const user = users[0];
     
-    // Log user preferences for debugging
-    console.log('User preferences:', {
-      major: user.major,
-      minor: user.minor,
-      interests: user.interests,
-      incoming_credits: user.incoming_credits
+    // Try intelligent recommendations if user has embedding
+    if (user.embedding) {
+      console.log('  → Using intelligent recommendation engine...');
+      
+      try {
+        // Call Python script directly (no internal HTTP calls)
+        const result: any = await runPythonScript(
+          '../../scripts/recommend_courses.py',
+          { userId: user.id }
+        );
+        
+        if (result.success && result.recommendations && result.recommendations.length > 0) {
+          // Transform to swiper format
+          const swiperCourses = result.recommendations.map((rec: any) => ({
+            id: rec.id,
+            school: rec.school,
+            department: rec.department,
+            number: rec.number,
+            title: rec.title,
+            description: rec.description,
+            hub_areas: [], // Will be populated below
+            typical_credits: 4,
+            // Add recommendation metadata
+            _recommendation_score: rec.final_score,
+            _similarity: rec.similarity,
+            _hub_coverage: rec.hub_score
+          }));
+          
+          // Fetch hub areas and study abroad locations
+          const courseIds = swiperCourses.map((c: any) => c.id);
+          
+          if (courseIds.length > 0) {
+            // Get hub areas
+            const hubData = await sql`
+              SELECT cthr."classId", hr.name
+              FROM "ClassToHubRequirement" cthr
+              JOIN "HubRequirement" hr ON cthr."hubRequirementId" = hr.id
+              WHERE cthr."classId" = ANY(${courseIds})
+            `;
+            
+            const hubMap = new Map();
+            for (const row of hubData) {
+              if (!hubMap.has(row.classId)) {
+                hubMap.set(row.classId, []);
+              }
+              hubMap.get(row.classId).push(row.name);
+            }
+            
+            // Get study abroad locations
+            const studyAbroadData = await sql`
+              SELECT lc.classid, sal.locationid, sal.name
+              FROM locationclasses lc
+              JOIN studyabroadlocations sal ON lc.locationid = sal.locationid
+              WHERE lc.classid = ANY(${courseIds})
+            `;
+            
+            const studyAbroadMap = new Map();
+            for (const row of studyAbroadData) {
+              if (!studyAbroadMap.has(row.classid)) {
+                studyAbroadMap.set(row.classid, []);
+              }
+              studyAbroadMap.get(row.classid).push({
+                id: row.locationid,
+                name: row.name
+              });
+            }
+            
+            // Add to courses
+            swiperCourses.forEach((course: any) => {
+              course.hub_areas = hubMap.get(course.id) || [];
+              course.studyAbroadLocations = studyAbroadMap.get(course.id) || [];
+            });
+          }
+          
+          const departments = new Set(swiperCourses.map((c: any) => c.department));
+          console.log(`  ✓ Intelligent: ${swiperCourses.length} courses across ${departments.size} departments`);
+          
+          return res.json(swiperCourses);
+        }
+      } catch (error: any) {
+        console.error('  ⚠️  Intelligent recommendations failed:', error.message);
+      }
+    } else {
+      console.log('  → No user embedding, using basic recommendations');
+    }
+    
+    // Fallback to basic recommendations
+    const limitNum = typeof limit === 'string' ? parseInt(limit) : 20;
+    const basicRecs = await getBasicRecommendations(googleId as string, limitNum);
+    res.json(basicRecs);
+    
+  } catch (error: any) {
+    console.error('Error fetching recommendations:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch recommendations',
+      details: error.message
     });
-    
-    // Get classes user has already bookmarked (exclude them from recommendations)
-    const bookmarkedClasses = await sql`
-      SELECT DISTINCT c.id
-      FROM "Bookmark" b
-      JOIN "Users" u ON u.id = b."userId"
-      JOIN "Class" c ON c.id = b."classId"
-      WHERE u.google_id = ${googleId}
-    `;
-    
-    // Get classes user has already completed (exclude them from recommendations)
-    const completedClasses = await sql`
-      SELECT DISTINCT c.id
-      FROM "UserCompletedClass" ucc
-      JOIN "Users" u ON u.id = ucc."userId"
-      JOIN "Class" c ON c.id = ucc."classId"
-      WHERE u.google_id = ${googleId}
-    `;
-    
-    const excludeIds = new Set([
-      ...bookmarkedClasses.map((c: any) => c.id),
-      ...completedClasses.map((c: any) => c.id)
-    ]);
-    
-    // Fetch ALL courses with hub areas and randomize them for diversity
-    const requestedLimit = parseInt(limit as string);
-    
-    const allClasses = await sql`
-      WITH ClassesWithHubs AS (
-        SELECT 
-          c.id,
-          c.school,
-          c.department,
-          c.number,
-          c.title,
-          c.description,
-          ARRAY_AGG(DISTINCT hr.name) FILTER (WHERE hr.name IS NOT NULL) as hub_areas,
-          4 as typical_credits
-        FROM "Class" c
-        LEFT JOIN "ClassToHubRequirement" cthr ON c.id = cthr."classId"
-        LEFT JOIN "HubRequirement" hr ON cthr."hubRequirementId" = hr.id
-        GROUP BY c.id, c.school, c.department, c.number, c.title, c.description
-      )
-      SELECT * FROM ClassesWithHubs
-      ORDER BY RANDOM()
-    `;
-    
-    console.log(`Fetched ${allClasses.length} random courses, excluding ${bookmarkedClasses.length} bookmarked and ${completedClasses.length} completed courses`);
-    
-    // Filter out already bookmarked and completed classes
-    const availableClasses = allClasses.filter((cls: any) => !excludeIds.has(cls.id));
-    
-    // Score and rank courses based on user preferences
-    const scoredClasses = availableClasses.map((cls: any) => ({
+  }
+});
+
+// Helper function for basic recommendations (fallback)
+async function getBasicRecommendations(googleId: string, limit: number) {
+  console.log('  → Using basic recommendation fallback');
+  
+  const users = await sql`SELECT * FROM "Users" WHERE google_id = ${googleId}`;
+  const user = users[0];
+  
+  const bookmarkedClasses = await sql`
+    SELECT DISTINCT c.id
+    FROM "Bookmark" b
+    JOIN "Users" u ON u.id = b."userId"
+    JOIN "Class" c ON c.id = b."classId"
+    WHERE u.google_id = ${googleId}
+  `;
+  
+  const completedClasses = await sql`
+    SELECT DISTINCT c.id
+    FROM "UserCompletedClass" ucc
+    JOIN "Users" u ON u.id = ucc."userId"
+    JOIN "Class" c ON c.id = ucc."classId"
+    WHERE u.google_id = ${googleId}
+  `;
+  
+  const excludeIds = new Set([
+    ...bookmarkedClasses.map((c: any) => c.id),
+    ...completedClasses.map((c: any) => c.id)
+  ]);
+  
+  const allClasses = await sql`
+    WITH ClassesWithHubs AS (
+      SELECT 
+        c.id,
+        c.school,
+        c.department,
+        c.number,
+        c.title,
+        c.description,
+        ARRAY_AGG(DISTINCT hr.name) FILTER (WHERE hr.name IS NOT NULL) as hub_areas,
+        4 as typical_credits
+      FROM "Class" c
+      LEFT JOIN "ClassToHubRequirement" cthr ON c.id = cthr."classId"
+      LEFT JOIN "HubRequirement" hr ON cthr."hubRequirementId" = hr.id
+      GROUP BY c.id, c.school, c.department, c.number, c.title, c.description
+    )
+    SELECT * FROM ClassesWithHubs
+    ORDER BY RANDOM()
+  `;
+  
+  const availableClasses = allClasses.filter((cls: any) => !excludeIds.has(cls.id));
+  
+  const scoredClasses = availableClasses
+    .map((cls: any) => ({
       ...cls,
       score: calculateRelevanceScore(cls, user)
     }))
     .sort((a: any, b: any) => b.score - a.score)
-    .slice(0, requestedLimit);
-    
-    console.log(`Returning ${scoredClasses.length} recommendations`);
-    if (scoredClasses.length > 0) {
-      console.log('Top 3 courses:', scoredClasses.slice(0, 3).map((c: any) => ({
-        code: `${c.school}-${c.department}-${c.number}`,
-        title: c.title,
-        score: c.score
-      })));
-    }
-    
-    res.json(scoredClasses);
-  } catch (error: any) {
-    console.error('Error fetching recommendations:', error);
-    console.error('Error stack:', error.stack);
-    console.error('Error message:', error.message);
-    res.status(500).json({ 
-      error: 'Failed to fetch recommendations',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
-  }
-});
+    .slice(0, limit);
+  
+  return scoredClasses;
+}
 
 // Save user interaction (bookmark or discard)
 app.post('/api/user/interaction', async (req, res) => {

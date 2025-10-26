@@ -9,3 +9,11 @@ urllib3==2.5.0
 psycopg==3.2.3
 openai>=1.0.0
 tqdm>=4.66.0
+numpy>=1.24.0
+python-dotenv>=1.0.0
+google-generativeai>=0.8.0
+# Schedule Solver dependencies
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+ortools==9.11.4210

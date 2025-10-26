@@ -95,6 +95,12 @@ class ScheduleSolver:
             "free_day": self._apply_free_day,
             "bookmarked_bonus": self._apply_bookmarked_bonus,
             "lexicographic_priority": self._apply_lexi_priority,
+            "disallowed_days": self._apply_disallowed_days,
+            "earliest_start": self._apply_earliest_start,
+            "latest_end": self._apply_latest_end,
+            "block_time_window": self._apply_block_time_window,
+            "professor_rating_weight": self._apply_professor_rating_weight,
+            "pin_sections": self._apply_pin_sections,
         }
 
     # --------------------------- Core model ---------------------------
@@ -340,3 +346,66 @@ class ScheduleSolver:
                 nt = t if t in self.obj.terms else "custom"
                 for (v, w) in pairs:
                     self.obj.terms[nt].append((v, w))
+
+    def _apply_disallowed_days(self, c: Dict[str, Any]):
+        """Disallow classes on specific days (e.g., no Friday classes)"""
+        mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
+        days_set = set(c["payload"].get("days", []))
+        
+        def pred(r):
+            return bool(set(r["days"]) & days_set)
+        
+        self.over_sections(pred, mode=mode, weight=w, tier="comfort")
+
+    def _apply_earliest_start(self, c: Dict[str, Any]):
+        """Enforce earliest class start time (e.g., no classes before 10 AM)"""
+        mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
+        earliest = self._hhmm_to_minutes(c["payload"]["time"])  # e.g., "10:00"
+        
+        def pred(r):
+            return r["start"] < earliest
+        
+        self.over_sections(pred, mode=mode, weight=w, tier="comfort")
+
+    def _apply_latest_end(self, c: Dict[str, Any]):
+        """Enforce latest class end time (e.g., no classes after 5 PM)"""
+        mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
+        latest = self._hhmm_to_minutes(c["payload"]["time"])  # e.g., "17:00"
+        
+        def pred(r):
+            return r["end"] > latest
+        
+        self.over_sections(pred, mode=mode, weight=w, tier="comfort")
+
+    def _apply_block_time_window(self, c: Dict[str, Any]):
+        """Block out a specific time window (e.g., lunch break 12-1 PM)"""
+        mode = c.get("mode", "hard"); w = float(c.get("weight", 1.0))
+        start = self._hhmm_to_minutes(c["payload"]["start"])
+        end = self._hhmm_to_minutes(c["payload"]["end"])
+        days_set = set(c["payload"].get("days", []))
+        
+        def pred(r):
+            # Check if section overlaps with blocked window
+            if days_set and not (set(r["days"]) & days_set):
+                return False  # Different days, no conflict
+            # Check time overlap
+            return not (r["end"] <= start or r["start"] >= end)
+        
+        self.over_sections(pred, mode=mode, weight=w, tier="comfort")
+
+    def _apply_professor_rating_weight(self, c: Dict[str, Any]):
+        """Bonus for sections with highly-rated professors"""
+        w = float(c.get("weight", 1.0))
+        threshold = float(c["payload"].get("threshold", 4.0))
+        
+        for rid, r in self.rid_to_relation.items():
+            rating = r.get("professor_rating", 0.0)
+            if rating >= threshold:
+                bonus = (rating - threshold) * w
+                self.obj.add("comfort", self.z[rid], bonus)
+
+    def _apply_pin_sections(self, c: Dict[str, Any]):
+        """Force specific sections to be included (hard constraint)"""
+        for rid in c["payload"]["section_ids"]:
+            if rid in self.z:
+                self.model.Add(self.z[rid] == 1)
