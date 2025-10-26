@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader, Select, ScrollArea, Badge, ActionIcon } from '@mantine/core';
-import { IconSend, IconRobot, IconUser, IconFilter, IconBook, IconBookmark, IconBookmarkFilled } from '@tabler/icons-react';
+import { IconSend, IconRobot, IconUser, IconFilter, IconBook, IconBookmark, IconBookmarkFilled, IconTrash } from '@tabler/icons-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -25,7 +25,16 @@ interface QuestionsPageProps {
 }
 
 const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookmark, bookmarks = [] }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  // Load messages from localStorage on mount
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const saved = localStorage.getItem('questionsPageMessages');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error('Failed to load messages from localStorage:', e);
+      return [];
+    }
+  });
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -39,6 +48,15 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
   const [loadingClasses, setLoadingClasses] = useState<boolean>(false);
   
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem('questionsPageMessages', JSON.stringify(messages));
+    } catch (e) {
+      console.error('Failed to save messages to localStorage:', e);
+    }
+  }, [messages]);
 
   // Helper function to check if a class is bookmarked
   const isBookmarked = (classId: number) => {
@@ -55,6 +73,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
     } else if (!bookmarked && addBookmark) {
       // Add bookmark if not bookmarked
       addBookmark(course);
+    }
+  };
+
+  // Clear conversation history
+  const handleClearConversation = () => {
+    if (messages.length > 0 && window.confirm('Are you sure you want to clear the conversation history?')) {
+      setMessages([]);
+      localStorage.removeItem('questionsPageMessages');
     }
   };
 
@@ -114,7 +140,11 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
     setMessages([...messages, { type: 'user', content: userMessage }]);
     setInputValue('');
     
-    // Call Gemini API with context about filtered classes
+    // Add empty AI message that will be updated with streaming content
+    const aiMessageIndex = messages.length + 1;
+    setMessages(prev => [...prev, { type: 'ai', content: '' }]);
+    
+    // Call Gemini API with streaming
     setIsLoading(true);
     
     try {
@@ -132,20 +162,61 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
       if (!response.ok) {
         throw new Error('Failed to get AI response');
       }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedText = '';
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          
+          if (done) break;
+          
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6);
+              
+              if (data === '[DONE]') {
+                setIsLoading(false);
+                break;
+              }
+              
+              try {
+                const parsed = JSON.parse(data);
+                accumulatedText += parsed.text;
+                
+                // Update the AI message with accumulated text
+                setMessages(prev => {
+                  const newMessages = [...prev];
+                  newMessages[aiMessageIndex] = {
+                    type: 'ai',
+                    content: accumulatedText
+                  };
+                  return newMessages;
+                });
+              } catch (e) {
+                // Skip invalid JSON
+              }
+            }
+          }
+        }
+      }
       
-      const data = await response.json();
-      
-      setMessages(prev => [...prev, { 
-        type: 'ai', 
-        content: data.response 
-      }]);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error calling Gemini:', error);
-      setMessages(prev => [...prev, { 
-        type: 'ai', 
-        content: 'Sorry, I encountered an error processing your question. Please try again.' 
-      }]);
-    } finally {
+      setMessages(prev => {
+        const newMessages = [...prev];
+        newMessages[aiMessageIndex] = {
+          type: 'ai',
+          content: 'Sorry, I encountered an error processing your question. Please try again.'
+        };
+        return newMessages;
+      });
       setIsLoading(false);
     }
   };
@@ -314,11 +385,36 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                 Ask Gemini
               </Title>
             </Group>
-            {bookmarks.length > 0 && (
-              <Badge color="bu-red" variant="light" size="sm">
-                {bookmarks.length} bookmarked
-              </Badge>
-            )}
+            <Group gap="xs">
+              {bookmarks.length > 0 && (
+                <Badge color="bu-red" variant="light" size="sm">
+                  {bookmarks.length} bookmarked
+                </Badge>
+              )}
+              {messages.length > 0 && (
+                <ActionIcon
+                  variant="subtle"
+                  color="gray"
+                  size="lg"
+                  onClick={handleClearConversation}
+                  title="Clear conversation"
+                  style={{
+                    transition: 'all 0.2s ease',
+                  }}
+                  styles={{
+                    root: {
+                      '&:hover': {
+                        transform: 'scale(1.1)',
+                        backgroundColor: 'rgba(204, 0, 0, 0.1)',
+                        color: '#CC0000',
+                      },
+                    },
+                  }}
+                >
+                  <IconTrash size={18} />
+                </ActionIcon>
+              )}
+            </Group>
           </Group>
           <Text size="sm" c="dimmed">
             Ask questions about the {filteredClasses.length} filtered classes
@@ -392,12 +488,68 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                 >
                   {message.type === 'ai' ? (
                     <Box
+                      className="ai-markdown-content"
                       style={{
                         fontSize: '0.875rem',
                         lineHeight: 1.6,
                       }}
-                      className="markdown-content"
                     >
+                      <style>{`
+                        .ai-markdown-content p {
+                          margin: 0 0 0.75em 0;
+                        }
+                        .ai-markdown-content p:last-child {
+                          margin-bottom: 0;
+                        }
+                        .ai-markdown-content ul,
+                        .ai-markdown-content ol {
+                          margin: 0.5em 0;
+                          padding-left: 1.5em;
+                        }
+                        .ai-markdown-content li {
+                          margin: 0.25em 0;
+                        }
+                        .ai-markdown-content h1,
+                        .ai-markdown-content h2,
+                        .ai-markdown-content h3,
+                        .ai-markdown-content h4,
+                        .ai-markdown-content h5,
+                        .ai-markdown-content h6 {
+                          margin: 1em 0 0.5em 0;
+                          font-weight: 600;
+                        }
+                        .ai-markdown-content h1:first-child,
+                        .ai-markdown-content h2:first-child,
+                        .ai-markdown-content h3:first-child,
+                        .ai-markdown-content h4:first-child,
+                        .ai-markdown-content h5:first-child,
+                        .ai-markdown-content h6:first-child {
+                          margin-top: 0;
+                        }
+                        .ai-markdown-content code {
+                          background-color: #f5f5f5;
+                          padding: 0.125em 0.25em;
+                          border-radius: 3px;
+                          font-size: 0.9em;
+                        }
+                        .ai-markdown-content pre {
+                          background-color: #f5f5f5;
+                          padding: 0.75em;
+                          border-radius: 6px;
+                          overflow: auto;
+                          margin: 0.5em 0;
+                        }
+                        .ai-markdown-content pre code {
+                          background-color: transparent;
+                          padding: 0;
+                        }
+                        .ai-markdown-content blockquote {
+                          border-left: 3px solid #CC0000;
+                          padding-left: 1em;
+                          margin: 0.5em 0;
+                          color: #666;
+                        }
+                      `}</style>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
                         {message.content}
                       </ReactMarkdown>
