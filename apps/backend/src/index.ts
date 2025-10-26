@@ -237,13 +237,16 @@ app.post('/api/gemini/chat', async (req, res) => {
 function calculateRelevanceScore(course: any, user: any): number {
   let score = 0;
   
-  // Major match (highest weight)
+  // Base score for all courses (ensures variety)
+  score = 50;
+  
+  // Major match (moderate weight to avoid over-concentration)
   if (user.major && course.department) {
     const majorKeywords = user.major.toLowerCase().split(' ');
     const deptLower = course.department.toLowerCase();
     
     if (majorKeywords.some((keyword: string) => deptLower.includes(keyword))) {
-      score += 50;
+      score += 25; // Reduced from 50 to allow more variety
     }
   }
   
@@ -253,7 +256,7 @@ function calculateRelevanceScore(course: any, user: any): number {
     const deptLower = course.department.toLowerCase();
     
     if (minorKeywords.some((keyword: string) => deptLower.includes(keyword))) {
-      score += 30;
+      score += 20; // Reduced from 30
     }
   }
   
@@ -264,8 +267,10 @@ function calculateRelevanceScore(course: any, user: any): number {
     const descLower = (course.description || '').toLowerCase();
     
     interestKeywords.forEach((keyword: string) => {
-      if (titleLower.includes(keyword)) score += 10;
-      if (descLower.includes(keyword)) score += 5;
+      if (keyword.length > 2) { // Ignore very short keywords
+        if (titleLower.includes(keyword)) score += 15; // Increased from 10
+        if (descLower.includes(keyword)) score += 8; // Increased from 5
+      }
     });
   }
   
@@ -273,14 +278,21 @@ function calculateRelevanceScore(course: any, user: any): number {
   if (user.incoming_credits !== null && user.incoming_credits !== undefined) {
     const courseNumber = course.number;
     if (user.incoming_credits < 30 && courseNumber < 200) {
-      score += 15; // Boost intro courses for newer students
+      score += 20; // Boost intro courses for newer students
     } else if (user.incoming_credits >= 60 && courseNumber >= 300) {
       score += 15; // Boost advanced courses for upperclassmen
+    } else if (courseNumber >= 100 && courseNumber < 300) {
+      score += 10; // Moderate boost for mid-level courses
     }
   }
   
-  // Add some randomness for variety (±10 points)
-  score += Math.random() * 20 - 10;
+  // Penalize very advanced courses for students without many credits
+  if (user.incoming_credits !== null && user.incoming_credits < 30 && course.number >= 400) {
+    score -= 20;
+  }
+  
+  // Add significant randomness for variety (±20 points)
+  score += Math.random() * 40 - 20;
   
   return score;
 }
@@ -299,11 +311,19 @@ app.get('/api/recommendations', async (req, res) => {
       SELECT * FROM "Users" WHERE google_id = ${googleId}
     `;
     
-    if (users.length === 0) {
+    if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
     }
     
     const user = users[0];
+    
+    // Log user preferences for debugging
+    console.log('User preferences:', {
+      major: user.major,
+      minor: user.minor,
+      interests: user.interests,
+      incoming_credits: user.incoming_credits
+    });
     
     // Get classes user has already interacted with
     const interactedClasses = await sql`
@@ -316,11 +336,15 @@ app.get('/api/recommendations', async (req, res) => {
     
     const excludeIds = new Set(interactedClasses.map((c: any) => c.id));
     
-    // Fetch more classes than needed, then filter and score
+    // Fetch ALL courses and randomize them for diversity
+    const requestedLimit = parseInt(limit as string);
+    
     const allClasses = await sql`
       SELECT * FROM "Class"
-      LIMIT ${parseInt(limit as string) * 3}
+      ORDER BY RANDOM()
     `;
+    
+    console.log(`Fetched ${allClasses.length} random courses, ${excludeIds.size} already interacted with`);
     
     // Filter out already interacted classes
     const availableClasses = allClasses.filter((cls: any) => !excludeIds.has(cls.id));
@@ -331,7 +355,16 @@ app.get('/api/recommendations', async (req, res) => {
       score: calculateRelevanceScore(cls, user)
     }))
     .sort((a: any, b: any) => b.score - a.score)
-    .slice(0, parseInt(limit as string));
+    .slice(0, requestedLimit);
+    
+    console.log(`Returning ${scoredClasses.length} recommendations`);
+    if (scoredClasses.length > 0) {
+      console.log('Top 3 courses:', scoredClasses.slice(0, 3).map((c: any) => ({
+        code: `${c.school}-${c.department}-${c.number}`,
+        title: c.title,
+        score: c.score
+      })));
+    }
     
     res.json(scoredClasses);
   } catch (error) {
