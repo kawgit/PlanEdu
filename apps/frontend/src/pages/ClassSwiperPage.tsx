@@ -197,6 +197,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
+          position: 'relative',
         }}
       >
         {/* Header section */}
@@ -231,8 +232,8 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
         </Box>
 
         {/* Card Stack Preview - grows to fill available space */}
-        <Box style={{ flex: 1, position: 'relative', minHeight: 0, marginBottom: '1rem' }}>
-          <Box style={{ position: 'relative', height: '100%', maxHeight: '500px', margin: '0 auto' }}>
+        <Box style={{ flex: 1, position: 'relative', minHeight: 0, marginBottom: '1rem', zIndex: 1, overflow: 'hidden' }}>
+          <Box style={{ position: 'relative', height: '100%', maxHeight: '500px', margin: '0 auto', overflow: 'hidden' }}>
             {/* Background cards for depth */}
             {[0.5, 0.7].map((opacity, idx) => (
               <Card
@@ -248,8 +249,10 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
                   transform: `translateX(-50%) scale(${0.95 + idx * 0.02})`,
                   width: `${90 + idx * 5}%`,
                   maxWidth: '400px',
+                  maxHeight: '500px',
                   opacity,
                   zIndex: idx + 1,
+                  overflow: 'hidden',
                 }}
               >
                 <Box style={{ height: '350px' }} />
@@ -269,11 +272,12 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
                 transform: 'translateX(-50%)',
                 width: '100%',
                 maxWidth: '400px',
-                maxHeight: '100%',
+                maxHeight: '500px',
                 zIndex: 3,
                 transition: 'all 0.3s ease',
                 display: 'flex',
                 flexDirection: 'column',
+                overflow: 'hidden',
               }}
             >
               <Stack gap="md" style={{ height: '100%', overflow: 'hidden' }}>
@@ -317,9 +321,9 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
         </Box>
 
         {/* Bottom section - buttons and status */}
-        <Box style={{ flexShrink: 0 }}>
+        <Box style={{ flexShrink: 0, position: 'relative', zIndex: 10, paddingTop: '1rem', background: 'transparent' }}>
           {/* Swipe Buttons */}
-          <Group justify="center" gap="xl" mb="md">
+          <Group justify="center" gap="xl" mb="md" style={{ position: 'relative', zIndex: 11 }}>
             <Button
               variant="outline"
               color="gray"
@@ -332,7 +336,9 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
                 minHeight: '60px',
                 display: 'flex',
                 alignItems: 'center',
-                transition: 'all 0.3s ease' 
+                transition: 'all 0.3s ease',
+                opacity: 1,
+                backgroundColor: 'white'
               }}
             >
               Discard
@@ -350,14 +356,15 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
                 minHeight: '60px',
                 display: 'flex',
                 alignItems: 'center',
-                transition: 'all 0.3s ease' 
+                transition: 'all 0.3s ease',
+                opacity: 1
               }}
             >
               Bookmark
             </Button>
           </Group>
 
-          <Text size="xs" c="dimmed">
+          <Text size="xs" c="dimmed" style={{ opacity: 1, position: 'relative', zIndex: 11 }}>
             {currentIndex + 1} / {classes.length} • {swipeCount} swipes today
           </Text>
         </Box>
