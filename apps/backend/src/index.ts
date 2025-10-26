@@ -484,7 +484,19 @@ app.get('/api/recommendations', async (req, res) => {
       WHERE u.google_id = ${googleId}
     `;
     
-    const excludeIds = new Set(bookmarkedClasses.map((c: any) => c.id));
+    // Get classes user has already completed (exclude them from recommendations)
+    const completedClasses = await sql`
+      SELECT DISTINCT c.id
+      FROM "UserCompletedClass" ucc
+      JOIN "Users" u ON u.id = ucc."userId"
+      JOIN "Class" c ON c.id = ucc."classId"
+      WHERE u.google_id = ${googleId}
+    `;
+    
+    const excludeIds = new Set([
+      ...bookmarkedClasses.map((c: any) => c.id),
+      ...completedClasses.map((c: any) => c.id)
+    ]);
     
     // Fetch ALL courses with hub areas and randomize them for diversity
     const requestedLimit = parseInt(limit as string);
@@ -509,9 +521,9 @@ app.get('/api/recommendations', async (req, res) => {
       ORDER BY RANDOM()
     `;
     
-    console.log(`Fetched ${allClasses.length} random courses, ${excludeIds.size} already bookmarked`);
+    console.log(`Fetched ${allClasses.length} random courses, excluding ${bookmarkedClasses.length} bookmarked and ${completedClasses.length} completed courses`);
     
-    // Filter out already bookmarked classes
+    // Filter out already bookmarked and completed classes
     const availableClasses = allClasses.filter((cls: any) => !excludeIds.has(cls.id));
     
     // Score and rank courses based on user preferences
