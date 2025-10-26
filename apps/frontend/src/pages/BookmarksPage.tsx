@@ -1,7 +1,8 @@
 import React from 'react';
-import { Container, Title, Text, Card, Badge, Group, Stack, ActionIcon, Button, Box } from '@mantine/core';
-import { IconBookmarkOff, IconExternalLink, IconSparkles } from '@tabler/icons-react';
+import { Container, Title, Text, Card, Badge, Group, Stack, ActionIcon, Button, Box, Alert } from '@mantine/core';
+import { IconBookmarkOff, IconExternalLink, IconSparkles, IconInfoCircle } from '@tabler/icons-react';
 import { TabName } from '../App';
+import { isUserLoggedIn } from '../utils/auth';
 
 interface BookmarksPageProps {
   setActiveTab?: (tab: TabName) => void;
@@ -12,7 +13,11 @@ interface BookmarksPageProps {
 const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks = [], removeBookmark }) => {
 
   // Sort bookmarks by numeric class number ascending
-  const sorted = [...bookmarks].sort((a, b) => extractClassNumber(a.number) - extractClassNumber(b.number));
+  const sorted = [...bookmarks].sort((a, b) => {
+    const aNum = typeof a.number === 'number' ? a.number : extractClassNumber(String(a.number || ''));
+    const bNum = typeof b.number === 'number' ? b.number : extractClassNumber(String(b.number || ''));
+    return aNum - bNum;
+  });
 
   return (
     <Container size="md" p="lg">
@@ -133,11 +138,20 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks =
       </Stack>
 
       {sorted.length === 0 && (
-        <Card shadow="sm" p="xl" radius="md" withBorder ta="center">
-          <Text c="dimmed" size="lg">
-            No bookmarked classes yet. Start swiping!
-          </Text>
-        </Card>
+        <>
+          {!isUserLoggedIn() && (
+            <Alert icon={<IconInfoCircle size={16} />} title="Not Logged In" color="blue" mb="md">
+              Please sign in to view and manage your bookmarked classes.
+            </Alert>
+          )}
+          <Card shadow="sm" p="xl" radius="md" withBorder ta="center">
+            <Text c="dimmed" size="lg">
+              {isUserLoggedIn() 
+                ? 'No bookmarked classes yet. Start swiping!' 
+                : 'Sign in to bookmark classes and build your schedule'}
+            </Text>
+          </Card>
+        </>
       )}
     </Container>
   );

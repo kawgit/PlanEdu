@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader, Select, ScrollArea, Badge } from '@mantine/core';
-import { IconSend, IconRobot, IconUser, IconFilter, IconBook } from '@tabler/icons-react';
+import { Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader, Select, ScrollArea, Badge, ActionIcon } from '@mantine/core';
+import { IconSend, IconRobot, IconUser, IconFilter, IconBook, IconBookmark, IconBookmarkFilled } from '@tabler/icons-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -18,7 +18,13 @@ interface ClassOffering {
   description: string;
 }
 
-const QuestionsPage: React.FC = () => {
+interface QuestionsPageProps {
+  addBookmark?: (course: any) => void;
+  removeBookmark?: (classId: number) => void;
+  bookmarks?: Array<any>;
+}
+
+const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookmark, bookmarks = [] }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +39,24 @@ const QuestionsPage: React.FC = () => {
   const [loadingClasses, setLoadingClasses] = useState<boolean>(false);
   
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
+  // Helper function to check if a class is bookmarked
+  const isBookmarked = (classId: number) => {
+    return bookmarks.some(bookmark => bookmark.id === classId);
+  };
+
+  // Handle bookmark toggle
+  const handleBookmarkToggle = (course: ClassOffering) => {
+    const bookmarked = isBookmarked(course.id);
+    
+    if (bookmarked && removeBookmark) {
+      // Remove bookmark if already bookmarked
+      removeBookmark(course.id);
+    } else if (!bookmarked && addBookmark) {
+      // Add bookmark if not bookmarked
+      addBookmark(course);
+    }
+  };
 
   // Load schools and departments on mount
   useEffect(() => {
@@ -214,7 +238,6 @@ const QuestionsPage: React.FC = () => {
                     withBorder
                     radius="md"
                     style={{
-                      cursor: 'pointer',
                       transition: 'all 0.2s ease',
                     }}
                     styles={{
@@ -231,9 +254,41 @@ const QuestionsPage: React.FC = () => {
                       <Text fw={600} c="bu-red" size="sm">
                         {code}
                       </Text>
-                      <Badge size="xs" variant="light">
-                        {cls.school} {cls.department}
-                      </Badge>
+                      <Group gap="xs">
+                        <Badge size="xs" variant="light">
+                          {cls.school} {cls.department}
+                        </Badge>
+                        {addBookmark && (
+                          <ActionIcon
+                            variant="subtle"
+                            color={isBookmarked(cls.id) ? "red" : "gray"}
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBookmarkToggle(cls);
+                            }}
+                            style={{
+                              transition: 'all 0.2s ease',
+                            }}
+                            styles={{
+                              root: {
+                                '&:hover': {
+                                  transform: 'scale(1.15)',
+                                  backgroundColor: isBookmarked(cls.id) 
+                                    ? 'rgba(204, 0, 0, 0.1)' 
+                                    : 'rgba(204, 0, 0, 0.05)',
+                                },
+                              },
+                            }}
+                          >
+                            {isBookmarked(cls.id) ? (
+                              <IconBookmarkFilled size={16} />
+                            ) : (
+                              <IconBookmark size={16} />
+                            )}
+                          </ActionIcon>
+                        )}
+                      </Group>
                     </Group>
                     <Text size="sm" fw={500} mb="xs">
                       {cls.title}
@@ -252,14 +307,26 @@ const QuestionsPage: React.FC = () => {
       {/* Right Column - Gemini Chat */}
       <Box style={{ width: '60%', display: 'flex', flexDirection: 'column' }}>
         <Paper p="lg" radius={0} style={{ borderBottom: '1px solid #dee2e6' }}>
-          <Group mb="xs">
-            <IconRobot size={24} color="#CC0000" />
-            <Title order={3} c="bu-red">
-              Ask Gemini
-            </Title>
+          <Group justify="space-between" align="flex-start" mb="xs">
+            <Group>
+              <IconRobot size={24} color="#CC0000" />
+              <Title order={3} c="bu-red">
+                Ask Gemini
+              </Title>
+            </Group>
+            {bookmarks.length > 0 && (
+              <Badge color="bu-red" variant="light" size="sm">
+                {bookmarks.length} bookmarked
+              </Badge>
+            )}
           </Group>
           <Text size="sm" c="dimmed">
             Ask questions about the {filteredClasses.length} filtered classes
+            {addBookmark && (
+              <Text component="span" size="xs" c="dimmed" ml="xs">
+                • Click the bookmark icon on any class to save it
+              </Text>
+            )}
           </Text>
         </Paper>
 
