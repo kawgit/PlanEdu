@@ -261,6 +261,7 @@ const ProfilePage: React.FC = () => {
                 'Engineering',
                 'Communications',
                 'Mathematics',
+                'Data Science',
                 'Statistics',
                 'Economics',
                 'Philosophy',
