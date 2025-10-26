@@ -200,3 +200,141 @@ export const removeBookmark = async (classId: number) => {
   return response.json();
 };
 
+/**
+ * Completed Courses Types
+ */
+export interface CompletedCourse {
+  id: number;
+  userId: number;
+  courseCode: string;
+  courseTitle: string;
+  grade?: string;
+  credits?: number;
+  semesterTaken?: string;
+  courseType: 'AP' | 'BU' | 'Transfer' | 'Other';
+  createdAt: string;
+}
+
+/**
+ * Upload transcript and extract courses
+ */
+export const uploadTranscript = async (file: File) => {
+  const googleId = getUserGoogleId();
+  
+  if (!googleId) {
+    throw new Error('User not logged in');
+  }
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  
+  const formData = new FormData();
+  formData.append('transcript', file);
+  formData.append('googleId', googleId);
+
+  const response = await fetch(`${backendUrl}/api/transcript/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to upload transcript');
+  }
+
+  return response.json();
+};
+
+/**
+ * Get user's completed courses
+ */
+export const fetchCompletedCourses = async (courseType?: 'AP' | 'BU' | 'Transfer' | 'Other') => {
+  const googleId = getUserGoogleId();
+  
+  if (!googleId) {
+    throw new Error('User not logged in');
+  }
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const url = courseType 
+    ? `${backendUrl}/api/user/completed-courses?googleId=${googleId}&courseType=${courseType}`
+    : `${backendUrl}/api/user/completed-courses?googleId=${googleId}`;
+    
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch completed courses');
+  }
+
+  return response.json();
+};
+
+/**
+ * Add a completed course manually
+ */
+export const addCompletedCourse = async (course: {
+  courseCode: string;
+  courseTitle: string;
+  grade?: string;
+  credits?: number;
+  semesterTaken?: string;
+  courseType: 'AP' | 'BU' | 'Transfer' | 'Other';
+}) => {
+  const googleId = getUserGoogleId();
+  
+  if (!googleId) {
+    throw new Error('User not logged in');
+  }
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const response = await fetch(`${backendUrl}/api/user/completed-course`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      googleId,
+      ...course,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to add completed course');
+  }
+
+  return response.json();
+};
+
+/**
+ * Delete a completed course
+ */
+export const deleteCompletedCourse = async (courseId: number) => {
+  const googleId = getUserGoogleId();
+  
+  if (!googleId) {
+    throw new Error('User not logged in');
+  }
+
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const response = await fetch(`${backendUrl}/api/user/completed-course`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      googleId,
+      courseId,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete completed course');
+  }
+
+  return response.json();
+};
+

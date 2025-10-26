@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import multer from 'multer';
 import sql from './db';
 
 const app = express();
@@ -14,6 +15,22 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 const geminiModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+// Configure multer for file uploads (store in memory)
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept images and PDFs
+    if (file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image and PDF files are allowed'));
+    }
+  }
+});
 
 // Middleware
 app.use(cors({
@@ -598,6 +615,297 @@ app.post('/auth/google', async (req, res) => {
   } catch (error) {
     console.error('Error verifying Google token:', error);
     res.status(401).json({ error: 'Invalid token' });
+  }
+});
+
+// Upload and parse transcript
+app.post('/api/transcript/upload', upload.single('transcript'), async (req, res) => {
+  try {
+    const { googleId } = req.body;
+    
+    if (!googleId) {
+      return res.status(400).json({ error: 'googleId is required' });
+    }
+    
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    // Get user ID from google_id
+    const users = await sql`
+      SELECT id FROM "Users" WHERE google_id = ${googleId}
+    `;
+    
+    if (users.length === 0 || !users[0]) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userId = users[0].id;
+
+    // Convert file buffer to base64 for Gemini
+    const base64Data = req.file.buffer.toString('base64');
+    const mimeType = req.file.mimetype;
+
+    console.log(`Processing transcript upload: ${req.file.originalname} (${mimeType})`);
+
+    // Use Gemini Vision to extract course information
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    
+    const prompt = `You are an expert at parsing Boston University academic transcripts. Analyze this transcript and extract ALL completed courses with grades.
+
+IMPORTANT RULES:
+1. ONLY include courses that have a grade (A, A-, B+, B, B-, C+, C, etc.)
+2. DO NOT include courses without grades (current/in-progress courses)
+3. DO NOT include courses listed under "Fall 2025" or future terms with no grades
+4. Include ALL courses from "Test Credit" section (these are AP credits)
+5. Include ALL courses from completed semesters (those with grades)
+
+For each course, identify:
+1. Course Code: Extract the department code and number (e.g., "CASCS 111", "CASMA 123")
+   - Format as one string with space: "CASCS 111" not "CAS CS 111"
+   - For test credits, use the code listed (e.g., "CASCS 101")
+2. Course Title: The full course name
+3. Grade: Letter grade (A, A-, B+, B, etc.) or AP score. Use null if no grade.
+4. Credits: Numeric value (usually 4.0)
+5. Semester: The term when taken (e.g., "Fall 2024", "Spring 2025", "Test Credit")
+6. Course Type: 
+   - "AP" for courses in the "Test Credit" section or with AP exam names
+   - "BU" for Boston University courses with grades
+   - "Transfer" for transfer credits
+   - "Other" for anything else
+
+BU TRANSCRIPT STRUCTURE:
+- Test Credits appear first (these are AP/Transfer credits)
+- Then completed semesters with grades
+- Current semester courses have NO grades - DO NOT INCLUDE THESE
+
+Return ONLY valid JSON array:
+[
+  {
+    "courseCode": "CASCS 111",
+    "courseTitle": "Intro Computer Science 1",
+    "grade": "A",
+    "credits": 4.0,
+    "semesterTaken": "Test Credit",
+    "courseType": "AP"
+  },
+  {
+    "courseCode": "CASCS 112",
+    "courseTitle": "Intro Computer Science 2",
+    "grade": "B",
+    "credits": 4.0,
+    "semesterTaken": "Fall 2024",
+    "courseType": "BU"
+  }
+]
+
+ONLY return the JSON array, no markdown, no explanation, no additional text.`;
+
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          mimeType,
+          data: base64Data
+        }
+      },
+      { text: prompt }
+    ]);
+
+    const response = await result.response;
+    let text = response.text();
+    
+    // Clean up the response to extract JSON
+    text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    console.log('Gemini response:', text);
+
+    let courses;
+    try {
+      courses = JSON.parse(text);
+    } catch (parseError) {
+      console.error('Failed to parse Gemini response as JSON:', parseError);
+      return res.status(500).json({ 
+        error: 'Failed to parse transcript. Please try again or add courses manually.',
+        rawResponse: text
+      });
+    }
+
+    if (!Array.isArray(courses)) {
+      return res.status(500).json({ 
+        error: 'Unexpected response format from AI',
+        rawResponse: text
+      });
+    }
+
+    // Insert courses into database
+    const insertedCourses = [];
+    const errors = [];
+
+    for (const course of courses) {
+      try {
+        const result = await sql`
+          INSERT INTO "UserCompletedCourse" 
+          ("userId", "courseCode", "courseTitle", "grade", "credits", "semesterTaken", "courseType")
+          VALUES (
+            ${userId},
+            ${course.courseCode || 'Unknown'},
+            ${course.courseTitle || 'Unknown Course'},
+            ${course.grade || null},
+            ${course.credits || null},
+            ${course.semesterTaken || null},
+            ${course.courseType || 'Other'}
+          )
+          ON CONFLICT ("userId", "courseCode") DO UPDATE
+          SET 
+            "courseTitle" = EXCLUDED."courseTitle",
+            "grade" = EXCLUDED."grade",
+            "credits" = EXCLUDED."credits",
+            "semesterTaken" = EXCLUDED."semesterTaken",
+            "courseType" = EXCLUDED."courseType"
+          RETURNING *
+        `;
+        insertedCourses.push(result[0]);
+      } catch (error: any) {
+        console.error('Error inserting course:', course, error);
+        errors.push({ course: course.courseCode, error: error.message });
+      }
+    }
+
+    res.json({
+      success: true,
+      coursesExtracted: courses.length,
+      coursesInserted: insertedCourses.length,
+      courses: insertedCourses,
+      errors: errors.length > 0 ? errors : undefined
+    });
+
+  } catch (error: any) {
+    console.error('Error processing transcript:', error);
+    res.status(500).json({ 
+      error: 'Failed to process transcript',
+      details: error.message 
+    });
+  }
+});
+
+// Get user's completed courses
+app.get('/api/user/completed-courses', async (req, res) => {
+  try {
+    const { googleId, courseType } = req.query;
+    
+    if (!googleId) {
+      return res.status(400).json({ error: 'googleId is required' });
+    }
+
+    let completedCourses;
+    
+    if (courseType) {
+      completedCourses = await sql`
+        SELECT cc.* 
+        FROM "UserCompletedCourse" cc
+        JOIN "Users" u ON u.id = cc."userId"
+        WHERE u.google_id = ${googleId} AND cc."courseType" = ${courseType}
+        ORDER BY cc."createdAt" DESC
+      `;
+    } else {
+      completedCourses = await sql`
+        SELECT cc.* 
+        FROM "UserCompletedCourse" cc
+        JOIN "Users" u ON u.id = cc."userId"
+        WHERE u.google_id = ${googleId}
+        ORDER BY cc."createdAt" DESC
+      `;
+    }
+    
+    res.json(completedCourses);
+  } catch (error) {
+    console.error('Error fetching completed courses:', error);
+    res.status(500).json({ error: 'Failed to fetch completed courses' });
+  }
+});
+
+// Add a completed course manually
+app.post('/api/user/completed-course', async (req, res) => {
+  try {
+    const { googleId, courseCode, courseTitle, grade, credits, semesterTaken, courseType } = req.body;
+    
+    if (!googleId || !courseCode || !courseTitle || !courseType) {
+      return res.status(400).json({ 
+        error: 'googleId, courseCode, courseTitle, and courseType are required' 
+      });
+    }
+    
+    // Get user ID from google_id
+    const users = await sql`
+      SELECT id FROM "Users" WHERE google_id = ${googleId}
+    `;
+    
+    if (users.length === 0 || !users[0]) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const userId = users[0].id;
+    
+    // Insert course
+    const result = await sql`
+      INSERT INTO "UserCompletedCourse" 
+      ("userId", "courseCode", "courseTitle", "grade", "credits", "semesterTaken", "courseType")
+      VALUES (
+        ${userId},
+        ${courseCode},
+        ${courseTitle},
+        ${grade || null},
+        ${credits || null},
+        ${semesterTaken || null},
+        ${courseType}
+      )
+      ON CONFLICT ("userId", "courseCode") DO UPDATE
+      SET 
+        "courseTitle" = EXCLUDED."courseTitle",
+        "grade" = EXCLUDED."grade",
+        "credits" = EXCLUDED."credits",
+        "semesterTaken" = EXCLUDED."semesterTaken",
+        "courseType" = EXCLUDED."courseType"
+      RETURNING *
+    `;
+    
+    res.json({ success: true, course: result[0] });
+  } catch (error) {
+    console.error('Error adding completed course:', error);
+    res.status(500).json({ error: 'Failed to add completed course' });
+  }
+});
+
+// Delete a completed course
+app.delete('/api/user/completed-course', async (req, res) => {
+  try {
+    const { googleId, courseId } = req.body;
+    
+    if (!googleId || !courseId) {
+      return res.status(400).json({ error: 'googleId and courseId are required' });
+    }
+    
+    // Get user ID from google_id
+    const users = await sql`
+      SELECT id FROM "Users" WHERE google_id = ${googleId}
+    `;
+    
+    if (users.length === 0 || !users[0]) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const userId = users[0].id;
+    
+    // Delete course
+    await sql`
+      DELETE FROM "UserCompletedCourse" 
+      WHERE id = ${courseId} AND "userId" = ${userId}
+    `;
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting completed course:', error);
+    res.status(500).json({ error: 'Failed to delete completed course' });
   }
 });
 

@@ -9,8 +9,9 @@ import ClassSwiperPage from './pages/ClassSwiperPage';
 import { fetchUserBookmarks, addBookmark as addBookmarkAPI, removeBookmark as removeBookmarkAPI } from './utils/auth';
 import BookmarksPage from './pages/BookmarksPage';
 import ScheduleBuilderPage from './pages/ScheduleBuilderPage';
+import CompletedCoursesPage from './pages/CompletedCoursesPage';
 
-export type TabName = 'home' | 'signin' | 'preferences' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder';
+export type TabName = 'home' | 'signin' | 'preferences' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder' | 'completed-courses';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabName>('signin');
@@ -76,6 +77,8 @@ const App: React.FC = () => {
         return <BookmarksPage setActiveTab={setActiveTab} bookmarks={bookmarks} removeBookmark={removeBookmark} />;
       case 'schedule-builder':
         return <ScheduleBuilderPage bookmarks={bookmarks} />;
+      case 'completed-courses':
+        return <CompletedCoursesPage />;
       default:
         return <SignInPage setActiveTab={setActiveTab} />;
     }
