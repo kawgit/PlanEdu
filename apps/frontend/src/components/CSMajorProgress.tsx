@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Title, Text, Stack, Progress, Group, Badge, Box, Accordion, List, Loader, Alert } from '@mantine/core';
-import { IconInfoCircle, IconCheck, IconX, IconAlertCircle } from '@tabler/icons-react';
-import { isUserLoggedIn } from '../utils/auth';
+import { Card, Title, Text, Progress, Group, Badge, Box, Accordion, List, Loader, Alert, RingProgress, Center } from '@mantine/core';
+import { IconInfoCircle, IconCheck, IconX, IconAlertCircle, IconTrophy } from '@tabler/icons-react';
+import { isUserLoggedIn, getUserGoogleId } from '../utils/auth';
 
 interface GroupProgress {
   required: number;
@@ -9,6 +9,15 @@ interface GroupProgress {
   courses: string[];
   completedCourses: string[];
   missingCourses: string[];
+}
+
+interface CompletedCourse {
+  school: string;
+  department: string;
+  number: number;
+  grade: string | null;
+  title?: string;
+  description?: string;
 }
 
 interface CSMajorCompletionResult {
@@ -20,8 +29,8 @@ interface CSMajorCompletionResult {
   groupC: GroupProgress;
   groupD: GroupProgress;
   calculusCompleted: boolean;
-  validCourses: any[];
-  invalidCourses: Array<{ course: any; reason: string }>;
+  validCourses: CompletedCourse[];
+  invalidCourses: Array<{ course: CompletedCourse; reason: string }>;
   missingRequirements: string[];
 }
 
@@ -48,15 +57,15 @@ const CSMajorProgress: React.FC<CSMajorProgressProps> = ({ refreshTrigger }) => 
       setLoading(true);
       setError(null);
 
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      const googleId = user.id;
+      const googleId = getUserGoogleId();
 
       if (!googleId) {
         throw new Error('User not found');
       }
 
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
       const response = await fetch(
-        `http://localhost:3001/api/user/cs-major-completion?googleId=${googleId}`,
+        `${backendUrl}/api/user/cs-major-completion?googleId=${googleId}`,
         {
           method: 'GET',
           headers: {
@@ -66,13 +75,15 @@ const CSMajorProgress: React.FC<CSMajorProgressProps> = ({ refreshTrigger }) => 
       );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch CS major completion data');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to fetch CS major completion data');
       }
 
       const data = await response.json();
       setProgress(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load CS major progress');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load CS major progress';
+      setError(errorMessage);
       console.error('Error loading CS major progress:', err);
     } finally {
       setLoading(false);
@@ -183,23 +194,44 @@ const CSMajorProgress: React.FC<CSMajorProgressProps> = ({ refreshTrigger }) => 
     <Card shadow="md" p="lg" radius="md" withBorder mb="xl">
       <Title order={4} mb="md">CS Major Progress</Title>
       
-      {/* Overall Progress */}
+      {/* Overall Progress - Dial Display */}
       <Box mb="xl">
-        <Group justify="space-between" mb="xs">
-          <Text size="sm" c="dimmed">Overall Completion</Text>
-          <Text size="xl" fw={700} c={progressColor}>
-            {progress.percentage}%
-          </Text>
-        </Group>
-        <Progress 
-          value={progress.percentage} 
-          color={progressColor} 
-          size="xl" 
-          mb="xs"
-          animated={progress.percentage < 100}
-        />
-        <Text size="sm" c="dimmed">
-          {progress.totalCompleted} of {progress.totalRequired} courses completed
+        <Center>
+          <RingProgress
+            size={220}
+            thickness={20}
+            roundCaps
+            sections={[
+              { 
+                value: progress.percentage, 
+                color: progressColor,
+                tooltip: `${progress.percentage}% complete`
+              }
+            ]}
+            label={
+              <Center style={{ flexDirection: 'column' }}>
+                <IconTrophy size={40} color={progressColor === 'green' ? '#2f9e44' : '#CC0000'} />
+                <Text size="xl" fw={700} c={progressColor} mt="xs">
+                  {progress.percentage}%
+                </Text>
+                <Text size="xs" c="dimmed" ta="center">
+                  {progress.totalCompleted} of {progress.totalRequired}
+                </Text>
+                <Text size="xs" c="dimmed" ta="center">
+                  courses
+                </Text>
+              </Center>
+            }
+          />
+        </Center>
+        <Text size="sm" c="dimmed" ta="center" mt="md">
+          {progress.percentage >= 100 
+            ? '🎉 Major Requirements Completed!' 
+            : progress.percentage >= 75
+            ? 'Almost there! Keep going!'
+            : progress.percentage >= 50
+            ? 'You\'re halfway through!'
+            : 'Just getting started!'}
         </Text>
       </Box>
 

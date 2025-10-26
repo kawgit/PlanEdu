@@ -1101,6 +1101,14 @@ app.get('/api/user/cs-major-completion', async (req, res) => {
       description: course.description as string
     }));
     
+    // Debug: Log courses with N/A grades
+    console.log('Courses with N/A or null grades:');
+    completedCourses.forEach(course => {
+      if (!course.grade || course.grade.toUpperCase() === 'N/A' || course.grade.toUpperCase() === 'NA') {
+        console.log(`  ${course.department} ${course.number}: grade="${course.grade}" (type: ${typeof course.grade})`);
+      }
+    });
+    
     // Calculate completion percentage
     const result = calculateCSMajorCompletion(completedCourses);
     

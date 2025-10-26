@@ -61,16 +61,22 @@ function formatCourse(course: CompletedCourse): string {
  * Check if a grade is C or higher
  */
 function isPassingGrade(grade: string | null): boolean {
-  if (!grade) return false;
+  // Handle null, undefined, or empty string
+  if (grade === null || grade === undefined || grade === '') {
+    return true;
+  }
+  
+  const upperGrade = grade.toUpperCase().trim();
+
   
   const passingGrades = [
     'A', 'A-', 
     'B+', 'B', 'B-', 
     'C+', 'C',
-    'P' // Pass for pass/fail courses
+    'P', // Pass for pass/fail courses
   ];
   
-  return passingGrades.includes(grade.toUpperCase());
+  return passingGrades.includes(upperGrade);
 }
 
 /**
@@ -99,6 +105,11 @@ export function calculateCSMajorCompletion(
   // Filter courses
   for (const course of completedCourses) {
     const courseCode = formatCourse(course);
+    
+    // Debug logging
+    if (!course.grade || course.grade.toUpperCase() === 'N/A' || course.grade.toUpperCase() === 'NA') {
+      console.log(`Course: ${courseCode}, Grade: "${course.grade}", isPassing: ${isPassingGrade(course.grade)}`);
+    }
     
     // Check if Metropolitan College
     if (isMetropolitanCollege(course)) {

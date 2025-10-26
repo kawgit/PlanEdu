@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, Select, Grid, Autocomplete, Loader } from '@mantine/core';
+import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, Select, Grid, Autocomplete, Loader, Alert } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { IconTrash, IconUpload, IconPlus, IconSchool, IconTrophy, IconSearch } from '@tabler/icons-react';
+import { IconTrash, IconUpload, IconPlus, IconSchool, IconTrophy, IconSearch, IconInfoCircle } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses } from '../utils/auth';
 import TranscriptUpload from '../components/TranscriptUpload';
@@ -291,9 +291,6 @@ const ProfilePage: React.FC = () => {
         </Grid>
       </Card>
 
-      {/* CS Major Progress */}
-      {major === 'Computer Science' && <CSMajorProgress refreshTrigger={refreshTrigger} />}
-
       {/* Action Buttons */}
       <Card shadow="md" p="lg" radius="md" withBorder mb="lg">
         <Group justify="space-between" align="flex-start" mb="md">
@@ -431,112 +428,128 @@ const ProfilePage: React.FC = () => {
         </form>
       </Modal>
 
-      {/* Stats Cards */}
-      <Grid mb="lg">
-        <Grid.Col span={6}>
-          <Card shadow="sm" p="md" radius="md" withBorder>
-            <Group gap="xs">
-              <IconSchool size={20} color="#CC0000" />
-              <Text size="sm" c="dimmed">Total Courses</Text>
-            </Group>
-            <Text size="xl" fw={700} mt="xs">{courses.length}</Text>
-          </Card>
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Card shadow="sm" p="md" radius="md" withBorder>
-            <Group gap="xs">
-              <IconTrophy size={20} color="#CC0000" />
-              <Text size="sm" c="dimmed">Estimated Credits</Text>
-            </Group>
-            <Text size="xl" fw={700} mt="xs">{getTotalCredits()}</Text>
-          </Card>
-        </Grid.Col>
-      </Grid>
+      {/* Two Column Layout: Progress Dial + Completed Courses */}
+      <Grid gutter="lg">
+        {/* Left Column: CS Major Progress Dial */}
+        <Grid.Col span={{ base: 12, md: 5 }}>
+          {/* Stats Cards */}
+          <Stack gap="md" mb="lg">
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Group gap="xs">
+                <IconSchool size={20} color="#CC0000" />
+                <Text size="sm" c="dimmed">Total Courses</Text>
+              </Group>
+              <Text size="xl" fw={700} mt="xs">{courses.length}</Text>
+            </Card>
+            <Card shadow="sm" p="md" radius="md" withBorder>
+              <Group gap="xs">
+                <IconTrophy size={20} color="#CC0000" />
+                <Text size="sm" c="dimmed">Estimated Credits</Text>
+              </Group>
+              <Text size="xl" fw={700} mt="xs">{getTotalCredits()}</Text>
+            </Card>
+          </Stack>
 
-      {/* Courses List */}
-      {loading ? (
-        <Card shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
-          <Text c="dimmed">Loading courses...</Text>
-        </Card>
-      ) : error ? (
-        <Card shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
-          <Text c="red">{error}</Text>
-        </Card>
-      ) : courses.length === 0 ? (
-        <Card shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
-          <Text c="dimmed" mb="xs">No completed courses yet.</Text>
-          <Text size="sm" c="dimmed">
-            Upload your transcript or add courses manually to get started.
-          </Text>
-        </Card>
-      ) : (
-        <Stack gap="md">
-          {courses.map((course) => (
-            <Card
-              key={course.id}
-              shadow="md"
-              p="lg"
-              radius="md"
-              withBorder
-              style={{
-                transition: 'all 0.3s ease',
-                cursor: 'default',
-              }}
-              styles={{
-                root: {
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-                  },
-                },
-              }}
-            >
-              <Group justify="space-between" mb="xs">
-                <Box>
-                  <Group gap="xs" mb="xs">
-                    {course.grade && (
-                      <Badge color="blue" variant="light">
-                        Grade: {course.grade}
-                      </Badge>
-                    )}
-                    <Badge color="gray" variant="outline">
-                      4 credits
-                    </Badge>
-                  </Group>
-                  <Title order={4} c="bu-red" mb="xs">
-                    {getCourseCode(course)}
-                  </Title>
-                  <Text fw={600} size="md" mb="xs">
-                    {course.title}
-                  </Text>
-                  {course.description && (
-                    <Text size="sm" c="dimmed" lineClamp={2}>
-                      {course.description}
-                    </Text>
-                  )}
-                </Box>
-                <ActionIcon
-                  variant="subtle"
-                  color="red"
-                  size="lg"
-                  onClick={() => handleDelete(course.id, getCourseCode(course))}
-                  style={{ transition: 'all 0.2s ease' }}
+          {/* CS Major Progress Dial */}
+          {major === 'Computer Science' && (
+            <CSMajorProgress refreshTrigger={refreshTrigger} />
+          )}
+          {major !== 'Computer Science' && major && (
+            <Alert icon={<IconInfoCircle size={16} />} title="Major Progress" color="blue" mb="lg">
+              Currently, major progress tracking is only available for Computer Science majors. 
+              Your major is set to: <strong>{major}</strong>
+            </Alert>
+          )}
+        </Grid.Col>
+
+        {/* Right Column: Completed Courses List */}
+        <Grid.Col span={{ base: 12, md: 7 }}>
+          <Title order={4} mb="md">Completed Courses</Title>
+          {loading ? (
+            <Card shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
+              <Text c="dimmed">Loading courses...</Text>
+            </Card>
+          ) : error ? (
+            <Card shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
+              <Text c="red">{error}</Text>
+            </Card>
+          ) : courses.length === 0 ? (
+            <Card shadow="sm" p="xl" radius="md" withBorder style={{ textAlign: 'center' }}>
+              <Text c="dimmed" mb="xs">No completed courses yet.</Text>
+              <Text size="sm" c="dimmed">
+                Upload your transcript or add courses manually to get started.
+              </Text>
+            </Card>
+          ) : (
+            <Stack gap="md">
+              {courses.map((course) => (
+                <Card
+                  key={course.id}
+                  shadow="md"
+                  p="lg"
+                  radius="md"
+                  withBorder
+                  style={{
+                    transition: 'all 0.3s ease',
+                    cursor: 'default',
+                  }}
                   styles={{
                     root: {
                       '&:hover': {
-                        transform: 'scale(1.15)',
-                        backgroundColor: 'rgba(204, 0, 0, 0.1)',
+                        transform: 'translateY(-4px)',
+                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
                       },
                     },
                   }}
                 >
-                  <IconTrash size={20} />
-                </ActionIcon>
-              </Group>
-            </Card>
-          ))}
-        </Stack>
-      )}
+                  <Group justify="space-between" mb="xs">
+                    <Box>
+                      <Group gap="xs" mb="xs">
+                        {course.grade && (
+                          <Badge color="blue" variant="light">
+                            Grade: {course.grade}
+                          </Badge>
+                        )}
+                        <Badge color="gray" variant="outline">
+                          4 credits
+                        </Badge>
+                      </Group>
+                      <Title order={4} c="bu-red" mb="xs">
+                        {getCourseCode(course)}
+                      </Title>
+                      <Text fw={600} size="md" mb="xs">
+                        {course.title}
+                      </Text>
+                      {course.description && (
+                        <Text size="sm" c="dimmed" lineClamp={2}>
+                          {course.description}
+                        </Text>
+                      )}
+                    </Box>
+                    <ActionIcon
+                      variant="subtle"
+                      color="red"
+                      size="lg"
+                      onClick={() => handleDelete(course.id, getCourseCode(course))}
+                      style={{ transition: 'all 0.2s ease' }}
+                      styles={{
+                        root: {
+                          '&:hover': {
+                            transform: 'scale(1.15)',
+                            backgroundColor: 'rgba(204, 0, 0, 0.1)',
+                          },
+                        },
+                      }}
+                    >
+                      <IconTrash size={20} />
+                    </ActionIcon>
+                  </Group>
+                </Card>
+              ))}
+            </Stack>
+          )}
+        </Grid.Col>
+      </Grid>
     </Container>
   );
 };
