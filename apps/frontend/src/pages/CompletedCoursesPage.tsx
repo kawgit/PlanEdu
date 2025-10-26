@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, TextInput, Select, NumberInput, Grid, Autocomplete, Loader } from '@mantine/core';
+import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, Select, Grid, Autocomplete, Loader } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { IconTrash, IconUpload, IconPlus, IconCertificate, IconSchool, IconTrophy, IconSearch } from '@tabler/icons-react';
+import { IconTrash, IconUpload, IconPlus, IconSchool, IconTrophy, IconSearch } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses } from '../utils/auth';
 import TranscriptUpload from '../components/TranscriptUpload';
@@ -11,7 +11,6 @@ const CompletedCoursesPage: React.FC = () => {
   const [courses, setCourses] = useState<CompletedCourse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filterType, setFilterType] = useState<'All' | 'AP' | 'BU' | 'Transfer' | 'Other'>('All');
   const [showAddForm, setShowAddForm] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   
@@ -28,12 +27,7 @@ const CompletedCoursesPage: React.FC = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
-  const [formData, setFormData] = useState({
-    grade: '',
-    credits: '',
-    semesterTaken: '',
-    courseType: 'BU' as 'AP' | 'BU' | 'Transfer' | 'Other',
-  });
+  const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isUserLoggedIn()) {
@@ -41,7 +35,7 @@ const CompletedCoursesPage: React.FC = () => {
     }
 
     loadCourses();
-  }, [filterType]);
+  }, []);
 
   // Search courses when query changes
   useEffect(() => {
@@ -125,8 +119,7 @@ const CompletedCoursesPage: React.FC = () => {
   const loadCourses = async () => {
     try {
       setLoading(true);
-      const courseType = filterType === 'All' ? undefined : filterType;
-      const data = await fetchCompletedCourses(courseType);
+      const data = await fetchCompletedCourses();
       setCourses(data);
       setError(null);
     } catch (err: any) {
@@ -136,9 +129,9 @@ const CompletedCoursesPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (courseId: number, courseName: string) => {
+  const handleDelete = async (completedCourseId: number, courseName: string) => {
     try {
-      await deleteCompletedCourse(courseId);
+      await deleteCompletedCourse(completedCourseId);
       await loadCourses();
       notifications.show({
         title: 'Course Removed',
@@ -169,24 +162,12 @@ const CompletedCoursesPage: React.FC = () => {
     const courseCode = `${selectedCourse.school}${selectedCourse.department} ${selectedCourse.number}`;
 
     try {
-      await addCompletedCourse({
-        courseCode: courseCode,
-        courseTitle: selectedCourse.title,
-        grade: formData.grade || undefined,
-        credits: formData.credits ? parseFloat(formData.credits) : 4,
-        semesterTaken: formData.semesterTaken || undefined,
-        courseType: formData.courseType,
-      });
+      await addCompletedCourse(selectedCourse.id, selectedGrade || undefined);
 
       setSelectedCourse(null);
+      setSelectedGrade(null);
       setSearchQuery('');
       setSearchResults([]);
-      setFormData({
-        grade: '',
-        credits: '',
-        semesterTaken: '',
-        courseType: 'BU',
-      });
       setShowAddForm(false);
       await loadCourses();
       
@@ -204,22 +185,13 @@ const CompletedCoursesPage: React.FC = () => {
     }
   };
 
-  const getCourseTypeColor = (type: string): string => {
-    switch (type) {
-      case 'AP': return 'violet';
-      case 'BU': return 'blue';
-      case 'Transfer': return 'green';
-      default: return 'gray';
-    }
+  const getCourseCode = (course: CompletedCourse): string => {
+    return `${course.school}${course.department} ${course.number}`;
   };
 
   const getTotalCredits = () => {
-    if (!courses || courses.length === 0) return 0;
-    const total = courses.reduce((sum, course) => {
-      const credits = parseFloat(String(course.credits || 0));
-      return sum + (isNaN(credits) ? 0 : credits);
-    }, 0);
-    return total;
+    // Assume 4 credits per course as standard
+    return courses.length * 4;
   };
 
   if (!isUserLoggedIn()) {
@@ -358,14 +330,9 @@ const CompletedCoursesPage: React.FC = () => {
         onClose={() => {
           setShowAddForm(false);
           setSelectedCourse(null);
+          setSelectedGrade(null);
           setSearchQuery('');
           setSearchResults([]);
-          setFormData({
-            grade: '',
-            credits: '',
-            semesterTaken: '',
-            courseType: 'BU',
-          });
         }} 
         title="Add Completed Course"
         size="lg"
@@ -377,16 +344,17 @@ const CompletedCoursesPage: React.FC = () => {
               <Autocomplete
                 label="Search for Course"
                 placeholder="Type to search courses (e.g., 'Computer Science', 'CS 111')"
-                data={searchResults.map((course) => ({
-                  value: `${course.school}${course.department} ${course.number} - ${course.title}`,
-                  label: `${course.school}${course.department} ${course.number} - ${course.title}`,
-                  course: course,
-                }))}
+                data={searchResults.map((course) => `${course.school}${course.department} ${course.number} - ${course.title}`)}
                 value={searchQuery}
-                onChange={setSearchQuery}
-                onOptionSubmit={(value, option: any) => {
-                  setSelectedCourse(option.course);
+                onChange={(value: string) => {
                   setSearchQuery(value);
+                  // Find and set the selected course when user types/selects
+                  const matchedCourse = searchResults.find(
+                    (c) => `${c.school}${c.department} ${c.number} - ${c.title}` === value
+                  );
+                  if (matchedCourse) {
+                    setSelectedCourse(matchedCourse);
+                  }
                 }}
                 leftSection={<IconSearch size={16} />}
                 rightSection={isSearching ? <Loader size="xs" /> : null}
@@ -409,50 +377,30 @@ const CompletedCoursesPage: React.FC = () => {
               )}
             </Box>
 
-            {/* Additional Details */}
+            {/* Grade Selection */}
             {selectedCourse && (
-              <>
-                <Select
-                  label="Course Type"
-                  data={[
-                    { value: 'BU', label: 'BU Course' },
-                    { value: 'AP', label: 'AP Course' },
-                    { value: 'Transfer', label: 'Transfer Course' },
-                    { value: 'Other', label: 'Other' },
-                  ]}
-                  value={formData.courseType}
-                  onChange={(value) => setFormData({ ...formData, courseType: value as any })}
-                  required
-                />
-                <Grid>
-                  <Grid.Col span={6}>
-                    <TextInput
-                      label="Grade"
-                      placeholder="e.g., A, B+, or 5 for AP"
-                      value={formData.grade}
-                      onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-                    />
-                  </Grid.Col>
-                  <Grid.Col span={6}>
-                    <NumberInput
-                      label="Credits"
-                      placeholder="e.g., 4"
-                      value={formData.credits}
-                      onChange={(value) => setFormData({ ...formData, credits: String(value) })}
-                      decimalScale={1}
-                      step={0.5}
-                      min={0}
-                      defaultValue={4}
-                    />
-                  </Grid.Col>
-                </Grid>
-                <TextInput
-                  label="Semester Taken"
-                  placeholder="e.g., Fall 2024 or Test Credit"
-                  value={formData.semesterTaken}
-                  onChange={(e) => setFormData({ ...formData, semesterTaken: e.target.value })}
-                />
-              </>
+              <Select
+                label="Grade (Optional)"
+                placeholder="Select your grade"
+                data={[
+                  { value: 'A+', label: 'A+' },
+                  { value: 'A', label: 'A' },
+                  { value: 'A-', label: 'A-' },
+                  { value: 'B+', label: 'B+' },
+                  { value: 'B', label: 'B' },
+                  { value: 'B-', label: 'B-' },
+                  { value: 'C+', label: 'C+' },
+                  { value: 'C', label: 'C' },
+                  { value: 'C-', label: 'C-' },
+                  { value: 'D', label: 'D' },
+                  { value: 'F', label: 'F' },
+                  { value: 'P', label: 'P (Pass)' },
+                  { value: 'S', label: 'S (Satisfactory)' },
+                ]}
+                value={selectedGrade}
+                onChange={setSelectedGrade}
+                clearable
+              />
             )}
 
             <Group justify="flex-end" mt="md">
@@ -461,6 +409,7 @@ const CompletedCoursesPage: React.FC = () => {
                 onClick={() => {
                   setShowAddForm(false);
                   setSelectedCourse(null);
+                  setSelectedGrade(null);
                   setSearchQuery('');
                   setSearchResults([]);
                 }}
@@ -477,7 +426,7 @@ const CompletedCoursesPage: React.FC = () => {
 
       {/* Stats Cards */}
       <Grid mb="lg">
-        <Grid.Col span={4}>
+        <Grid.Col span={6}>
           <Card shadow="sm" p="md" radius="md" withBorder>
             <Group gap="xs">
               <IconSchool size={20} color="#CC0000" />
@@ -486,44 +435,16 @@ const CompletedCoursesPage: React.FC = () => {
             <Text size="xl" fw={700} mt="xs">{courses.length}</Text>
           </Card>
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col span={6}>
           <Card shadow="sm" p="md" radius="md" withBorder>
             <Group gap="xs">
               <IconTrophy size={20} color="#CC0000" />
-              <Text size="sm" c="dimmed">Total Credits</Text>
+              <Text size="sm" c="dimmed">Estimated Credits</Text>
             </Group>
-            <Text size="xl" fw={700} mt="xs">{getTotalCredits().toFixed(1)}</Text>
-          </Card>
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <Card shadow="sm" p="md" radius="md" withBorder>
-            <Group gap="xs">
-              <IconCertificate size={20} color="#CC0000" />
-              <Text size="sm" c="dimmed">AP Courses</Text>
-            </Group>
-            <Text size="xl" fw={700} mt="xs">
-              {courses.filter(c => c.courseType === 'AP').length}
-            </Text>
+            <Text size="xl" fw={700} mt="xs">{getTotalCredits()}</Text>
           </Card>
         </Grid.Col>
       </Grid>
-
-      {/* Filter */}
-      <Group mb="md">
-        <Select
-          label="Filter by Type"
-          data={[
-            { value: 'All', label: 'All Courses' },
-            { value: 'AP', label: 'AP Courses' },
-            { value: 'BU', label: 'BU Courses' },
-            { value: 'Transfer', label: 'Transfer Courses' },
-            { value: 'Other', label: 'Other' },
-          ]}
-          value={filterType}
-          onChange={(value) => setFilterType(value as any)}
-          style={{ width: 200 }}
-        />
-      </Group>
 
       {/* Courses List */}
       {loading ? (
@@ -566,29 +487,24 @@ const CompletedCoursesPage: React.FC = () => {
               <Group justify="space-between" mb="xs">
                 <Box>
                   <Group gap="xs" mb="xs">
-                    <Badge color={getCourseTypeColor(course.courseType)} variant="light">
-                      {course.courseType}
-                    </Badge>
                     {course.grade && (
-                      <Badge color="gray" variant="outline">
+                      <Badge color="blue" variant="light">
                         Grade: {course.grade}
                       </Badge>
                     )}
-                    {course.credits && (
-                      <Badge color="gray" variant="outline">
-                        {course.credits} credits
-                      </Badge>
-                    )}
+                    <Badge color="gray" variant="outline">
+                      4 credits
+                    </Badge>
                   </Group>
                   <Title order={4} c="bu-red" mb="xs">
-                    {course.courseCode}
+                    {getCourseCode(course)}
                   </Title>
                   <Text fw={600} size="md" mb="xs">
-                    {course.courseTitle}
+                    {course.title}
                   </Text>
-                  {course.semesterTaken && (
-                    <Text size="sm" c="dimmed">
-                      {course.semesterTaken}
+                  {course.description && (
+                    <Text size="sm" c="dimmed" lineClamp={2}>
+                      {course.description}
                     </Text>
                   )}
                 </Box>
@@ -596,7 +512,7 @@ const CompletedCoursesPage: React.FC = () => {
                   variant="subtle"
                   color="red"
                   size="lg"
-                  onClick={() => handleDelete(course.id, course.courseCode)}
+                  onClick={() => handleDelete(course.id, getCourseCode(course))}
                   style={{ transition: 'all 0.2s ease' }}
                   styles={{
                     root: {

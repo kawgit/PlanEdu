@@ -207,13 +207,14 @@ export const removeBookmark = async (classId: number) => {
 export interface CompletedCourse {
   id: number;
   userId: number;
-  courseCode: string;
-  courseTitle: string;
+  classId: number;
   grade?: string;
-  credits?: number;
-  semesterTaken?: string;
-  courseType: 'AP' | 'BU' | 'Transfer' | 'Other';
-  createdAt: string;
+  // From joined Class table
+  school: string;
+  department: string;
+  number: number;
+  title: string;
+  description?: string;
 }
 
 /**
@@ -248,7 +249,7 @@ export const uploadTranscript = async (file: File) => {
 /**
  * Get user's completed courses
  */
-export const fetchCompletedCourses = async (courseType?: 'AP' | 'BU' | 'Transfer' | 'Other') => {
+export const fetchCompletedCourses = async () => {
   const googleId = getUserGoogleId();
   
   if (!googleId) {
@@ -256,9 +257,7 @@ export const fetchCompletedCourses = async (courseType?: 'AP' | 'BU' | 'Transfer
   }
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
-  const url = courseType 
-    ? `${backendUrl}/api/user/completed-courses?googleId=${googleId}&courseType=${courseType}`
-    : `${backendUrl}/api/user/completed-courses?googleId=${googleId}`;
+  const url = `${backendUrl}/api/user/completed-courses?googleId=${googleId}`;
     
   const response = await fetch(url, {
     method: 'GET',
@@ -277,14 +276,7 @@ export const fetchCompletedCourses = async (courseType?: 'AP' | 'BU' | 'Transfer
 /**
  * Add a completed course manually
  */
-export const addCompletedCourse = async (course: {
-  courseCode: string;
-  courseTitle: string;
-  grade?: string;
-  credits?: number;
-  semesterTaken?: string;
-  courseType: 'AP' | 'BU' | 'Transfer' | 'Other';
-}) => {
+export const addCompletedCourse = async (classId: number, grade?: string) => {
   const googleId = getUserGoogleId();
   
   if (!googleId) {
@@ -299,7 +291,8 @@ export const addCompletedCourse = async (course: {
     },
     body: JSON.stringify({
       googleId,
-      ...course,
+      classId,
+      grade: grade || null,
     }),
   });
 
@@ -313,7 +306,7 @@ export const addCompletedCourse = async (course: {
 /**
  * Delete a completed course
  */
-export const deleteCompletedCourse = async (courseId: number) => {
+export const deleteCompletedCourse = async (completedCourseId: number) => {
   const googleId = getUserGoogleId();
   
   if (!googleId) {
@@ -328,7 +321,7 @@ export const deleteCompletedCourse = async (courseId: number) => {
     },
     body: JSON.stringify({
       googleId,
-      courseId,
+      completedCourseId,
     }),
   });
 

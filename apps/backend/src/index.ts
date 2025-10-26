@@ -897,31 +897,30 @@ ONLY return the JSON array, no markdown, no explanation, no additional text.`;
 // Get user's completed courses
 app.get('/api/user/completed-courses', async (req, res) => {
   try {
-    const { googleId, courseType } = req.query;
+    const { googleId } = req.query;
     
     if (!googleId) {
       return res.status(400).json({ error: 'googleId is required' });
     }
 
-    let completedCourses;
-    
-    if (courseType) {
-      completedCourses = await sql`
-        SELECT cc.* 
-        FROM "UserCompletedCourse" cc
-        JOIN "Users" u ON u.id = cc."userId"
-        WHERE u.google_id = ${googleId} AND cc."courseType" = ${courseType}
-        ORDER BY cc."createdAt" DESC
-      `;
-    } else {
-      completedCourses = await sql`
-        SELECT cc.* 
-        FROM "UserCompletedCourse" cc
-        JOIN "Users" u ON u.id = cc."userId"
-        WHERE u.google_id = ${googleId}
-        ORDER BY cc."createdAt" DESC
-      `;
-    }
+    // Get courses from UserCompletedClass table joined with Class table
+    const completedCourses = await sql`
+      SELECT 
+        ucc.id,
+        ucc."userId",
+        ucc."classId",
+        ucc.grade,
+        c.school,
+        c.department,
+        c.number,
+        c.title,
+        c.description
+      FROM "UserCompletedClass" ucc
+      JOIN "Users" u ON u.id = ucc."userId"
+      JOIN "Class" c ON c.id = ucc."classId"
+      WHERE u.google_id = ${googleId}
+      ORDER BY ucc.id DESC
+    `;
     
     res.json(completedCourses);
   } catch (error) {
@@ -933,11 +932,11 @@ app.get('/api/user/completed-courses', async (req, res) => {
 // Add a completed course manually
 app.post('/api/user/completed-course', async (req, res) => {
   try {
-    const { googleId, courseCode, courseTitle, grade, credits, semesterTaken, courseType } = req.body;
+    const { googleId, classId, grade } = req.body;
     
-    if (!googleId || !courseCode || !courseTitle || !courseType) {
+    if (!googleId || !classId) {
       return res.status(400).json({ 
-        error: 'googleId, courseCode, courseTitle, and courseType are required' 
+        error: 'googleId and classId are required' 
       });
     }
     
@@ -952,26 +951,26 @@ app.post('/api/user/completed-course', async (req, res) => {
     
     const userId = users[0].id;
     
-    // Insert course
+    // Check if class exists
+    const classes = await sql`
+      SELECT id FROM "Class" WHERE id = ${classId}
+    `;
+    
+    if (classes.length === 0) {
+      return res.status(404).json({ error: 'Class not found' });
+    }
+    
+    // Insert into UserCompletedClass
     const result = await sql`
-      INSERT INTO "UserCompletedCourse" 
-      ("userId", "courseCode", "courseTitle", "grade", "credits", "semesterTaken", "courseType")
+      INSERT INTO "UserCompletedClass" 
+      ("userId", "classId", "grade")
       VALUES (
         ${userId},
-        ${courseCode},
-        ${courseTitle},
-        ${grade || null},
-        ${credits || null},
-        ${semesterTaken || null},
-        ${courseType}
+        ${classId},
+        ${grade || null}
       )
-      ON CONFLICT ("userId", "courseCode") DO UPDATE
-      SET 
-        "courseTitle" = EXCLUDED."courseTitle",
-        "grade" = EXCLUDED."grade",
-        "credits" = EXCLUDED."credits",
-        "semesterTaken" = EXCLUDED."semesterTaken",
-        "courseType" = EXCLUDED."courseType"
+      ON CONFLICT ("userId", "classId") DO UPDATE
+      SET grade = EXCLUDED.grade
       RETURNING *
     `;
     
@@ -985,10 +984,10 @@ app.post('/api/user/completed-course', async (req, res) => {
 // Delete a completed course
 app.delete('/api/user/completed-course', async (req, res) => {
   try {
-    const { googleId, courseId } = req.body;
+    const { googleId, completedCourseId } = req.body;
     
-    if (!googleId || !courseId) {
-      return res.status(400).json({ error: 'googleId and courseId are required' });
+    if (!googleId || !completedCourseId) {
+      return res.status(400).json({ error: 'googleId and completedCourseId are required' });
     }
     
     // Get user ID from google_id
@@ -1002,10 +1001,10 @@ app.delete('/api/user/completed-course', async (req, res) => {
     
     const userId = users[0].id;
     
-    // Delete course
+    // Delete from UserCompletedClass
     await sql`
-      DELETE FROM "UserCompletedCourse" 
-      WHERE id = ${courseId} AND "userId" = ${userId}
+      DELETE FROM "UserCompletedClass" 
+      WHERE id = ${completedCourseId} AND "userId" = ${userId}
     `;
     
     res.json({ success: true });
