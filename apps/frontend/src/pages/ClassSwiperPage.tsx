@@ -1,95 +1,153 @@
-import React, { useMemo, useState } from 'react';
-import { Container, Title, Text, Card, Group, Badge, Button, Stack, Box, useMantineTheme } from '@mantine/core';
-import { IconHeart, IconX, IconStar, IconClock, IconUsers } from '@tabler/icons-react';
+import React, { useEffect, useState } from 'react';
+import { Container, Title, Text, Card, Group, Badge, Button, Stack, Box, Loader } from '@mantine/core';
+import { IconHeart, IconX, IconClock } from '@tabler/icons-react';
+import { getUserGoogleId } from '../utils/auth';
+import { notifications } from '@mantine/notifications';
 
 interface ClassCard {
-  code: string;
+  id: number;
+  school: string;
+  department: string;
+  number: number;
   title: string;
   description: string;
-  credits: number;
-  rating: number;
-  enrollment: string;
-  hubArea: string;
+  hub_areas?: string[];
+  typical_credits?: number;
+  score?: number;
 }
+
 interface ClassSwiperPageProps {
-  addBookmark?: (course: ClassCard) => void;
-  // preferences shape can expand; for now we accept a primary interest/hubArea
-  preferences?: { interests?: string | null };
+  addBookmark?: (course: any) => void;
 }
 
-const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark, preferences }) => {
-  const theme = useMantineTheme();
+const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
+  const [classes, setClasses] = useState<ClassCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [swipeCount, setSwipeCount] = useState(0);
 
-  // Example classes (this would come from an API in the real app)
-  const rawClasses: ClassCard[] = [
-    {
-      code: 'CFA AR 101',
-      title: 'Introduction to Studio Art',
-      description: 'Explore various media including drawing, painting, and sculpture. Perfect for beginners interested in creative expression.',
-      credits: 4,
-      rating: 4.5,
-      enrollment: '18/25',
-      hubArea: 'Creative Arts',
-    },
-    {
-      code: 'CAS PS 101',
-      title: 'Introduction to Psychology',
-      description: 'Survey of major topics in psychology including cognition, development, social psychology, and mental health.',
-      credits: 4,
-      rating: 4.2,
-      enrollment: '120/150',
-      hubArea: 'Social Inquiry',
-    },
-    {
-      code: 'CAS PH 100',
-      title: 'Philosophical Problems',
-      description: 'Introduction to fundamental questions in philosophy through classic and contemporary texts.',
-      credits: 4,
-      rating: 4.7,
-      enrollment: '32/40',
-      hubArea: 'Philosophical Inquiry',
-    },
-  ];
+  useEffect(() => {
+    fetchRecommendedClasses();
+  }, []);
 
-  // Sort classes based on user preferences, then by class number ascending.
-  const classes = useMemo(() => {
-    const preferred = preferences?.interests;
+  const fetchRecommendedClasses = async () => {
+    try {
+      setLoading(true);
+      const googleId = getUserGoogleId();
+      
+      if (!googleId) {
+        throw new Error('Not authenticated');
+      }
 
-    const copy = [...rawClasses];
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const response = await fetch(
+        `${backendUrl}/api/recommendations?googleId=${googleId}&limit=30`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch recommendations');
+      }
 
-    // If a preferred hub area is provided, bump matching hubArea to the front
-    if (preferred) {
-      copy.sort((a, b) => {
-        const aPref = a.hubArea === preferred ? -1 : 1;
-        const bPref = b.hubArea === preferred ? -1 : 1;
-        if (aPref !== bPref) return aPref - bPref;
-        return extractClassNumber(a.code) - extractClassNumber(b.code);
+      const data = await response.json();
+      setClasses(data);
+      setCurrentIndex(0);
+    } catch (error) {
+      console.error('Error fetching classes:', error);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to load course recommendations',
+        color: 'red',
       });
-    } else {
-      copy.sort((a, b) => extractClassNumber(a.code) - extractClassNumber(b.code));
+    } finally {
+      setLoading(false);
     }
-
-    return copy;
-  }, [rawClasses, preferences]);
+  };
 
   const currentClass = classes[currentIndex];
 
-  const handleSwipe = (liked: boolean) => {
-    console.log(liked ? 'Liked' : 'Passed', currentClass.code);
-    if (liked && addBookmark) {
-      addBookmark(currentClass);
+  const handleSwipe = async (liked: boolean) => {
+    if (!currentClass) return;
+
+    try {
+      const googleId = getUserGoogleId();
+      
+      if (!googleId) {
+        throw new Error('Not authenticated');
+      }
+
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      
+      // Save interaction to backend
+      await fetch(`${backendUrl}/api/user/interaction`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          googleId,
+          classId: currentClass.id,
+          interactionType: liked ? 'like' : 'pass',
+        }),
+      });
+
+      if (liked && addBookmark) {
+        // Transform to match expected bookmark format
+        const courseCode = `${currentClass.school} ${currentClass.department} ${currentClass.number}`;
+        addBookmark({
+          code: courseCode,
+          title: currentClass.title,
+          description: currentClass.description,
+          credits: currentClass.typical_credits || 4,
+        });
+        
+        notifications.show({
+          title: 'Course Liked!',
+          message: `${courseCode} added to bookmarks`,
+          color: 'green',
+        });
+      }
+
+      setSwipeCount(prev => prev + 1);
+      
+      // Move to next card
+      if (currentIndex < classes.length - 1) {
+        setCurrentIndex(prev => prev + 1);
+      } else {
+        // Fetch more recommendations when running out
+        await fetchRecommendedClasses();
+      }
+    } catch (error) {
+      console.error('Error saving swipe:', error);
+      notifications.show({
+        title: 'Error',
+        message: 'Failed to save your choice',
+        color: 'red',
+      });
     }
-    setCurrentIndex((prev) => (prev + 1) % classes.length);
   };
 
-  // Helper to extract numeric part of class code for sorting. Falls back to large number.
-  function extractClassNumber(code: string) {
-    // examples: 'CFA AR 101', 'CAS PH 100', 'CS 111'
-    const match = code.match(/(\d{2,4})/);
-    if (!match) return 9999;
-    return Number(match[0]);
+  if (loading) {
+    return (
+      <Container size="sm" p="lg" ta="center">
+        <Loader size="lg" />
+        <Text mt="md">Loading personalized recommendations...</Text>
+      </Container>
+    );
   }
+
+  if (!currentClass || classes.length === 0) {
+    return (
+      <Container size="sm" p="lg" ta="center">
+        <Title order={2} c="bu-red">No More Courses</Title>
+        <Text mt="md">You've seen all available recommendations!</Text>
+        <Button onClick={fetchRecommendedClasses} mt="lg" color="bu-red">
+          Refresh Recommendations
+        </Button>
+      </Container>
+    );
+  }
+
+  const courseCode = `${currentClass.school} ${currentClass.department} ${currentClass.number}`;
+  const hubArea = currentClass.hub_areas?.[0] || 'General Education';
+  const credits = currentClass.typical_credits || 4;
 
   return (
     <Container size="sm" p="lg" ta="center">
@@ -97,49 +155,33 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark, preferen
         Class Swiper
       </Title>
       <Text c="dimmed" mb="xl" size="sm">
-        Swipe through classes to find your perfect match
+        Swipe through personalized course recommendations
       </Text>
 
       {/* Card Stack Preview */}
       <Box style={{ position: 'relative', height: '500px', marginBottom: '2rem' }}>
         {/* Background cards for depth */}
-        <Card
-          shadow="md"
-          p="xl"
-          radius="lg"
-          withBorder
-          style={{
-            position: 'absolute',
-            top: '20px',
-            left: '50%',
-            transform: 'translateX(-50%) scale(0.95)',
-            width: '90%',
-            maxWidth: '400px',
-            opacity: 0.5,
-            zIndex: 1,
-          }}
-        >
-          <Box style={{ height: '350px' }} />
-        </Card>
-
-        <Card
-          shadow="md"
-          p="xl"
-          radius="lg"
-          withBorder
-          style={{
-            position: 'absolute',
-            top: '10px',
-            left: '50%',
-            transform: 'translateX(-50%) scale(0.97)',
-            width: '95%',
-            maxWidth: '400px',
-            opacity: 0.7,
-            zIndex: 2,
-          }}
-        >
-          <Box style={{ height: '350px' }} />
-        </Card>
+        {[0.5, 0.7].map((opacity, idx) => (
+          <Card
+            key={idx}
+            shadow="md"
+            p="xl"
+            radius="lg"
+            withBorder
+            style={{
+              position: 'absolute',
+              top: `${(idx + 1) * 10}px`,
+              left: '50%',
+              transform: `translateX(-50%) scale(${0.95 + idx * 0.02})`,
+              width: `${90 + idx * 5}%`,
+              maxWidth: '400px',
+              opacity,
+              zIndex: idx + 1,
+            }}
+          >
+            <Box style={{ height: '350px' }} />
+          </Card>
+        ))}
 
         {/* Main card */}
         <Card
@@ -157,23 +199,15 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark, preferen
             zIndex: 3,
             transition: 'all 0.3s ease',
           }}
-          styles={{
-            root: {
-              '&:hover': {
-                transform: 'translateX(-50%) translateY(-8px)',
-                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
-              },
-            },
-          }}
         >
           <Stack gap="md">
             {/* Header */}
             <Box>
               <Badge color="red" variant="light" mb="xs">
-                {currentClass.hubArea}
+                {hubArea}
               </Badge>
               <Title order={3} c="bu-red" mb="xs">
-                {currentClass.code}
+                {courseCode}
               </Title>
               <Text fw={600} size="lg" mb="md">
                 {currentClass.title}
@@ -181,32 +215,23 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark, preferen
             </Box>
 
             {/* Description */}
-            <Text size="sm" c="dimmed" style={{ textAlign: 'left' }}>
-              {currentClass.description}
+            <Text size="sm" c="dimmed" style={{ textAlign: 'left', minHeight: '100px' }}>
+              {currentClass.description || 'No description available.'}
             </Text>
 
             {/* Stats */}
             <Group justify="space-between" mt="md">
               <Group gap="xs">
-                <IconStar size={18} color={theme.colors['bu-red'][6]} />
-                <Text size="sm" fw={500}>
-                  {currentClass.rating}/5
-                </Text>
-              </Group>
-
-              <Group gap="xs">
-                <IconUsers size={18} color="#868e96" />
-                <Text size="sm" c="dimmed">
-                  {currentClass.enrollment}
-                </Text>
-              </Group>
-
-              <Group gap="xs">
                 <IconClock size={18} color="#868e96" />
                 <Text size="sm" c="dimmed">
-                  {currentClass.credits} credits
+                  {credits} credits
                 </Text>
               </Group>
+              {currentClass.score && (
+                <Badge variant="light" color="green">
+                  {Math.round(currentClass.score)}% Match
+                </Badge>
+              )}
             </Group>
           </Stack>
         </Card>
@@ -221,18 +246,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark, preferen
           radius="xl"
           leftSection={<IconX size={24} />}
           onClick={() => handleSwipe(false)}
-          style={{
-            width: '140px',
-            transition: 'all 0.3s ease',
-          }}
-          styles={{
-            root: {
-              '&:hover': {
-                transform: 'scale(1.1)',
-                backgroundColor: 'rgba(255, 0, 0, 0.05)',
-              },
-            },
-          }}
+          style={{ width: '140px', transition: 'all 0.3s ease' }}
         >
           Pass
         </Button>
@@ -244,25 +258,14 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark, preferen
           radius="xl"
           leftSection={<IconHeart size={24} />}
           onClick={() => handleSwipe(true)}
-          style={{
-            width: '140px',
-            transition: 'all 0.3s ease',
-          }}
-          styles={{
-            root: {
-              '&:hover': {
-                transform: 'scale(1.1)',
-                boxShadow: '0 8px 24px rgba(204, 0, 0, 0.4)',
-              },
-            },
-          }}
+          style={{ width: '140px', transition: 'all 0.3s ease' }}
         >
           Like
         </Button>
       </Group>
 
       <Text size="xs" c="dimmed" mt="xl">
-        {currentIndex + 1} / {classes.length}
+        {currentIndex + 1} / {classes.length} • {swipeCount} swipes today
       </Text>
     </Container>
   );

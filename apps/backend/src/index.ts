@@ -233,6 +233,188 @@ app.post('/api/gemini/chat', async (req, res) => {
   }
 });
 
+// Helper function to calculate relevance score
+function calculateRelevanceScore(course: any, user: any): number {
+  let score = 0;
+  
+  // Major match (highest weight)
+  if (user.major && course.department) {
+    const majorKeywords = user.major.toLowerCase().split(' ');
+    const deptLower = course.department.toLowerCase();
+    
+    if (majorKeywords.some((keyword: string) => deptLower.includes(keyword))) {
+      score += 50;
+    }
+  }
+  
+  // Minor match
+  if (user.minor && course.department) {
+    const minorKeywords = user.minor.toLowerCase().split(' ');
+    const deptLower = course.department.toLowerCase();
+    
+    if (minorKeywords.some((keyword: string) => deptLower.includes(keyword))) {
+      score += 30;
+    }
+  }
+  
+  // Interest match (check title and description)
+  if (user.interests) {
+    const interestKeywords = user.interests.toLowerCase().split(/[\s,]+/);
+    const titleLower = (course.title || '').toLowerCase();
+    const descLower = (course.description || '').toLowerCase();
+    
+    interestKeywords.forEach((keyword: string) => {
+      if (titleLower.includes(keyword)) score += 10;
+      if (descLower.includes(keyword)) score += 5;
+    });
+  }
+  
+  // Course level matching (introductory courses for new students)
+  if (user.incoming_credits !== null && user.incoming_credits !== undefined) {
+    const courseNumber = course.number;
+    if (user.incoming_credits < 30 && courseNumber < 200) {
+      score += 15; // Boost intro courses for newer students
+    } else if (user.incoming_credits >= 60 && courseNumber >= 300) {
+      score += 15; // Boost advanced courses for upperclassmen
+    }
+  }
+  
+  // Add some randomness for variety (±10 points)
+  score += Math.random() * 20 - 10;
+  
+  return score;
+}
+
+// Get personalized course recommendations
+app.get('/api/recommendations', async (req, res) => {
+  try {
+    const { googleId, limit = '20' } = req.query;
+    
+    if (!googleId) {
+      return res.status(400).json({ error: 'googleId is required' });
+    }
+
+    // Get user and their preferences
+    const users = await sql`
+      SELECT * FROM "Users" WHERE google_id = ${googleId}
+    `;
+    
+    if (users.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const user = users[0];
+    
+    // Get classes user has already interacted with
+    const interactedClasses = await sql`
+      SELECT DISTINCT c.id
+      FROM "UserCourseInteraction" uci
+      JOIN "Users" u ON u.id = uci.user_id
+      JOIN "Class" c ON c.id = uci.class_id
+      WHERE u.google_id = ${googleId}
+    `;
+    
+    const excludeIds = new Set(interactedClasses.map((c: any) => c.id));
+    
+    // Fetch more classes than needed, then filter and score
+    const allClasses = await sql`
+      SELECT * FROM "Class"
+      LIMIT ${parseInt(limit as string) * 3}
+    `;
+    
+    // Filter out already interacted classes
+    const availableClasses = allClasses.filter((cls: any) => !excludeIds.has(cls.id));
+    
+    // Score and rank courses based on user preferences
+    const scoredClasses = availableClasses.map((cls: any) => ({
+      ...cls,
+      score: calculateRelevanceScore(cls, user)
+    }))
+    .sort((a: any, b: any) => b.score - a.score)
+    .slice(0, parseInt(limit as string));
+    
+    res.json(scoredClasses);
+  } catch (error) {
+    console.error('Error fetching recommendations:', error);
+    res.status(500).json({ error: 'Failed to fetch recommendations' });
+  }
+});
+
+// Save user interaction (like/pass)
+app.post('/api/user/interaction', async (req, res) => {
+  try {
+    const { googleId, classId, interactionType } = req.body;
+    
+    if (!googleId || !classId || !interactionType) {
+      return res.status(400).json({ 
+        error: 'googleId, classId, and interactionType are required' 
+      });
+    }
+    
+    // Get user ID from google_id
+    const users = await sql`
+      SELECT id FROM "Users" WHERE google_id = ${googleId}
+    `;
+    
+    if (users.length === 0 || !users[0]) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const userId = users[0].id;
+    
+    // Insert interaction (will ignore on conflict)
+    await sql`
+      INSERT INTO "UserCourseInteraction" (user_id, class_id, interaction_type)
+      VALUES (${userId}, ${classId}, ${interactionType})
+      ON CONFLICT (user_id, class_id, interaction_type) DO NOTHING
+    `;
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error saving interaction:', error);
+    res.status(500).json({ error: 'Failed to save interaction' });
+  }
+});
+
+// Get user's interaction history
+app.get('/api/user/interactions', async (req, res) => {
+  try {
+    const { googleId, interactionType } = req.query;
+    
+    if (!googleId) {
+      return res.status(400).json({ error: 'googleId is required' });
+    }
+    
+    let interactions;
+    
+    if (interactionType) {
+      interactions = await sql`
+        SELECT c.*, uci.interaction_type, uci.created_at
+        FROM "UserCourseInteraction" uci
+        JOIN "Users" u ON u.id = uci.user_id
+        JOIN "Class" c ON c.id = uci.class_id
+        WHERE u.google_id = ${googleId} 
+          AND uci.interaction_type = ${interactionType}
+        ORDER BY uci.created_at DESC
+      `;
+    } else {
+      interactions = await sql`
+        SELECT c.*, uci.interaction_type, uci.created_at
+        FROM "UserCourseInteraction" uci
+        JOIN "Users" u ON u.id = uci.user_id
+        JOIN "Class" c ON c.id = uci.class_id
+        WHERE u.google_id = ${googleId}
+        ORDER BY uci.created_at DESC
+      `;
+    }
+    
+    res.json(interactions);
+  } catch (error) {
+    console.error('Error fetching interactions:', error);
+    res.status(500).json({ error: 'Failed to fetch interactions' });
+  }
+});
+
 // Google OAuth authentication endpoint
 app.post('/auth/google', async (req, res) => {
   try {
