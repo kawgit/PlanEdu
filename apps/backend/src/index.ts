@@ -206,7 +206,7 @@ app.get('/api/departments', async (req, res) => {
   }
 });
 
-// Gemini AI chat endpoint
+// Gemini AI chat endpoint (streaming)
 app.post('/api/gemini/chat', async (req, res) => {
   try {
     const { question, classes } = req.body;
@@ -236,12 +236,22 @@ app.post('/api/gemini/chat', async (req, res) => {
       context = `You are a helpful BU course advisor. Answer the following question:\n\n${question}`;
     }
 
-    // Call Gemini API
-    const result = await geminiModel.generateContent(context);
-    const response = await result.response;
-    const text = response.text();
+    // Set headers for streaming
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
 
-    res.json({ response: text });
+    // Call Gemini API with streaming
+    const result = await geminiModel.generateContentStream(context);
+
+    // Stream the response
+    for await (const chunk of result.stream) {
+      const chunkText = chunk.text();
+      res.write(`data: ${JSON.stringify({ text: chunkText })}\n\n`);
+    }
+
+    res.write('data: [DONE]\n\n');
+    res.end();
   } catch (error: any) {
     console.error('Gemini API error:', error);
     res.status(500).json({ 
