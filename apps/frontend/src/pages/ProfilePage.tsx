@@ -5,6 +5,7 @@ import { IconTrash, IconUpload, IconPlus, IconSchool, IconTrophy, IconSearch } f
 import { notifications } from '@mantine/notifications';
 import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses } from '../utils/auth';
 import TranscriptUpload from '../components/TranscriptUpload';
+import CSMajorProgress from '../components/CSMajorProgress';
 import { useDebouncedValue } from '@mantine/hooks';
 
 const ProfilePage: React.FC = () => {
@@ -13,6 +14,7 @@ const ProfilePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   // Profile fields
   const [major, setMajor] = useState<string | null>(null);
@@ -122,6 +124,8 @@ const ProfilePage: React.FC = () => {
       const data = await fetchCompletedCourses();
       setCourses(data);
       setError(null);
+      // Trigger refresh of CS major progress
+      setRefreshTrigger(prev => prev + 1);
     } catch (err: any) {
       setError(err.message || 'Failed to load courses');
     } finally {
@@ -286,6 +290,9 @@ const ProfilePage: React.FC = () => {
           </Grid.Col>
         </Grid>
       </Card>
+
+      {/* CS Major Progress */}
+      {major === 'Computer Science' && <CSMajorProgress refreshTrigger={refreshTrigger} />}
 
       {/* Action Buttons */}
       <Card shadow="md" p="lg" radius="md" withBorder mb="lg">

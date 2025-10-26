@@ -5,6 +5,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import multer from 'multer';
 import sql from './db';
+import { calculateCSMajorCompletion } from './majorCompletion';
 
 const app = express();
 const port = 3001;
@@ -1019,6 +1020,53 @@ app.delete('/api/user/completed-course', async (req, res) => {
   } catch (error) {
     console.error('Error deleting completed course:', error);
     res.status(500).json({ error: 'Failed to delete completed course' });
+  }
+});
+
+// Calculate CS major completion percentage
+app.get('/api/user/cs-major-completion', async (req, res) => {
+  try {
+    const { googleId } = req.query;
+    
+    if (!googleId) {
+      return res.status(400).json({ error: 'googleId is required' });
+    }
+
+    // Get user's completed courses
+    const completedCoursesRaw = await sql`
+      SELECT 
+        c.school,
+        c.department,
+        c.number,
+        c.title,
+        c.description,
+        ucc.grade
+      FROM "UserCompletedClass" ucc
+      JOIN "Users" u ON u.id = ucc."userId"
+      JOIN "Class" c ON c.id = ucc."classId"
+      WHERE u.google_id = ${googleId}
+    `;
+    
+    // Map to CompletedCourse type
+    const completedCourses = completedCoursesRaw.map(course => ({
+      school: course.school as string,
+      department: course.department as string,
+      number: course.number as number,
+      grade: course.grade as string | null,
+      title: course.title as string,
+      description: course.description as string
+    }));
+    
+    // Calculate completion percentage
+    const result = calculateCSMajorCompletion(completedCourses);
+    
+    res.json(result);
+  } catch (error) {
+    console.error('Error calculating CS major completion:', error);
+    res.status(500).json({ 
+      error: 'Failed to calculate CS major completion',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
