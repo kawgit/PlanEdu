@@ -255,63 +255,111 @@ function calculateRelevanceScore(course: any, user: any): number {
   let score = 0;
   
   // Base score for all courses (ensures variety)
-  score = 50;
+  score = 40;
   
-  // Major match (moderate weight to avoid over-concentration)
+  // Major match - highest weight for core curriculum
   if (user.major && course.department) {
     const majorKeywords = user.major.toLowerCase().split(' ');
     const deptLower = course.department.toLowerCase();
+    const schoolLower = (course.school || '').toLowerCase();
     
-    if (majorKeywords.some((keyword: string) => deptLower.includes(keyword))) {
-      score += 25; // Reduced from 50 to allow more variety
+    // Check if department matches any major keyword
+    if (majorKeywords.some((keyword: string) => 
+      deptLower.includes(keyword) || schoolLower.includes(keyword)
+    )) {
+      score += 35; // Strong boost for major-related courses
+      
+      // Additional boost for courses at appropriate level
+      if (user.incoming_credits !== null && user.incoming_credits !== undefined) {
+        if (user.incoming_credits < 30 && course.number < 300) {
+          score += 10; // Intro/intermediate courses for new students
+        } else if (user.incoming_credits >= 30 && course.number >= 200) {
+          score += 10; // More advanced courses for experienced students
+        }
+      }
     }
   }
   
-  // Minor match
+  // Minor match - moderate weight
   if (user.minor && course.department) {
     const minorKeywords = user.minor.toLowerCase().split(' ');
     const deptLower = course.department.toLowerCase();
+    const schoolLower = (course.school || '').toLowerCase();
     
-    if (minorKeywords.some((keyword: string) => deptLower.includes(keyword))) {
-      score += 20; // Reduced from 30
+    if (minorKeywords.some((keyword: string) => 
+      deptLower.includes(keyword) || schoolLower.includes(keyword)
+    )) {
+      score += 25; // Good boost for minor-related courses
     }
   }
   
-  // Interest match (check title and description)
+  // Interest match - check title and description for keywords
   if (user.interests) {
     const interestKeywords = user.interests.toLowerCase().split(/[\s,]+/);
     const titleLower = (course.title || '').toLowerCase();
     const descLower = (course.description || '').toLowerCase();
     
+    // Map interest categories to relevant keywords
+    const interestMapping: { [key: string]: string[] } = {
+      'creative': ['art', 'music', 'design', 'creative', 'studio', 'performance', 'theater', 'film'],
+      'social': ['society', 'culture', 'sociology', 'anthropology', 'history', 'politics', 'psychology'],
+      'natural': ['biology', 'chemistry', 'physics', 'earth', 'environment', 'science'],
+      'technology': ['computer', 'programming', 'data', 'digital', 'software', 'engineering', 'tech'],
+      'global': ['international', 'global', 'world', 'culture', 'language', 'geography'],
+      'health': ['health', 'medical', 'wellness', 'nutrition', 'biology', 'physiology'],
+    };
+    
     interestKeywords.forEach((keyword: string) => {
-      if (keyword.length > 2) { // Ignore very short keywords
-        if (titleLower.includes(keyword)) score += 15; // Increased from 10
-        if (descLower.includes(keyword)) score += 8; // Increased from 5
+      if (keyword.length > 3) {
+        // Direct keyword match
+        if (titleLower.includes(keyword)) score += 18;
+        if (descLower.includes(keyword)) score += 10;
+        
+        // Check mapped keywords for this interest
+        for (const [category, relatedTerms] of Object.entries(interestMapping)) {
+          if (keyword.includes(category)) {
+            relatedTerms.forEach(term => {
+              if (titleLower.includes(term)) score += 12;
+              if (descLower.includes(term)) score += 6;
+            });
+          }
+        }
       }
     });
   }
   
-  // Course level matching (introductory courses for new students)
+  // Course level matching based on incoming credits
   if (user.incoming_credits !== null && user.incoming_credits !== undefined) {
     const courseNumber = course.number;
-    if (user.incoming_credits < 30 && courseNumber < 200) {
-      score += 20; // Boost intro courses for newer students
-    } else if (user.incoming_credits >= 60 && courseNumber >= 300) {
-      score += 15; // Boost advanced courses for upperclassmen
-    } else if (courseNumber >= 100 && courseNumber < 300) {
-      score += 10; // Moderate boost for mid-level courses
+    
+    if (user.incoming_credits < 30) {
+      // New students: prefer 100-200 level courses
+      if (courseNumber >= 100 && courseNumber < 200) score += 20;
+      else if (courseNumber >= 200 && courseNumber < 300) score += 10;
+      else if (courseNumber >= 500) score -= 25; // Strongly discourage grad courses
+    } else if (user.incoming_credits >= 30 && user.incoming_credits < 60) {
+      // Sophomores: prefer 200-300 level
+      if (courseNumber >= 200 && courseNumber < 400) score += 15;
+      else if (courseNumber >= 100 && courseNumber < 200) score += 5;
+    } else if (user.incoming_credits >= 60) {
+      // Juniors/Seniors: prefer 300-400 level
+      if (courseNumber >= 300) score += 20;
+      else if (courseNumber >= 200 && courseNumber < 300) score += 10;
+      else if (courseNumber < 200) score -= 10; // Discourage intro courses
     }
   }
   
-  // Penalize very advanced courses for students without many credits
-  if (user.incoming_credits !== null && user.incoming_credits < 30 && course.number >= 400) {
-    score -= 20;
+  // Hub requirements - boost courses that fulfill hub requirements
+  if (course.hub_areas && Array.isArray(course.hub_areas) && course.hub_areas.length > 0) {
+    score += 8; // Bonus for hub courses (helps with gen ed requirements)
   }
   
-  // Add significant randomness for variety (±20 points)
-  score += Math.random() * 40 - 20;
+  // Variety factor: Add controlled randomness (±15 points)
+  // This ensures users see diverse recommendations while still prioritizing relevance
+  score += Math.random() * 30 - 15;
   
-  return score;
+  // Ensure score is non-negative
+  return Math.max(0, score);
 }
 
 // Get personalized course recommendations
@@ -342,28 +390,43 @@ app.get('/api/recommendations', async (req, res) => {
       incoming_credits: user.incoming_credits
     });
     
-    // Get classes user has already interacted with
-    const interactedClasses = await sql`
+    // Get classes user has already bookmarked (exclude them from recommendations)
+    const bookmarkedClasses = await sql`
       SELECT DISTINCT c.id
-      FROM "UserCourseInteraction" uci
-      JOIN "Users" u ON u.id = uci.user_id
-      JOIN "Class" c ON c.id = uci.class_id
+      FROM "Bookmark" b
+      JOIN "Users" u ON u.id = b."userId"
+      JOIN "Class" c ON c.id = b."classId"
       WHERE u.google_id = ${googleId}
     `;
     
-    const excludeIds = new Set(interactedClasses.map((c: any) => c.id));
+    const excludeIds = new Set(bookmarkedClasses.map((c: any) => c.id));
     
-    // Fetch ALL courses and randomize them for diversity
+    // Fetch ALL courses with hub areas and randomize them for diversity
     const requestedLimit = parseInt(limit as string);
     
     const allClasses = await sql`
-      SELECT * FROM "Class"
+      WITH ClassesWithHubs AS (
+        SELECT 
+          c.id,
+          c.school,
+          c.department,
+          c.number,
+          c.title,
+          c.description,
+          ARRAY_AGG(DISTINCT hr.name) FILTER (WHERE hr.name IS NOT NULL) as hub_areas,
+          4 as typical_credits
+        FROM "Class" c
+        LEFT JOIN "ClassToHubRequirement" cthr ON c.id = cthr."classId"
+        LEFT JOIN "HubRequirement" hr ON cthr."hubRequirementId" = hr.id
+        GROUP BY c.id, c.school, c.department, c.number, c.title, c.description
+      )
+      SELECT * FROM ClassesWithHubs
       ORDER BY RANDOM()
     `;
     
-    console.log(`Fetched ${allClasses.length} random courses, ${excludeIds.size} already interacted with`);
+    console.log(`Fetched ${allClasses.length} random courses, ${excludeIds.size} already bookmarked`);
     
-    // Filter out already interacted classes
+    // Filter out already bookmarked classes
     const availableClasses = allClasses.filter((cls: any) => !excludeIds.has(cls.id));
     
     // Score and rank courses based on user preferences
@@ -384,13 +447,19 @@ app.get('/api/recommendations', async (req, res) => {
     }
     
     res.json(scoredClasses);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching recommendations:', error);
-    res.status(500).json({ error: 'Failed to fetch recommendations' });
+    console.error('Error stack:', error.stack);
+    console.error('Error message:', error.message);
+    res.status(500).json({ 
+      error: 'Failed to fetch recommendations',
+      details: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
-// Save user interaction (like/pass)
+// Save user interaction (bookmark or discard)
 app.post('/api/user/interaction', async (req, res) => {
   try {
     const { googleId, classId, interactionType } = req.body;
@@ -401,23 +470,27 @@ app.post('/api/user/interaction', async (req, res) => {
       });
     }
     
-    // Get user ID from google_id
-    const users = await sql`
-      SELECT id FROM "Users" WHERE google_id = ${googleId}
-    `;
-    
-    if (users.length === 0 || !users[0]) {
-      return res.status(404).json({ error: 'User not found' });
+    // Only handle bookmarks - discards are just ignored (user moves to next card)
+    if (interactionType === 'bookmark') {
+      // Get user ID from google_id
+      const users = await sql`
+        SELECT id FROM "Users" WHERE google_id = ${googleId}
+      `;
+      
+      if (users.length === 0 || !users[0]) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      
+      const userId = users[0].id;
+      
+      // Insert bookmark (will ignore on conflict)
+      await sql`
+        INSERT INTO "Bookmark" ("userId", "classId")
+        VALUES (${userId}, ${classId})
+        ON CONFLICT ("userId", "classId") DO NOTHING
+      `;
     }
-    
-    const userId = users[0].id;
-    
-    // Insert interaction (will ignore on conflict)
-    await sql`
-      INSERT INTO "UserCourseInteraction" (user_id, class_id, interaction_type)
-      VALUES (${userId}, ${classId}, ${interactionType})
-      ON CONFLICT (user_id, class_id, interaction_type) DO NOTHING
-    `;
+    // For 'discard', we just do nothing - no need to track it
     
     res.json({ success: true });
   } catch (error) {
@@ -426,39 +499,27 @@ app.post('/api/user/interaction', async (req, res) => {
   }
 });
 
-// Get user's interaction history
+// Get user's interaction history (redirects to bookmarks endpoint)
+// This endpoint is kept for backward compatibility
 app.get('/api/user/interactions', async (req, res) => {
   try {
-    const { googleId, interactionType } = req.query;
+    const { googleId } = req.query;
     
     if (!googleId) {
       return res.status(400).json({ error: 'googleId is required' });
     }
     
-    let interactions;
+    // Only return bookmarks now (no more interaction tracking)
+    const bookmarks = await sql`
+      SELECT c.*, b.created_at as bookmarked_at
+      FROM "Bookmark" b
+      JOIN "Users" u ON u.id = b."userId"
+      JOIN "Class" c ON c.id = b."classId"
+      WHERE u.google_id = ${googleId}
+      ORDER BY b.created_at DESC
+    `;
     
-    if (interactionType) {
-      interactions = await sql`
-        SELECT c.*, uci.interaction_type, uci.created_at
-        FROM "UserCourseInteraction" uci
-        JOIN "Users" u ON u.id = uci.user_id
-        JOIN "Class" c ON c.id = uci.class_id
-        WHERE u.google_id = ${googleId} 
-          AND uci.interaction_type = ${interactionType}
-        ORDER BY uci.created_at DESC
-      `;
-    } else {
-      interactions = await sql`
-        SELECT c.*, uci.interaction_type, uci.created_at
-        FROM "UserCourseInteraction" uci
-        JOIN "Users" u ON u.id = uci.user_id
-        JOIN "Class" c ON c.id = uci.class_id
-        WHERE u.google_id = ${googleId}
-        ORDER BY uci.created_at DESC
-      `;
-    }
-    
-    res.json(interactions);
+    res.json(bookmarks);
   } catch (error) {
     console.error('Error fetching interactions:', error);
     res.status(500).json({ error: 'Failed to fetch interactions' });

@@ -26,7 +26,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
     {
       icon: IconBook,
       title: 'Discover Classes',
-      description: 'Swipe through courses to find your perfect matches',
+      description: 'Get personalized course recommendations based on your preferences',
       color: 'blue',
       action: () => setActiveTab('swiper'),
     },

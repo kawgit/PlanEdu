@@ -111,7 +111,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
         />
         <NavItem
           icon={<IconCards size={24} stroke={1.5} />}
-          label="Swiper"
+          label="Discover"
           active={activeTab === 'swiper'}
           onClick={() => setActiveTab('swiper')}
         />

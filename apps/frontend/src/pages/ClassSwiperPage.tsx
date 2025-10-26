@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Title, Text, Card, Group, Badge, Button, Stack, Box, Loader } from '@mantine/core';
-import { IconHeart, IconX, IconClock } from '@tabler/icons-react';
+import { IconBookmark, IconX, IconClock, IconInfoCircle } from '@tabler/icons-react';
 import { getUserGoogleId } from '../utils/auth';
 import { notifications } from '@mantine/notifications';
 
@@ -25,10 +25,29 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [swipeCount, setSwipeCount] = useState(0);
+  const [userPreferences, setUserPreferences] = useState<any>(null);
 
   useEffect(() => {
+    fetchUserPreferences();
     fetchRecommendedClasses();
   }, []);
+
+  const fetchUserPreferences = async () => {
+    try {
+      const googleId = getUserGoogleId();
+      if (!googleId) return;
+
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const response = await fetch(`${backendUrl}/api/user?googleId=${googleId}`);
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setUserPreferences(userData);
+      }
+    } catch (error) {
+      console.error('Error fetching user preferences:', error);
+    }
+  };
 
   const fetchRecommendedClasses = async () => {
     try {
@@ -65,7 +84,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
 
   const currentClass = classes[currentIndex];
 
-  const handleSwipe = async (liked: boolean) => {
+  const handleSwipe = async (bookmarked: boolean) => {
     if (!currentClass) return;
 
     try {
@@ -84,24 +103,31 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
         body: JSON.stringify({
           googleId,
           classId: currentClass.id,
-          interactionType: liked ? 'like' : 'pass',
+          interactionType: bookmarked ? 'bookmark' : 'discard',
         }),
       });
 
-      if (liked && addBookmark) {
+      if (bookmarked && addBookmark) {
         // Transform to match expected bookmark format
         const courseCode = `${currentClass.school} ${currentClass.department} ${currentClass.number}`;
         addBookmark({
+          ...currentClass,
           code: courseCode,
-          title: currentClass.title,
-          description: currentClass.description,
-          credits: currentClass.typical_credits || 4,
         });
         
         notifications.show({
-          title: 'Course Liked!',
-          message: `${courseCode} added to bookmarks`,
+          title: 'Course Bookmarked!',
+          message: `${courseCode} - ${currentClass.title}`,
           color: 'green',
+        });
+      } else if (!bookmarked) {
+        // Just move to the next card - no need to track discards
+        // Optionally show a subtle notification
+        notifications.show({
+          title: 'Skipped',
+          message: 'Moving to next course',
+          color: 'gray',
+          autoClose: 1500,
         });
       }
 
@@ -137,7 +163,11 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
     return (
       <Container size="sm" p="lg" ta="center">
         <Title order={2} c="bu-red">No More Courses</Title>
-        <Text mt="md">You've seen all available recommendations!</Text>
+        <Text mt="md">
+          {!userPreferences || (!userPreferences.major && !userPreferences.minor && !userPreferences.interests)
+            ? "Set your preferences to get personalized recommendations!"
+            : "You've seen all available recommendations!"}
+        </Text>
         <Button onClick={fetchRecommendedClasses} mt="lg" color="bu-red">
           Refresh Recommendations
         </Button>
@@ -152,11 +182,32 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
   return (
     <Container size="sm" p="lg" ta="center">
       <Title order={2} mb="xs" c="bu-red">
-        Class Swiper
+        Course Recommendations
       </Title>
-      <Text c="dimmed" mb="xl" size="sm">
-        Swipe through personalized course recommendations
+      <Text c="dimmed" mb="md" size="sm">
+        Personalized based on your preferences
       </Text>
+      
+      {/* Show active preference filters */}
+      {userPreferences && (userPreferences.major || userPreferences.minor || userPreferences.interests) && (
+        <Group justify="center" gap="xs" mb="lg">
+          {userPreferences.major && (
+            <Badge variant="light" color="blue" leftSection={<IconInfoCircle size={14} />}>
+              Major: {userPreferences.major}
+            </Badge>
+          )}
+          {userPreferences.minor && (
+            <Badge variant="light" color="green">
+              Minor: {userPreferences.minor}
+            </Badge>
+          )}
+          {userPreferences.interests && (
+            <Badge variant="light" color="violet">
+              Interest: {userPreferences.interests}
+            </Badge>
+          )}
+        </Group>
+      )}
 
       {/* Card Stack Preview */}
       <Box style={{ position: 'relative', height: '500px', marginBottom: '2rem' }}>
@@ -241,14 +292,14 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
       <Group justify="center" gap="xl">
         <Button
           variant="outline"
-          color="red"
+          color="gray"
           size="xl"
           radius="xl"
           leftSection={<IconX size={24} />}
           onClick={() => handleSwipe(false)}
-          style={{ width: '140px', transition: 'all 0.3s ease' }}
+          style={{ width: '160px', transition: 'all 0.3s ease' }}
         >
-          Pass
+          Discard
         </Button>
 
         <Button
@@ -256,11 +307,11 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
           color="bu-red"
           size="xl"
           radius="xl"
-          leftSection={<IconHeart size={24} />}
+          leftSection={<IconBookmark size={24} />}
           onClick={() => handleSwipe(true)}
-          style={{ width: '140px', transition: 'all 0.3s ease' }}
+          style={{ width: '160px', transition: 'all 0.3s ease' }}
         >
-          Like
+          Bookmark
         </Button>
       </Group>
 
