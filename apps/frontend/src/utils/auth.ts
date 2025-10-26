@@ -339,3 +339,25 @@ export const deleteCompletedCourse = async (courseId: number) => {
   return response.json();
 };
 
+/**
+ * Search for classes by keyword
+ */
+export const searchClasses = async (keyword: string, limit: number = 20) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const response = await fetch(
+    `${backendUrl}/api/classes?keyword=${encodeURIComponent(keyword)}&limit=${limit}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to search classes');
+  }
+
+  return response.json();
+};
+

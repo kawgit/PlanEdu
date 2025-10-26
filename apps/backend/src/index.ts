@@ -120,7 +120,11 @@ app.get('/api/classes', async (req, res) => {
         SELECT * FROM "Class" 
         WHERE "school" = ${school} 
           AND "department" = ${department}
-          AND ("title" ILIKE ${searchTerm} OR "description" ILIKE ${searchTerm})
+          AND (
+            "title" ILIKE ${searchTerm} 
+            OR "description" ILIKE ${searchTerm}
+            OR CAST("number" AS TEXT) ILIKE ${searchTerm}
+          )
         LIMIT ${parseInt(limit as string)}
       `;
     } else if (school && department) {
@@ -134,7 +138,12 @@ app.get('/api/classes', async (req, res) => {
       classes = await sql`
         SELECT * FROM "Class" 
         WHERE "school" = ${school}
-          AND ("title" ILIKE ${searchTerm} OR "description" ILIKE ${searchTerm})
+          AND (
+            "title" ILIKE ${searchTerm} 
+            OR "description" ILIKE ${searchTerm}
+            OR "department" ILIKE ${searchTerm}
+            OR CAST("number" AS TEXT) ILIKE ${searchTerm}
+          )
         LIMIT ${parseInt(limit as string)}
       `;
     } else if (school) {
@@ -147,7 +156,12 @@ app.get('/api/classes', async (req, res) => {
       const searchTerm = `%${keyword}%`;
       classes = await sql`
         SELECT * FROM "Class" 
-        WHERE "title" ILIKE ${searchTerm} OR "description" ILIKE ${searchTerm}
+        WHERE "title" ILIKE ${searchTerm} 
+          OR "description" ILIKE ${searchTerm}
+          OR "school" ILIKE ${searchTerm}
+          OR "department" ILIKE ${searchTerm}
+          OR CAST("number" AS TEXT) ILIKE ${searchTerm}
+          OR CONCAT("school", "department", ' ', "number") ILIKE ${searchTerm}
         LIMIT ${parseInt(limit as string)}
       `;
     } else {

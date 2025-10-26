@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, TextInput, Select, NumberInput, Grid } from '@mantine/core';
+import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, TextInput, Select, NumberInput, Grid, Autocomplete, Loader } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { IconTrash, IconUpload, IconPlus, IconCertificate, IconSchool, IconTrophy } from '@tabler/icons-react';
+import { IconTrash, IconUpload, IconPlus, IconCertificate, IconSchool, IconTrophy, IconSearch } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
-import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB } from '../utils/auth';
+import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses } from '../utils/auth';
 import TranscriptUpload from '../components/TranscriptUpload';
+import { useDebouncedValue } from '@mantine/hooks';
 
 const CompletedCoursesPage: React.FC = () => {
   const [courses, setCourses] = useState<CompletedCourse[]>([]);
@@ -22,9 +23,12 @@ const CompletedCoursesPage: React.FC = () => {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   // Form state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 300);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
   const [formData, setFormData] = useState({
-    courseCode: '',
-    courseTitle: '',
     grade: '',
     credits: '',
     semesterTaken: '',
@@ -38,6 +42,29 @@ const CompletedCoursesPage: React.FC = () => {
 
     loadCourses();
   }, [filterType]);
+
+  // Search courses when query changes
+  useEffect(() => {
+    if (!debouncedSearchQuery || debouncedSearchQuery.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const performSearch = async () => {
+      setIsSearching(true);
+      try {
+        const results = await searchClasses(debouncedSearchQuery, 20);
+        setSearchResults(results);
+      } catch (error) {
+        console.error('Search failed:', error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    performSearch();
+  }, [debouncedSearchQuery]);
 
   // Load profile preferences when component mounts
   useEffect(() => {
@@ -130,28 +157,31 @@ const CompletedCoursesPage: React.FC = () => {
   const handleAddCourse = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.courseCode || !formData.courseTitle) {
+    if (!selectedCourse) {
       notifications.show({
         title: 'Missing Information',
-        message: 'Course code and title are required',
+        message: 'Please select a course from the search results',
         color: 'red',
       });
       return;
     }
 
+    const courseCode = `${selectedCourse.school}${selectedCourse.department} ${selectedCourse.number}`;
+
     try {
       await addCompletedCourse({
-        courseCode: formData.courseCode,
-        courseTitle: formData.courseTitle,
+        courseCode: courseCode,
+        courseTitle: selectedCourse.title,
         grade: formData.grade || undefined,
-        credits: formData.credits ? parseFloat(formData.credits) : undefined,
+        credits: formData.credits ? parseFloat(formData.credits) : 4,
         semesterTaken: formData.semesterTaken || undefined,
         courseType: formData.courseType,
       });
 
+      setSelectedCourse(null);
+      setSearchQuery('');
+      setSearchResults([]);
       setFormData({
-        courseCode: '',
-        courseTitle: '',
         grade: '',
         credits: '',
         semesterTaken: '',
@@ -162,7 +192,7 @@ const CompletedCoursesPage: React.FC = () => {
       
       notifications.show({
         title: 'Course Added!',
-        message: `${formData.courseCode} has been added to your completed courses`,
+        message: `${courseCode} has been added to your completed courses`,
         color: 'green',
       });
     } catch (err: any) {
@@ -325,67 +355,121 @@ const CompletedCoursesPage: React.FC = () => {
       {/* Add Course Modal */}
       <Modal 
         opened={showAddForm} 
-        onClose={() => setShowAddForm(false)} 
+        onClose={() => {
+          setShowAddForm(false);
+          setSelectedCourse(null);
+          setSearchQuery('');
+          setSearchResults([]);
+          setFormData({
+            grade: '',
+            credits: '',
+            semesterTaken: '',
+            courseType: 'BU',
+          });
+        }} 
         title="Add Completed Course"
         size="lg"
       >
         <form onSubmit={handleAddCourse}>
           <Stack gap="md">
-            <TextInput
-              label="Course Code"
-              placeholder="e.g., CASCS 111 or AP Calculus BC"
-              value={formData.courseCode}
-              onChange={(e) => setFormData({ ...formData, courseCode: e.target.value })}
-              required
-            />
-            <TextInput
-              label="Course Title"
-              placeholder="e.g., Introduction to Computer Science"
-              value={formData.courseTitle}
-              onChange={(e) => setFormData({ ...formData, courseTitle: e.target.value })}
-              required
-            />
-            <Select
-              label="Course Type"
-              data={[
-                { value: 'BU', label: 'BU Course' },
-                { value: 'AP', label: 'AP Course' },
-                { value: 'Transfer', label: 'Transfer Course' },
-                { value: 'Other', label: 'Other' },
-              ]}
-              value={formData.courseType}
-              onChange={(value) => setFormData({ ...formData, courseType: value as any })}
-              required
-            />
-            <Grid>
-              <Grid.Col span={6}>
+            {/* Course Search */}
+            <Box>
+              <Autocomplete
+                label="Search for Course"
+                placeholder="Type to search courses (e.g., 'Computer Science', 'CS 111')"
+                data={searchResults.map((course) => ({
+                  value: `${course.school}${course.department} ${course.number} - ${course.title}`,
+                  label: `${course.school}${course.department} ${course.number} - ${course.title}`,
+                  course: course,
+                }))}
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onOptionSubmit={(value, option: any) => {
+                  setSelectedCourse(option.course);
+                  setSearchQuery(value);
+                }}
+                leftSection={<IconSearch size={16} />}
+                rightSection={isSearching ? <Loader size="xs" /> : null}
+                limit={20}
+                maxDropdownHeight={300}
+                required
+              />
+              {selectedCourse && (
+                <Card mt="sm" p="sm" withBorder bg="gray.0">
+                  <Text size="sm" fw={600} c="bu-red">
+                    {selectedCourse.school}{selectedCourse.department} {selectedCourse.number}
+                  </Text>
+                  <Text size="sm">{selectedCourse.title}</Text>
+                  {selectedCourse.description && (
+                    <Text size="xs" c="dimmed" mt="xs" lineClamp={2}>
+                      {selectedCourse.description}
+                    </Text>
+                  )}
+                </Card>
+              )}
+            </Box>
+
+            {/* Additional Details */}
+            {selectedCourse && (
+              <>
+                <Select
+                  label="Course Type"
+                  data={[
+                    { value: 'BU', label: 'BU Course' },
+                    { value: 'AP', label: 'AP Course' },
+                    { value: 'Transfer', label: 'Transfer Course' },
+                    { value: 'Other', label: 'Other' },
+                  ]}
+                  value={formData.courseType}
+                  onChange={(value) => setFormData({ ...formData, courseType: value as any })}
+                  required
+                />
+                <Grid>
+                  <Grid.Col span={6}>
+                    <TextInput
+                      label="Grade"
+                      placeholder="e.g., A, B+, or 5 for AP"
+                      value={formData.grade}
+                      onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <NumberInput
+                      label="Credits"
+                      placeholder="e.g., 4"
+                      value={formData.credits}
+                      onChange={(value) => setFormData({ ...formData, credits: String(value) })}
+                      decimalScale={1}
+                      step={0.5}
+                      min={0}
+                      defaultValue={4}
+                    />
+                  </Grid.Col>
+                </Grid>
                 <TextInput
-                  label="Grade"
-                  placeholder="e.g., A, B+, or 5 for AP"
-                  value={formData.grade}
-                  onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+                  label="Semester Taken"
+                  placeholder="e.g., Fall 2024 or Test Credit"
+                  value={formData.semesterTaken}
+                  onChange={(e) => setFormData({ ...formData, semesterTaken: e.target.value })}
                 />
-              </Grid.Col>
-              <Grid.Col span={6}>
-                <NumberInput
-                  label="Credits"
-                  placeholder="e.g., 4"
-                  value={formData.credits}
-                  onChange={(value) => setFormData({ ...formData, credits: String(value) })}
-                  decimalScale={1}
-                  step={0.5}
-                />
-              </Grid.Col>
-            </Grid>
-            <TextInput
-              label="Semester Taken"
-              placeholder="e.g., Fall 2024 or Test Credit"
-              value={formData.semesterTaken}
-              onChange={(e) => setFormData({ ...formData, semesterTaken: e.target.value })}
-            />
+              </>
+            )}
+
             <Group justify="flex-end" mt="md">
-              <Button variant="subtle" onClick={() => setShowAddForm(false)}>Cancel</Button>
-              <Button type="submit" color="bu-red">Add Course</Button>
+              <Button 
+                variant="subtle" 
+                onClick={() => {
+                  setShowAddForm(false);
+                  setSelectedCourse(null);
+                  setSearchQuery('');
+                  setSearchResults([]);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" color="bu-red" disabled={!selectedCourse}>
+                Add Course
+              </Button>
             </Group>
           </Stack>
         </form>
