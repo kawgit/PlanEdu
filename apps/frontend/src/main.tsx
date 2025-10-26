@@ -31,7 +31,7 @@ const theme = createTheme({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
-      <MantineProvider theme={theme} defaultColorScheme="auto">
+      <MantineProvider theme={theme} defaultColorScheme="light">
         <Notifications />
         <App />
       </MantineProvider>
