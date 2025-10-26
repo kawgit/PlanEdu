@@ -15,7 +15,7 @@ const SignInPage: React.FC<SignInPageProps> = ({ setActiveTab }) => {
   const handleLoginSuccess = (credentialResponse: CredentialResponse) => {
     console.log('Login successful!', credentialResponse);
     setLoginModalOpened(false);
-    setActiveTab('home');
+    setActiveTab('questions');
   };
 
   const handleLoginError = () => {

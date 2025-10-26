@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mantine/core';
 import Navigation from './components/Navigation';
-import HomePage from './pages/HomePage';
 import SignInPage from './pages/SignInPage';
 import PreferencesPage from './pages/PreferencesPage';
 import QuestionsPage from './pages/QuestionsPage';
@@ -11,7 +10,7 @@ import BookmarksPage from './pages/BookmarksPage';
 import ScheduleBuilderPage from './pages/ScheduleBuilderPage';
 import CompletedCoursesPage from './pages/CompletedCoursesPage';
 
-export type TabName = 'home' | 'signin' | 'preferences' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder' | 'completed-courses';
+export type TabName = 'signin' | 'profile' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder' | 'completed-courses';
 
 const App: React.FC = () => {
   // Check if user is logged in and restore last active tab
@@ -28,7 +27,7 @@ const App: React.FC = () => {
     } catch (e) {
       console.error('Failed to load active tab from localStorage:', e);
     }
-    return 'home';
+    return 'questions';
   });
   // Shared bookmarks state - loaded from database
   const [bookmarks, setBookmarks] = useState<Array<any>>([]);
@@ -91,9 +90,7 @@ const App: React.FC = () => {
     switch (activeTab) {
       case 'signin':
         return <SignInPage setActiveTab={setActiveTab} />;
-      case 'home':
-        return <HomePage setActiveTab={setActiveTab} />;
-      case 'preferences':
+      case 'profile':
         return <PreferencesPage />;
       case 'questions':
         return <QuestionsPage addBookmark={addBookmark} removeBookmark={removeBookmark} bookmarks={bookmarks} />;
@@ -114,13 +111,13 @@ const App: React.FC = () => {
     <>
       <Box
         style={{
-          paddingBottom: activeTab !== 'signin' && activeTab !== 'home' ? '80px' : '0',
+          paddingBottom: activeTab !== 'signin' ? '80px' : '0',
           minHeight: '100vh',
         }}
       >
         {renderPage()}
       </Box>
-      {activeTab !== 'signin' && activeTab !== 'home' && (
+      {activeTab !== 'signin' && (
         <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
       )}
     </>
