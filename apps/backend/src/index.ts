@@ -10,6 +10,7 @@ import sql from './db';
 import { calculateCSMajorCompletion, calculateMathCSMajorCompletion } from './majorCompletion';
 import { calculateHubCompletion } from './hubCompletion';
 import recommendRouter from './routes/recommend';
+import userEmbeddingRouter from './routes/userEmbedding';
 
 const execAsync = promisify(exec);
 
@@ -48,6 +49,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api', recommendRouter);
+app.use('/api/user', userEmbeddingRouter);
 
 // Existing API endpoint
 app.get('/api', (req, res) => {

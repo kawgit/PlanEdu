@@ -4,8 +4,19 @@ import { runPythonScript } from '../utils/runPython';
 const router = Router();
 
 /**
+ * Interface for user embedding response from Python script
+ */
+interface UserEmbeddingResult {
+  embedding: number[];
+  profile_text: string;
+  dimension: number;
+  model: string;
+}
+
+/**
  * POST /api/user-embedding
  * Generate a user embedding based on their major, interests, and courses taken
+ * This is a stateless endpoint that doesn't store the embedding
  */
 router.post('/user-embedding', async (req: Request, res: Response) => {
   try {
@@ -27,15 +38,18 @@ router.post('/user-embedding', async (req: Request, res: Response) => {
     
     console.log('Generating user embedding for:', userData);
     
-    // Call the Python script to generate the embedding
-    const result = await runPythonScript<{ embedding: number[] }>(
-      '../../scripts/recommend.py',
+    // Call the new user_embedding.py script
+    const result = await runPythonScript<UserEmbeddingResult>(
+      '../../scripts/user_embedding.py',
       userData
     );
     
-    console.log('Successfully generated embedding with dimension:', result.embedding.length);
+    console.log('Successfully generated embedding:', {
+      dimension: result.dimension,
+      model: result.model
+    });
     
-    // Return the embedding
+    // Return the embedding with metadata
     res.json(result);
   } catch (error: any) {
     console.error('Error generating user embedding:', error);
