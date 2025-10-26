@@ -51,6 +51,7 @@ class SolveRequest(BaseModel):
     hubs: Dict[str, Any] = Field(default={}, description="Hub requirements and class mappings")
     semesters: List[str] = Field(..., description="List of semester IDs")
     bookmarks: List[str] = Field(default=[], description="List of bookmarked course IDs")
+    completed_courses: List[str] = Field(default=[], description="List of completed course IDs to exclude")
     k: int = Field(default=4, description="Maximum courses per semester")
     constraints: List[Dict[str, Any]] = Field(default=[], description="Additional user constraints")
     time_limit_sec: int = Field(default=5, description="Solver time limit in seconds")
@@ -138,7 +139,8 @@ async def health():
             "require_group_counts", "hub_targets", "enforce_ordering",
             "free_day", "bookmarked_bonus", "lexicographic_priority",
             "disallowed_days", "earliest_start", "latest_end",
-            "block_time_window", "professor_rating_weight", "pin_sections"
+            "block_time_window", "professor_rating_weight", "pin_sections",
+            "target_courses_per_semester"
         ]
     }
 
@@ -151,10 +153,37 @@ async def solve_schedule(request: SolveRequest):
     Takes course data, constraints, and preferences, and returns an optimized schedule.
     """
     try:
-        # Convert bookmarks to set
+        print("\n" + "="*80)
+        print("SCHEDULE SOLVER - NEW REQUEST")
+        print("="*80)
+        
+        # Convert bookmarks and completed to sets
         bookmarks_set = set(request.bookmarks)
+        completed_set = set(request.completed_courses)
+        
+        # Count available courses (relations minus completed)
+        all_courses = set(r["class_id"] for r in request.relations)
+        available_courses = all_courses - completed_set
+        
+        print(f"📚 Total Courses in Pool: {len(all_courses)}")
+        print(f"✅ Bookmarked Courses: {len(bookmarks_set)}")
+        print(f"❌ Completed (Excluded): {len(completed_set)}")
+        print(f"🎯 Available for Selection: {len(available_courses)}")
+        print(f"📋 User Constraints: {len(request.constraints)}")
+        print(f"🔢 Max Courses/Semester: {request.k}")
+        print(f"📅 Semesters: {', '.join(request.semesters)}")
+        
+        if completed_set:
+            print(f"\nCompleted courses (will be excluded): {sorted(list(completed_set))[:5]}{'...' if len(completed_set) > 5 else ''}")
+        if bookmarks_set:
+            print(f"Bookmarked courses (soft preference): {sorted(list(bookmarks_set))[:5]}{'...' if len(bookmarks_set) > 5 else ''}")
+        if request.constraints:
+            print(f"\nUser constraints:")
+            for c in request.constraints:
+                print(f"  • {c.get('kind', 'unknown')} ({c.get('mode', 'soft')}): {c.get('payload', {})}")
         
         # Initialize solver
+        print("\n🔧 Initializing CP-SAT solver...")
         solver = ScheduleSolver(
             relations=request.relations,
             conflicts=request.conflicts,
@@ -162,6 +191,7 @@ async def solve_schedule(request: SolveRequest):
             hubs=request.hubs,
             semesters=request.semesters,
             bookmarks=bookmarks_set,
+            completed_courses=completed_set,
             k=request.k,
             scale=request.scale
         )
@@ -169,19 +199,56 @@ async def solve_schedule(request: SolveRequest):
         # Add user constraints
         if request.constraints:
             try:
+                print(f"Adding {len(request.constraints)} user constraints...")
                 solver.add_constraints(request.constraints)
             except ValueError as e:
+                print(f"❌ Invalid constraint: {str(e)}")
                 raise HTTPException(status_code=400, detail=f"Invalid constraint: {str(e)}")
         
         # Solve
+        print(f"\n⚡ Running solver (time limit: {request.time_limit_sec}s)...")
         result = solver.solve(time_limit_sec=request.time_limit_sec, maximize=True)
         
         # Check if feasible
         if result["status"] == "INFEASIBLE":
+            print("❌ INFEASIBLE - No solution found")
+            print("="*80 + "\n")
             return SolveResponse(
                 status="INFEASIBLE",
                 error="No feasible schedule found. Try relaxing some constraints."
             )
+        
+        # Log results
+        chosen_classes = result.get("chosen_classes", [])
+        chosen_sections = result.get("chosen_sections", [])
+        objective_scores = result.get("objective_scores", {})
+        
+        print(f"\n✅ SOLUTION FOUND ({result['status']})")
+        print(f"📝 Chosen Classes: {len(chosen_classes)}")
+        print(f"📅 Chosen Sections: {len(chosen_sections)}")
+        
+        if chosen_classes:
+            print(f"\nSelected courses: {', '.join(sorted(chosen_classes))}")
+        
+        if objective_scores:
+            print("\n🎯 Objective Scores by Tier:")
+            for tier, score in objective_scores.items():
+                print(f"  {tier}: {score}")
+        
+        # Count courses per semester
+        semester_counts = {}
+        for rid in chosen_sections:
+            rel = next((r for r in request.relations if r["rid"] == rid), None)
+            if rel:
+                sem = rel.get("semester", "unknown")
+                semester_counts[sem] = semester_counts.get(sem, 0) + 1
+        
+        if semester_counts:
+            print("\n📊 Courses per Semester:")
+            for sem, count in semester_counts.items():
+                print(f"  {sem}: {count} courses")
+        
+        print("="*80 + "\n")
         
         # Return successful result
         return SolveResponse(
@@ -193,8 +260,12 @@ async def solve_schedule(request: SolveRequest):
         )
         
     except ValueError as e:
+        print(f"❌ ValueError: {str(e)}")
+        print("="*80 + "\n")
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        print(f"❌ Unexpected error: {str(e)}")
+        print("="*80 + "\n")
         raise HTTPException(status_code=500, detail=f"Solver error: {str(e)}")
 
 

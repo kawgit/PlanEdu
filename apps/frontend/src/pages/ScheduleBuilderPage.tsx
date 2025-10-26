@@ -118,11 +118,6 @@ const ScheduleBuilderPage: React.FC = () => {
   }, []);
 
   const handleGenerateSchedule = async () => {
-    if (bookmarks.length === 0) {
-      setError('Please bookmark some courses before generating a schedule');
-      return;
-    }
-
     setIsGenerating(true);
     setError(null);
     setGeneratedSchedule(null);
@@ -199,7 +194,8 @@ const ScheduleBuilderPage: React.FC = () => {
         </Group>
       </Title>
       <Text c="dimmed" mb="xl" size="sm">
-        Tell our AI what you want, and we'll build the perfect schedule from your {bookmarks.length} bookmarked classes
+        Tell our AI what you want, and we'll build the perfect schedule. 
+        {bookmarks.length > 0 ? ` We'll prioritize your ${bookmarks.length} bookmarked classes.` : ' Bookmark courses to give them priority.'}
       </Text>
 
       <Grid gutter="lg">
@@ -214,8 +210,8 @@ const ScheduleBuilderPage: React.FC = () => {
               </Group>
               
               {bookmarks.length === 0 ? (
-                <Alert color="yellow" icon={<IconAlertCircle size={16} />}>
-                  No bookmarked courses found. Visit the Class Swiper to bookmark courses first!
+                <Alert color="blue" icon={<IconAlertCircle size={16} />}>
+                  No bookmarked courses yet. You can still generate a schedule from all available courses, or visit the Class Swiper to bookmark preferred courses!
                 </Alert>
               ) : (
                 <>
@@ -252,8 +248,8 @@ const ScheduleBuilderPage: React.FC = () => {
                   onChange={(value) => setSelectedSemester(value || 'all')}
                   data={[
                     { value: 'all', label: 'All Semesters' },
-                    { value: 'Fall2024', label: 'Fall 2024' },
-                    { value: 'Spring2025', label: 'Spring 2025' },
+                    { value: 'Fall2025', label: 'Fall 2025' },
+                    { value: 'Spring2026', label: 'Spring 2026' },
                   ]}
                 />
 
@@ -294,7 +290,6 @@ const ScheduleBuilderPage: React.FC = () => {
                 fullWidth
                 onClick={handleGenerateSchedule}
                 loading={isGenerating}
-                disabled={bookmarks.length === 0}
                 leftSection={<IconSparkles size={18} />}
                 style={{ transition: 'all 0.3s ease' }}
                 styles={{
@@ -517,20 +512,10 @@ const ScheduleBuilderPage: React.FC = () => {
                 </Title>
                 <Text c="dimmed" size="sm">
                   {bookmarks.length > 0 
-                    ? `Enter your preferences above and let our AI create the perfect schedule from your ${bookmarks.length} bookmarked classes.`
-                    : 'Bookmark some courses first to get started!'
+                    ? `Enter your preferences above and let our AI create the perfect schedule, prioritizing your ${bookmarks.length} bookmarked classes.`
+                    : 'Enter your preferences above and our AI will create a schedule from all available courses. Bookmark courses to give them priority!'
                   }
                 </Text>
-                {bookmarks.length === 0 && (
-                  <Button
-                    variant="light"
-                    color="bu-red"
-                    component="a"
-                    href="/class-swiper"
-                  >
-                    Go to Class Swiper
-                  </Button>
-                )}
               </Stack>
             </Card>
           )}

@@ -51,6 +51,7 @@ class ScheduleSolver:
         hubs: Dict[str, Any],
         semesters: List[str],
         bookmarks: Set[str],
+        completed_courses: Set[str] = None,
         k: int = 4,
         tiers: List[str] = None,
         scale: int = 1000,
@@ -62,6 +63,7 @@ class ScheduleSolver:
         self.hubs = hubs or {"requirements": {}, "classes_by_tag": {}}
         self.semesters = semesters
         self.bookmarks = set(bookmarks or [])
+        self.completed = set(completed_courses or [])
         self.k = int(k)
 
         # Vars & indexes
@@ -101,6 +103,7 @@ class ScheduleSolver:
             "block_time_window": self._apply_block_time_window,
             "professor_rating_weight": self._apply_professor_rating_weight,
             "pin_sections": self._apply_pin_sections,
+            "target_courses_per_semester": self._apply_target_courses_per_semester,
         }
 
     # --------------------------- Core model ---------------------------
@@ -109,6 +112,11 @@ class ScheduleSolver:
             rid = r["rid"]
             cid = r["class_id"]
             sem = r["semester"]
+            
+            # Skip completed courses
+            if cid in self.completed:
+                continue
+                
             self.rid_to_relation[rid] = r
             self.class_to_rids[cid].append(rid)
             self.semester_to_rids[sem].append(rid)
@@ -123,19 +131,34 @@ class ScheduleSolver:
             self.model.Add(sum(self.z[rid] for rid in rids) <= 1)
 
     def _add_core_constraints(self):
+        # Time conflicts
         for rid1, rid2 in self.conflicts:
-            self.model.Add(self.z[rid1] + self.z[rid2] <= 1)
+            if rid1 in self.z and rid2 in self.z:
+                self.model.Add(self.z[rid1] + self.z[rid2] <= 1)
+        
+        # Max courses per semester
         for s in self.semesters:
             rids = self.semester_to_rids.get(s, [])
             if rids:
                 self.model.Add(sum(self.z[r] for r in rids) <= self.k)
+        
+        # Baseline objective: reward selecting any non-completed course
+        for cid in self.class_ids:
+            if cid not in self.completed:
+                self.obj.add("degree", self._x(cid), 1.0)
+        
+        # Bookmark bonus (optional nudge, not a requirement)
         for cid in self.bookmarks:
-            self.obj.add("bookmarks", self._x(cid), 1.0)
+            if cid not in self.completed:
+                self.obj.add("bookmarks", self._x(cid), 1.0)
 
     def _x(self, cid: str) -> cp_model.IntVar:
         if cid not in self.x:
             self.x[cid] = self.model.NewBoolVar(f"x_{cid}")
-            if cid not in self.class_to_rids:
+            # Completed courses are fixed to 0
+            if cid in self.completed:
+                self.model.Add(self.x[cid] == 0)
+            elif cid not in self.class_to_rids:
                 self.model.Add(self.x[cid] == 0)
         return self.x[cid]
 
@@ -409,3 +432,12 @@ class ScheduleSolver:
         for rid in c["payload"]["section_ids"]:
             if rid in self.z:
                 self.model.Add(self.z[rid] == 1)
+
+    def _apply_target_courses_per_semester(self, c: Dict[str, Any]):
+        """Set exact number of courses per semester (not just max)"""
+        t = int(c["payload"]["t"])
+        sems = c["payload"].get("semesters", self.semesters)
+        for s in sems:
+            rids = self.semester_to_rids.get(s, [])
+            if rids:
+                self.model.Add(sum(self.z[r] for r in rids) == t)

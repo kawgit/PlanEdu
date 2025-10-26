@@ -57,13 +57,21 @@ SUPPORTED CONSTRAINT TYPES:
    Example: "At least 3 classes per semester"
    Output: {"kind": "min_courses_per_semester", "mode": "hard", "payload": {"m": 3}}
 
-8. **include_course** - User wants specific courses included
+8. **target_courses_per_semester** - Exact number of courses per semester
+   Example: "I want exactly 3 classes this spring"
+   Output: {"kind": "target_courses_per_semester", "mode": "hard", "payload": {"t": 3, "semesters": ["Spring2025"]}}
+
+9. **include_course** - User wants specific courses included
    Example: "I must take CS 111"
    Output: {"kind": "include_course", "mode": "hard", "payload": {"course_ids": ["CASCS111"]}}
 
-9. **exclude_course** - User wants to avoid specific courses
+10. **exclude_course** - User wants to avoid specific courses
    Example: "Don't include CS 350"
    Output: {"kind": "exclude_course", "mode": "hard", "payload": {"course_ids": ["CASCS350"]}}
+
+11. **bookmarked_bonus** - Boost bookmarked courses (only if user mentions them)
+   Example: "Prefer my bookmarked courses"
+   Output: {"kind": "bookmarked_bonus", "mode": "soft", "payload": {"bonus": 2.0}}
 
 MODES:
 - "hard" = must be satisfied (constraint)
@@ -79,10 +87,14 @@ IMPORTANT:
 2. Use course IDs in format: "SCHOOLDEPT###" (e.g., "CASCS111", "ENGEK125")
 3. Use 24-hour time format (e.g., "10:00", "17:00")
 4. Days: ["Mon", "Tue", "Wed", "Thu", "Fri"]
-5. Generate unique IDs for each constraint (c1, c2, c3, etc.)
-6. Infer whether constraints should be "hard" or "soft" based on user language
-7. If user says "must", "need", "require" → hard constraint
-8. If user says "prefer", "would like", "ideally" → soft constraint
+5. Semesters: ["Fall2024", "Spring2025", "Fall2025", "Spring2026"]
+6. Generate unique IDs for each constraint (c1, c2, c3, etc.)
+7. Infer whether constraints should be "hard" or "soft" based on user language
+8. If user says "must", "need", "require", "exactly" → hard constraint
+9. If user says "prefer", "would like", "ideally" → soft constraint
+10. **Do NOT add include_course or bookmarked_bonus** unless user specifically mentions courses or bookmarks
+11. Focus on general constraints (time, days, counts) when user is vague
+12. Use "target_courses_per_semester" for "exactly N classes", use "max_courses_per_semester" for "at most N"
 
 Return format:
 [
@@ -101,6 +113,13 @@ Return format:
 export async function parseConstraints(feedbackText: string): Promise<Constraint[]> {
   try {
     if (!feedbackText || feedbackText.trim().length === 0) {
+      return [];
+    }
+
+    // Check if API key is configured
+    if (!process.env.GEMINI_API_KEY) {
+      console.warn('⚠️  GEMINI_API_KEY not set - skipping LLM constraint parsing');
+      console.warn('   Set GEMINI_API_KEY in .env file or environment to enable natural language parsing');
       return [];
     }
 

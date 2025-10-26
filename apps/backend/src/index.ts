@@ -24,9 +24,23 @@ const port = 3001;
 // Initialize Google OAuth client
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const geminiModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+// Initialize Gemini AI (lazy initialization to avoid errors if key not set)
+let genAI: GoogleGenerativeAI | null = null;
+let geminiModel: any = null;
+
+// Function to get or initialize Gemini model
+function getGeminiModel() {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY not configured');
+  }
+  
+  if (!genAI) {
+    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    geminiModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  }
+  
+  return geminiModel;
+}
 
 // Configure multer for file uploads (store in memory)
 const upload = multer({ 
@@ -49,7 +63,9 @@ app.use(cors({
   origin: 'http://localhost:5173', // Your frontend URL
   credentials: true,
 }));
-app.use(express.json());
+// Increase body size limit for Gemini chat (handles large course lists)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Routes
 app.use('/api', recommendRouter);
@@ -380,8 +396,16 @@ app.post('/api/gemini/chat', async (req, res) => {
       return res.status(400).json({ error: 'Question is required' });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ error: 'Gemini API key not configured' });
+    // Check API key and get model
+    let model;
+    try {
+      model = getGeminiModel();
+    } catch (error: any) {
+      console.error('❌ Gemini API key not configured');
+      return res.status(500).json({ 
+        error: 'Gemini API key not configured',
+        hint: 'Add GEMINI_API_KEY to your .env file. Get a key from: https://makersuite.google.com/app/apikey'
+      });
     }
 
     // Build context from user profile and completed courses
@@ -465,7 +489,7 @@ app.post('/api/gemini/chat', async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
 
     // Call Gemini API with streaming
-    const result = await geminiModel.generateContentStream(context);
+    const result = await model.generateContentStream(context);
 
     // Stream the response
     for await (const chunk of result.stream) {
@@ -476,7 +500,17 @@ app.post('/api/gemini/chat', async (req, res) => {
     res.write('data: [DONE]\n\n');
     res.end();
   } catch (error: any) {
-    console.error('Gemini API error:', error);
+    console.error('❌ Gemini API error:', error);
+    
+    // Check if it's an API key issue
+    if (error.message?.includes('API_KEY') || error.message?.includes('not configured')) {
+      return res.status(500).json({ 
+        error: 'Gemini API key not configured',
+        details: error.message,
+        hint: 'Add GEMINI_API_KEY to apps/backend/.env file'
+      });
+    }
+    
     res.status(500).json({ 
       error: 'Failed to get AI response',
       details: error.message 
@@ -1050,8 +1084,17 @@ app.post('/api/transcript/upload', upload.single('transcript'), async (req, res)
 
     console.log(`Processing transcript upload: ${req.file.originalname} (${mimeType})`);
 
-    // Use Gemini Vision to extract course information
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    // Check API key and get model
+    let model;
+    try {
+      model = getGeminiModel();
+    } catch (error: any) {
+      console.error('❌ Gemini API key not configured for transcript parsing');
+      return res.status(500).json({ 
+        error: 'Gemini API key not configured',
+        hint: 'Add GEMINI_API_KEY to your .env file to enable transcript parsing. Get a key from: https://makersuite.google.com/app/apikey'
+      });
+    }
     
     const prompt = `You are an expert at parsing Boston University academic transcripts. Analyze this transcript and extract ALL courses, including both completed courses with grades AND currently in-progress courses.
 

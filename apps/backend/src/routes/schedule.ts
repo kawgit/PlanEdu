@@ -95,32 +95,40 @@ router.post('/generate', async (req, res) => {
 
     // 3. Get user's completed courses (to filter out)
     const completed = await sql`
-      SELECT "classId" FROM "UserCompletedClass" WHERE "userId" = ${user.id}
+      SELECT c.school, c.department, c.number
+      FROM "UserCompletedClass" ucc
+      JOIN "Class" c ON c.id = ucc."classId"
+      WHERE ucc."userId" = ${user.id}
     `;
-    const completedIds = completed.map(c => c.classId);
-    console.log(`Completed courses: ${completedIds.length}`);
+    const completedCourseIds = completed.map(c => `${c.school}${c.department}${c.number}`);
+    console.log(`Completed courses: ${completedCourseIds.length}`);
 
-    // 4. Determine which courses to schedule
-    // If specific courses are requested, use those. Otherwise, use bookmarks.
-    let targetCourses = coursesToSchedule || bookmarkIds;
-    if (targetCourses.length === 0) {
-      targetCourses = bookmarkIds.slice(0, 10); // Limit to first 10 bookmarks
-    }
-    console.log(`Target courses for scheduling: ${targetCourses.length}`);
+    // 4. Get ALL available courses (not just bookmarks)
+    // We'll let the solver decide which courses to include based on constraints
+    const allAvailableCourses = await sql`
+      SELECT c.id, c.school, c.department, c.number, c.title
+      FROM "Class" c
+      WHERE c.id NOT IN (
+        SELECT "classId" FROM "UserCompletedClass" WHERE "userId" = ${user.id}
+      )
+      ORDER BY c.school, c.department, c.number
+      LIMIT 100
+    `;
+    console.log(`Available courses for scheduling: ${allAvailableCourses.length}`);
 
     // 5. Get course data with sections (slots)
     // For simplicity, we'll create dummy section data since we don't have a full sections table
     // In production, you'd query actual course sections from your database
     const relations: any[] = [];
     const conflicts: [string, string][] = [];
-    const semesters = ['Fall2024', 'Spring2025'];
+    const semesters = ['Fall2025', 'Spring2026'];
     const groups: Record<string, string[]> = {};
     const hubs: Record<string, any> = { requirements: {}, classes_by_tag: {} };
 
-    // Build relations from bookmarked courses
+    // Build relations from ALL available courses (not just bookmarks)
     // This is a simplified version - in production you'd have actual section data
-    for (const bookmark of bookmarks.slice(0, Math.min(bookmarks.length, 10))) {
-      const courseId = `${bookmark.school}${bookmark.department}${bookmark.number}`;
+    for (const course of allAvailableCourses) {
+      const courseId = `${course.school}${course.department}${course.number}`;
       
       // Create mock sections for each semester
       for (const sem of semesters) {
@@ -133,7 +141,7 @@ router.post('/generate', async (req, res) => {
           days: ['Mon', 'Wed', 'Fri'],
           start: timeToMinutes('09:00'),
           end: timeToMinutes('10:00'),
-          instructor_id: `prof_${bookmark.id}_a`,
+          instructor_id: `prof_${course.id}_a`,
           professor_rating: 4.0 + Math.random()
         });
 
@@ -146,7 +154,7 @@ router.post('/generate', async (req, res) => {
           days: ['Tue', 'Thu'],
           start: timeToMinutes('14:00'),
           end: timeToMinutes('15:30'),
-          instructor_id: `prof_${bookmark.id}_b`,
+          instructor_id: `prof_${course.id}_b`,
           professor_rating: 3.5 + Math.random()
         });
       }
@@ -205,6 +213,7 @@ router.post('/generate', async (req, res) => {
       hubs,
       semesters: semester ? [semester] : semesters,
       bookmarks: bookmarkIds,
+      completed_courses: completedCourseIds,
       k: maxCoursesPerSemester || 4,
       constraints: userConstraints,
       time_limit_sec: 10,
@@ -212,7 +221,9 @@ router.post('/generate', async (req, res) => {
     };
 
     console.log(`\n--- Calling solver ---`);
-    console.log(`Relations: ${relations.length}`);
+    console.log(`Total sections: ${relations.length}`);
+    console.log(`Completed courses (filtered): ${completedCourseIds.length}`);
+    console.log(`Bookmarked courses: ${bookmarkIds.length}`);
     console.log(`Constraints: ${userConstraints.length}`);
     console.log(`Max courses per semester: ${solverRequest.k}`);
 
@@ -269,19 +280,25 @@ router.post('/generate', async (req, res) => {
       const relation = relations.find(r => r.rid === rid);
       if (!relation) continue;
 
-      // Get course details from bookmarks
-      const bookmark = bookmarks.find(b => 
-        `${b.school}${b.department}${b.number}` === relation.class_id
+      // Get course details from all available courses or bookmarks
+      let courseDetails = allAvailableCourses.find(c => 
+        `${c.school}${c.department}${c.number}` === relation.class_id
       );
+      
+      if (!courseDetails) {
+        courseDetails = bookmarks.find(b => 
+          `${b.school}${b.department}${b.number}` === relation.class_id
+        );
+      }
 
-      if (bookmark && bookmark.school && bookmark.department && bookmark.number && bookmark.title) {
+      if (courseDetails && courseDetails.school && courseDetails.department && courseDetails.number && courseDetails.title) {
         schedule.push({
           sectionId: rid,
           courseId: relation.class_id,
-          school: bookmark.school,
-          department: bookmark.department,
-          number: bookmark.number,
-          title: bookmark.title,
+          school: courseDetails.school,
+          department: courseDetails.department,
+          number: courseDetails.number,
+          title: courseDetails.title,
           semester: relation.semester,
           days: relation.days,
           startTime: relation.start,
