@@ -327,7 +327,13 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
               radius="xl"
               leftSection={<IconX size={24} />}
               onClick={() => handleSwipe(false)}
-              style={{ width: '160px', transition: 'all 0.3s ease' }}
+              style={{ 
+                width: '180px', 
+                minHeight: '60px',
+                display: 'flex',
+                alignItems: 'center',
+                transition: 'all 0.3s ease' 
+              }}
             >
               Discard
             </Button>
@@ -339,7 +345,13 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
               radius="xl"
               leftSection={<IconBookmark size={24} />}
               onClick={() => handleSwipe(true)}
-              style={{ width: '160px', transition: 'all 0.3s ease' }}
+              style={{ 
+                width: '180px',
+                minHeight: '60px',
+                display: 'flex',
+                alignItems: 'center',
+                transition: 'all 0.3s ease' 
+              }}
             >
               Bookmark
             </Button>
@@ -355,4 +367,3 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
 };
 
 export default ClassSwiperPage;
-
