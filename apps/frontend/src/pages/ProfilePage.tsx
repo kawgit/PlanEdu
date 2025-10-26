@@ -7,7 +7,7 @@ import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addComple
 import TranscriptUpload from '../components/TranscriptUpload';
 import { useDebouncedValue } from '@mantine/hooks';
 
-const CompletedCoursesPage: React.FC = () => {
+const ProfilePage: React.FC = () => {
   const [courses, setCourses] = useState<CompletedCourse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -534,4 +534,5 @@ const CompletedCoursesPage: React.FC = () => {
   );
 };
 
-export default CompletedCoursesPage;
+export default ProfilePage;
+

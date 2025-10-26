@@ -7,7 +7,7 @@ import ClassSwiperPage from './pages/ClassSwiperPage';
 import { fetchUserBookmarks, addBookmark as addBookmarkAPI, removeBookmark as removeBookmarkAPI, isUserLoggedIn } from './utils/auth';
 import BookmarksPage from './pages/BookmarksPage';
 import ScheduleBuilderPage from './pages/ScheduleBuilderPage';
-import CompletedCoursesPage from './pages/CompletedCoursesPage';
+import ProfilePage from './pages/ProfilePage';
 
 export type TabName = 'signin' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder' | 'profile';
 
@@ -98,7 +98,7 @@ const App: React.FC = () => {
       case 'schedule-builder':
         return <ScheduleBuilderPage bookmarks={bookmarks} />;
       case 'profile':
-        return <CompletedCoursesPage />;
+        return <ProfilePage />;
       default:
         return <SignInPage setActiveTab={setActiveTab} />;
     }
