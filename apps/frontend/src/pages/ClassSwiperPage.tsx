@@ -180,145 +180,177 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
   const credits = currentClass.typical_credits || 4;
 
   return (
-    <Container size="sm" p="lg" ta="center">
-      <Title order={2} mb="xs" c="bu-red">
-        Course Recommendations
-      </Title>
-      <Text c="dimmed" mb="md" size="sm">
-        Personalized based on your preferences
-      </Text>
-      
-      {/* Show active preference filters */}
-      {userPreferences && (userPreferences.major || userPreferences.minor || userPreferences.interests) && (
-        <Group justify="center" gap="xs" mb="lg">
-          {userPreferences.major && (
-            <Badge variant="light" color="blue" leftSection={<IconInfoCircle size={14} />}>
-              Major: {userPreferences.major}
-            </Badge>
-          )}
-          {userPreferences.minor && (
-            <Badge variant="light" color="green">
-              Minor: {userPreferences.minor}
-            </Badge>
-          )}
-          {userPreferences.interests && (
-            <Badge variant="light" color="violet">
-              Interest: {userPreferences.interests}
-            </Badge>
-          )}
-        </Group>
-      )}
-
-      {/* Card Stack Preview */}
-      <Box style={{ position: 'relative', height: '500px', marginBottom: '2rem' }}>
-        {/* Background cards for depth */}
-        {[0.5, 0.7].map((opacity, idx) => (
-          <Card
-            key={idx}
-            shadow="md"
-            p="xl"
-            radius="lg"
-            withBorder
-            style={{
-              position: 'absolute',
-              top: `${(idx + 1) * 10}px`,
-              left: '50%',
-              transform: `translateX(-50%) scale(${0.95 + idx * 0.02})`,
-              width: `${90 + idx * 5}%`,
-              maxWidth: '400px',
-              opacity,
-              zIndex: idx + 1,
-            }}
-          >
-            <Box style={{ height: '350px' }} />
-          </Card>
-        ))}
-
-        {/* Main card */}
-        <Card
-          shadow="xl"
-          p="xl"
-          radius="lg"
-          withBorder
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '100%',
-            maxWidth: '400px',
-            zIndex: 3,
-            transition: 'all 0.3s ease',
-          }}
-        >
-          <Stack gap="md">
-            {/* Header */}
-            <Box>
-              <Badge color="red" variant="light" mb="xs">
-                {hubArea}
-              </Badge>
-              <Title order={3} c="bu-red" mb="xs">
-                {courseCode}
-              </Title>
-              <Text fw={600} size="lg" mb="md">
-                {currentClass.title}
-              </Text>
-            </Box>
-
-            {/* Description */}
-            <Text size="sm" c="dimmed" style={{ textAlign: 'left', minHeight: '100px' }}>
-              {currentClass.description || 'No description available.'}
-            </Text>
-
-            {/* Stats */}
-            <Group justify="space-between" mt="md">
-              <Group gap="xs">
-                <IconClock size={18} color="#868e96" />
-                <Text size="sm" c="dimmed">
-                  {credits} credits
-                </Text>
-              </Group>
-              {currentClass.score && (
+    <Box
+      style={{
+        height: 'calc(100vh - 80px)', // Full viewport height minus navigation bar
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden', // Prevent page-level scrolling
+      }}
+    >
+      <Container 
+        size="sm" 
+        p="lg" 
+        ta="center"
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header section */}
+        <Box style={{ flexShrink: 0 }}>
+          <Title order={2} mb="xs" c="bu-red">
+            Course Recommendations
+          </Title>
+          <Text c="dimmed" mb="md" size="sm">
+            Personalized based on your preferences
+          </Text>
+          
+          {/* Show active preference filters */}
+          {userPreferences && (userPreferences.major || userPreferences.minor || userPreferences.interests) && (
+            <Group justify="center" gap="xs" mb="lg">
+              {userPreferences.major && (
+                <Badge variant="light" color="blue" leftSection={<IconInfoCircle size={14} />}>
+                  Major: {userPreferences.major}
+                </Badge>
+              )}
+              {userPreferences.minor && (
                 <Badge variant="light" color="green">
-                  {Math.round(currentClass.score)}% Match
+                  Minor: {userPreferences.minor}
+                </Badge>
+              )}
+              {userPreferences.interests && (
+                <Badge variant="light" color="violet">
+                  Interest: {userPreferences.interests}
                 </Badge>
               )}
             </Group>
-          </Stack>
-        </Card>
-      </Box>
+          )}
+        </Box>
 
-      {/* Swipe Buttons */}
-      <Group justify="center" gap="xl">
-        <Button
-          variant="outline"
-          color="gray"
-          size="xl"
-          radius="xl"
-          leftSection={<IconX size={24} />}
-          onClick={() => handleSwipe(false)}
-          style={{ width: '160px', transition: 'all 0.3s ease' }}
-        >
-          Discard
-        </Button>
+        {/* Card Stack Preview - grows to fill available space */}
+        <Box style={{ flex: 1, position: 'relative', minHeight: 0, marginBottom: '1rem' }}>
+          <Box style={{ position: 'relative', height: '100%', maxHeight: '500px', margin: '0 auto' }}>
+            {/* Background cards for depth */}
+            {[0.5, 0.7].map((opacity, idx) => (
+              <Card
+                key={idx}
+                shadow="md"
+                p="xl"
+                radius="lg"
+                withBorder
+                style={{
+                  position: 'absolute',
+                  top: `${(idx + 1) * 10}px`,
+                  left: '50%',
+                  transform: `translateX(-50%) scale(${0.95 + idx * 0.02})`,
+                  width: `${90 + idx * 5}%`,
+                  maxWidth: '400px',
+                  opacity,
+                  zIndex: idx + 1,
+                }}
+              >
+                <Box style={{ height: '350px' }} />
+              </Card>
+            ))}
 
-        <Button
-          variant="filled"
-          color="bu-red"
-          size="xl"
-          radius="xl"
-          leftSection={<IconBookmark size={24} />}
-          onClick={() => handleSwipe(true)}
-          style={{ width: '160px', transition: 'all 0.3s ease' }}
-        >
-          Bookmark
-        </Button>
-      </Group>
+            {/* Main card */}
+            <Card
+              shadow="xl"
+              p="xl"
+              radius="lg"
+              withBorder
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '100%',
+                maxWidth: '400px',
+                maxHeight: '100%',
+                zIndex: 3,
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Stack gap="md" style={{ height: '100%', overflow: 'hidden' }}>
+                {/* Header */}
+                <Box style={{ flexShrink: 0 }}>
+                  <Badge color="red" variant="light" mb="xs">
+                    {hubArea}
+                  </Badge>
+                  <Title order={3} c="bu-red" mb="xs">
+                    {courseCode}
+                  </Title>
+                  <Text fw={600} size="lg" mb="md">
+                    {currentClass.title}
+                  </Text>
+                </Box>
 
-      <Text size="xs" c="dimmed" mt="xl">
-        {currentIndex + 1} / {classes.length} • {swipeCount} swipes today
-      </Text>
-    </Container>
+                {/* Description - scrollable if needed */}
+                <Box style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
+                  <Text size="sm" c="dimmed" style={{ textAlign: 'left' }}>
+                    {currentClass.description || 'No description available.'}
+                  </Text>
+                </Box>
+
+                {/* Stats */}
+                <Group justify="space-between" mt="md" style={{ flexShrink: 0 }}>
+                  <Group gap="xs">
+                    <IconClock size={18} color="#868e96" />
+                    <Text size="sm" c="dimmed">
+                      {credits} credits
+                    </Text>
+                  </Group>
+                  {currentClass.score && (
+                    <Badge variant="light" color="green">
+                      {Math.round(currentClass.score)}% Match
+                    </Badge>
+                  )}
+                </Group>
+              </Stack>
+            </Card>
+          </Box>
+        </Box>
+
+        {/* Bottom section - buttons and status */}
+        <Box style={{ flexShrink: 0 }}>
+          {/* Swipe Buttons */}
+          <Group justify="center" gap="xl" mb="md">
+            <Button
+              variant="outline"
+              color="gray"
+              size="xl"
+              radius="xl"
+              leftSection={<IconX size={24} />}
+              onClick={() => handleSwipe(false)}
+              style={{ width: '160px', transition: 'all 0.3s ease' }}
+            >
+              Discard
+            </Button>
+
+            <Button
+              variant="filled"
+              color="bu-red"
+              size="xl"
+              radius="xl"
+              leftSection={<IconBookmark size={24} />}
+              onClick={() => handleSwipe(true)}
+              style={{ width: '160px', transition: 'all 0.3s ease' }}
+            >
+              Bookmark
+            </Button>
+          </Group>
+
+          <Text size="xs" c="dimmed">
+            {currentIndex + 1} / {classes.length} • {swipeCount} swipes today
+          </Text>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 
