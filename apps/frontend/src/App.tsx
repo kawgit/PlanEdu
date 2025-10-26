@@ -70,7 +70,7 @@ const App: React.FC = () => {
       case 'preferences':
         return <PreferencesPage />;
       case 'questions':
-        return <QuestionsPage />;
+        return <QuestionsPage addBookmark={addBookmark} removeBookmark={removeBookmark} bookmarks={bookmarks} />;
       case 'swiper':
         return <ClassSwiperPage addBookmark={addBookmark} />;
       case 'bookmarks':

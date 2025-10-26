@@ -124,7 +124,8 @@ export const fetchUserBookmarks = async () => {
   const googleId = getUserGoogleId();
   
   if (!googleId) {
-    throw new Error('User not logged in');
+    // Return empty array if user is not logged in
+    return [];
   }
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';

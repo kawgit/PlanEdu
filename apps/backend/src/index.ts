@@ -44,6 +44,7 @@ app.get('/api', (req, res) => {
   res.json({ message: 'Hello from the backend!' });
 });
 
+
 app.get('/api/user', async (req, res) => {
   try {
     const { googleId } = req.query;
@@ -475,12 +476,12 @@ app.get('/api/user/bookmarks', async (req, res) => {
     }
     
     const bookmarks = await sql`
-      SELECT c.*, b.created_at as bookmarked_at
+      SELECT c.*
       FROM "Bookmark" b
-      JOIN "Users" u ON u.id = b.user_id
-      JOIN "Class" c ON c.id = b.class_id
+      JOIN "Users" u ON u.id = b."userId"
+      JOIN "Class" c ON c.id = b."classId"
       WHERE u.google_id = ${googleId}
-      ORDER BY b.created_at DESC
+      ORDER BY b.id DESC
     `;
     
     res.json(bookmarks);
@@ -510,17 +511,37 @@ app.post('/api/user/bookmark', async (req, res) => {
     
     const userId = users[0].id;
     
-    // Insert bookmark (will ignore on conflict)
+    // Check if the class exists
+    const classExists = await sql`
+      SELECT id FROM "Class" WHERE id = ${classId}
+    `;
+    
+    if (classExists.length === 0) {
+      return res.status(404).json({ error: 'Class not found' });
+    }
+    
+    // Insert bookmark (check if already exists first)
+    const existingBookmark = await sql`
+      SELECT id FROM "Bookmark" 
+      WHERE "userId" = ${userId} AND "classId" = ${classId}
+    `;
+    
+    if (existingBookmark.length > 0) {
+      return res.json({ success: true, message: 'Bookmark already exists' });
+    }
+    
     await sql`
-      INSERT INTO "Bookmark" (user_id, class_id)
+      INSERT INTO "Bookmark" ("userId", "classId")
       VALUES (${userId}, ${classId})
-      ON CONFLICT (user_id, class_id) DO NOTHING
     `;
     
     res.json({ success: true });
   } catch (error) {
     console.error('Error adding bookmark:', error);
-    res.status(500).json({ error: 'Failed to add bookmark' });
+    res.status(500).json({ 
+      error: 'Failed to add bookmark',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
@@ -547,7 +568,7 @@ app.delete('/api/user/bookmark', async (req, res) => {
     // Delete bookmark
     await sql`
       DELETE FROM "Bookmark" 
-      WHERE user_id = ${userId} AND class_id = ${classId}
+      WHERE "userId" = ${userId} AND "classId" = ${classId}
     `;
     
     res.json({ success: true });
