@@ -151,12 +151,28 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
     if (selectedSchool) params.append('school', selectedSchool);
     if (selectedDepartment) params.append('department', selectedDepartment);
     if (keywordSearch.trim()) params.append('keyword', keywordSearch.trim());
-    if (selectedStudyAbroadLocation) params.append('studyAbroadLocation', selectedStudyAbroadLocation);
+    // Only apply study abroad filter if a specific location is selected
+    if (selectedStudyAbroadLocation) {
+      params.append('studyAbroadLocation', selectedStudyAbroadLocation);
+    }
     
     fetch(`${backendUrl}/api/classes?${params}`)
       .then(res => res.json())
       .then(data => {
-        setFilteredClasses(data);
+        // Sort classes by school, department, then number
+        const sortedData = data.sort((a: ClassOffering, b: ClassOffering) => {
+          // First sort by school
+          if (a.school !== b.school) {
+            return a.school.localeCompare(b.school);
+          }
+          // Then by department
+          if (a.department !== b.department) {
+            return a.department.localeCompare(b.department);
+          }
+          // Finally by number (numerically)
+          return a.number - b.number;
+        });
+        setFilteredClasses(sortedData);
         setLoadingClasses(false);
       })
       .catch(err => {
@@ -281,11 +297,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
           
           <Stack gap="md">
             <Select
-              label="Study Abroad Location"
-              placeholder="All Locations"
+              label="Study Abroad Location (Optional)"
+              placeholder="🏛️ BU Charles River Campus (All Classes)"
               value={selectedStudyAbroadLocation}
               onChange={setSelectedStudyAbroadLocation}
-              data={studyAbroadLocations.map(loc => ({ value: loc.id.toString(), label: loc.name }))}
+              data={studyAbroadLocations.map(loc => ({ 
+                value: loc.id.toString(), 
+                label: loc.name
+              }))}
               searchable
               clearable
               leftSection={<IconWorld size={16} />}
@@ -501,9 +520,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
           </Group>
           <Text size="sm" c="dimmed">
             Ask questions about the {filteredClasses.length} filtered classes
+            {!selectedStudyAbroadLocation && (
+              <Text component="span" size="xs" c="green" fw={500} ml="xs">
+                • Viewing BU Charles River Campus classes
+              </Text>
+            )}
             {selectedStudyAbroadLocation && (
               <Text component="span" size="xs" c="blue" fw={500} ml="xs">
-                • Showing classes available at selected study abroad location
+                • Filtered by study abroad location
               </Text>
             )}
             {addBookmark && (

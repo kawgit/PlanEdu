@@ -7,6 +7,7 @@ import multer from 'multer';
 import sql from './db';
 import { calculateCSMajorCompletion, calculateMathCSMajorCompletion } from './majorCompletion';
 import { calculateHubCompletion } from './hubCompletion';
+import recommendRouter from './routes/recommend';
 
 const app = express();
 const port = 3001;
@@ -40,6 +41,9 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+
+// Routes
+app.use('/api', recommendRouter);
 
 // Existing API endpoint
 app.get('/api', (req, res) => {
