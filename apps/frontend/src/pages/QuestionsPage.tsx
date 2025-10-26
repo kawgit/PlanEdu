@@ -3,6 +3,7 @@ import { Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader, Selec
 import { IconSend, IconRobot, IconUser, IconFilter, IconBook, IconBookmark, IconBookmarkFilled, IconTrash } from '@tabler/icons-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { getUserGoogleId, fetchUserFromDB, fetchCompletedCourses } from '../utils/auth';
 
 interface Message {
   type: 'user' | 'ai';
@@ -47,6 +48,10 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
   const [departments, setDepartments] = useState<string[]>([]);
   const [loadingClasses, setLoadingClasses] = useState<boolean>(false);
   
+  // User profile data
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [completedCourses, setCompletedCourses] = useState<any[]>([]);
+  
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 
   // Save messages to localStorage whenever they change
@@ -83,6 +88,30 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
       localStorage.removeItem('questionsPageMessages');
     }
   };
+
+  // Load user profile and completed courses on mount
+  useEffect(() => {
+    const loadUserData = async () => {
+      const googleId = getUserGoogleId();
+      if (!googleId) {
+        return; // User not logged in
+      }
+      
+      try {
+        // Load user profile
+        const profile = await fetchUserFromDB();
+        setUserProfile(profile);
+        
+        // Load completed courses
+        const courses = await fetchCompletedCourses();
+        setCompletedCourses(courses);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    };
+    
+    loadUserData();
+  }, []);
 
   // Load schools and departments on mount
   useEffect(() => {
@@ -156,6 +185,8 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
         body: JSON.stringify({
           question: userMessage,
           classes: filteredClasses,
+          userProfile: userProfile,
+          completedCourses: completedCourses,
         }),
       });
       
@@ -424,6 +455,18 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
               </Text>
             )}
           </Text>
+          {(userProfile || completedCourses.length > 0) && (
+            <Group gap="xs" mt="xs">
+              <Badge color="green" size="sm" variant="light">
+                ✓ Profile Information Available
+              </Badge>
+              {completedCourses.length > 0 && (
+                <Badge color="blue" size="sm" variant="light">
+                  {completedCourses.length} Completed Course{completedCourses.length !== 1 ? 's' : ''}
+                </Badge>
+              )}
+            </Group>
+          )}
         </Paper>
 
         {/* Chat Messages */}
@@ -435,9 +478,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                 <Text c="dimmed" size="lg" fw={500} mb="xs">
                   Start a conversation
                 </Text>
-                <Text c="dimmed" size="sm">
+                <Text c="dimmed" size="sm" mb="xs">
                   Ask about course recommendations, requirements, or anything else about the filtered classes
                 </Text>
+                {(userProfile || completedCourses.length > 0) && (
+                  <Text c="green" size="sm" fw={500} mt="md">
+                    💡 The advisor can see your profile and completed courses for personalized advice
+                  </Text>
+                )}
               </Box>
             )}
             

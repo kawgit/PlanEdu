@@ -224,7 +224,7 @@ app.get('/api/departments', async (req, res) => {
 // Gemini AI chat endpoint (streaming)
 app.post('/api/gemini/chat', async (req, res) => {
   try {
-    const { question, classes } = req.body;
+    const { question, classes, userProfile, completedCourses } = req.body;
 
     if (!question) {
       return res.status(400).json({ error: 'Question is required' });
@@ -234,22 +234,66 @@ app.post('/api/gemini/chat', async (req, res) => {
       return res.status(500).json({ error: 'Gemini API key not configured' });
     }
 
+    // Build context from user profile and completed courses
+    let context = `You are a helpful BU (Boston University) course advisor. You have access to the student's profile information and completed courses to provide personalized advice.\n\n`;
+    
+    // Add user profile information if available
+    if (userProfile) {
+      context += `STUDENT PROFILE:\n`;
+      if (userProfile.major) {
+        context += `- Major: ${userProfile.major}\n`;
+      }
+      if (userProfile.minor) {
+        context += `- Minor: ${userProfile.minor}\n`;
+      }
+      if (userProfile.target_graduation) {
+        context += `- Expected Graduation: ${new Date(userProfile.target_graduation).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}\n`;
+      }
+      if (userProfile.incoming_credits !== null && userProfile.incoming_credits !== undefined) {
+        context += `- Incoming Credits: ${userProfile.incoming_credits}\n`;
+      }
+      if (userProfile.interests) {
+        context += `- Interests: ${userProfile.interests}\n`;
+      }
+      if (userProfile.study_abroad_interest) {
+        context += `- Study Abroad Interest: ${userProfile.study_abroad_interest}\n`;
+      }
+      if (userProfile.preferred_course_load) {
+        context += `- Preferred Course Load: ${userProfile.preferred_course_load}\n`;
+      }
+      context += `\n`;
+    }
+    
+    // Add completed courses if available
+    if (completedCourses && completedCourses.length > 0) {
+      context += `COMPLETED COURSES (${completedCourses.length} courses):\n`;
+      completedCourses.forEach((course: any) => {
+        const code = `${course.school}${course.department} ${course.number}`;
+        const grade = course.grade ? ` (Grade: ${course.grade})` : '';
+        context += `- ${code}: ${course.title}${grade}\n`;
+      });
+      context += `\n`;
+    }
+    
     // Build context from filtered classes
-    let context = '';
     if (classes && classes.length > 0) {
-      context = `You are a helpful BU course advisor. Answer questions about the following BU classes:\n\n`;
+      context += `AVAILABLE CLASSES IN CURRENT FILTER (${classes.length} classes):\n`;
       
       classes.forEach((cls: any) => {
         const code = `${cls.school}-${cls.department}-${cls.number}`;
         context += `${code}: ${cls.title}\n`;
         context += `Description: ${cls.description}\n\n`;
       });
-      
-      context += `\nStudent question: ${question}\n\n`;
-      context += `Please provide a helpful, concise answer about these courses. If recommending courses, explain why they might be a good fit.`;
-    } else {
-      context = `You are a helpful BU course advisor. Answer the following question:\n\n${question}`;
     }
+    
+    context += `\nSTUDENT QUESTION: ${question}\n\n`;
+    context += `INSTRUCTIONS:\n`;
+    context += `- Provide a helpful, personalized answer based on the student's profile and completed courses\n`;
+    context += `- If recommending courses, explain why they're a good fit for this specific student\n`;
+    context += `- Consider prerequisites and whether the student has taken required courses\n`;
+    context += `- If the student has already completed a course they're asking about, mention that\n`;
+    context += `- Use the student's major, minor, and interests to tailor your recommendations\n`;
+    context += `- Be encouraging and supportive in your responses\n`;
 
     // Set headers for streaming
     res.setHeader('Content-Type', 'text/event-stream');
