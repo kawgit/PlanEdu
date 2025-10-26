@@ -7,6 +7,7 @@ import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addComple
 import TranscriptUpload from '../components/TranscriptUpload';
 import CSMajorProgress from '../components/CSMajorProgress';
 import MathCSMajorProgress from '../components/MathCSMajorProgress';
+import HubProgress from '../components/HubProgress';
 import { useDebouncedValue } from '@mantine/hooks';
 
 const ProfilePage: React.FC = () => {
@@ -466,6 +467,11 @@ const ProfilePage: React.FC = () => {
               Your major is set to: <strong>{major}</strong>
             </Alert>
           )}
+          
+          {/* Hub Progress - Always show */}
+          <Box mt="lg">
+            <HubProgress refreshTrigger={refreshTrigger} />
+          </Box>
         </Grid.Col>
 
         {/* Right Column: Completed Courses List */}
