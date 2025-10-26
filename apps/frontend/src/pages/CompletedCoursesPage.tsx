@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, TextInput, Select, NumberInput, Grid } from '@mantine/core';
+import { DateInput } from '@mantine/dates';
 import { IconTrash, IconUpload, IconPlus, IconCertificate, IconSchool, IconTrophy } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
-import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse } from '../utils/auth';
+import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB } from '../utils/auth';
 import TranscriptUpload from '../components/TranscriptUpload';
 
 const CompletedCoursesPage: React.FC = () => {
@@ -12,6 +13,13 @@ const CompletedCoursesPage: React.FC = () => {
   const [filterType, setFilterType] = useState<'All' | 'AP' | 'BU' | 'Transfer' | 'Other'>('All');
   const [showAddForm, setShowAddForm] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
+  
+  // Profile fields
+  const [major, setMajor] = useState<string | null>(null);
+  const [minor, setMinor] = useState<string | null>(null);
+  const [expectedGraduation, setExpectedGraduation] = useState<Date | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -30,6 +38,62 @@ const CompletedCoursesPage: React.FC = () => {
 
     loadCourses();
   }, [filterType]);
+
+  // Load profile preferences when component mounts
+  useEffect(() => {
+    if (!isUserLoggedIn()) {
+      setIsLoadingProfile(false);
+      return;
+    }
+
+    const loadProfile = async () => {
+      try {
+        const userData = await fetchUserFromDB();
+        if (userData) {
+          setMajor(userData.major || null);
+          setMinor(userData.minor || null);
+          setExpectedGraduation(userData.target_graduation ? new Date(userData.target_graduation) : null);
+        }
+      } catch (error) {
+        console.error('Failed to load profile:', error);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
+  // Auto-save profile preferences whenever they change
+  useEffect(() => {
+    if (isLoadingProfile || !isUserLoggedIn()) return;
+
+    const saveProfile = async () => {
+      setIsSavingProfile(true);
+      try {
+        await saveUserPreferences({
+          major: major || undefined,
+          minor: minor || undefined,
+          target_graduation: expectedGraduation ? expectedGraduation.toISOString() : undefined,
+        });
+      } catch (error) {
+        console.error('Failed to save profile:', error);
+        notifications.show({
+          title: 'Error',
+          message: 'Failed to save profile changes. Please try again.',
+          color: 'red',
+        });
+      } finally {
+        setIsSavingProfile(false);
+      }
+    };
+
+    const timeoutId = setTimeout(() => {
+      saveProfile();
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [major, minor, expectedGraduation, isLoadingProfile]);
 
   const loadCourses = async () => {
     try {
@@ -143,13 +207,83 @@ const CompletedCoursesPage: React.FC = () => {
       <Group justify="space-between" align="flex-start" mb="xl">
         <Box>
           <Title order={2} mb="xs" c="bu-red">
-            Completed Courses
+            Profile
           </Title>
           <Text c="dimmed" size="sm">
-            Manage courses you've already completed, including AP courses and BU courses
+            Manage your academic profile and completed courses
           </Text>
         </Box>
+        {isSavingProfile && (
+          <Text size="sm" c="dimmed" fs="italic">
+            Saving...
+          </Text>
+        )}
       </Group>
+
+      {/* Profile Fields */}
+      <Card shadow="md" p="lg" radius="md" withBorder mb="xl">
+        <Title order={4} mb="md">Academic Profile</Title>
+        <Grid>
+          <Grid.Col span={4}>
+            <Select
+              label="Major"
+              placeholder="Select your major"
+              data={[
+                'Computer Science',
+                'Business Administration',
+                'Biology',
+                'Psychology',
+                'Engineering',
+                'Communications',
+              ]}
+              value={major}
+              onChange={setMajor}
+              disabled={isLoadingProfile}
+            />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <Select
+              label="Minor"
+              placeholder="Select your minor (optional)"
+              data={[
+                'Computer Science',
+                'Business Administration',
+                'Biology',
+                'Psychology',
+                'Engineering',
+                'Communications',
+                'Mathematics',
+                'Statistics',
+                'Economics',
+                'Philosophy',
+                'History',
+                'English',
+              ]}
+              value={minor}
+              onChange={setMinor}
+              clearable
+              disabled={isLoadingProfile}
+            />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <DateInput
+              label="Expected Graduation"
+              placeholder="Select graduation date"
+              value={expectedGraduation}
+              onChange={(value) => {
+                if (typeof value === 'string') {
+                  setExpectedGraduation(value ? new Date(value) : null);
+                } else {
+                  setExpectedGraduation(value);
+                }
+              }}
+              valueFormat="MMMM YYYY"
+              level="month"
+              disabled={isLoadingProfile}
+            />
+          </Grid.Col>
+        </Grid>
+      </Card>
 
       {/* Action Buttons */}
       <Group mb="lg" gap="sm">

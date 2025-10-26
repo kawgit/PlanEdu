@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mantine/core';
 import Navigation from './components/Navigation';
 import SignInPage from './pages/SignInPage';
-import PreferencesPage from './pages/PreferencesPage';
 import QuestionsPage from './pages/QuestionsPage';
 import ClassSwiperPage from './pages/ClassSwiperPage';
 import { fetchUserBookmarks, addBookmark as addBookmarkAPI, removeBookmark as removeBookmarkAPI, isUserLoggedIn } from './utils/auth';
@@ -10,7 +9,7 @@ import BookmarksPage from './pages/BookmarksPage';
 import ScheduleBuilderPage from './pages/ScheduleBuilderPage';
 import CompletedCoursesPage from './pages/CompletedCoursesPage';
 
-export type TabName = 'signin' | 'profile' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder' | 'completed-courses';
+export type TabName = 'signin' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder' | 'profile';
 
 const App: React.FC = () => {
   // Check if user is logged in and restore last active tab
@@ -90,8 +89,6 @@ const App: React.FC = () => {
     switch (activeTab) {
       case 'signin':
         return <SignInPage setActiveTab={setActiveTab} />;
-      case 'profile':
-        return <PreferencesPage />;
       case 'questions':
         return <QuestionsPage addBookmark={addBookmark} removeBookmark={removeBookmark} bookmarks={bookmarks} />;
       case 'swiper':
@@ -100,7 +97,7 @@ const App: React.FC = () => {
         return <BookmarksPage setActiveTab={setActiveTab} bookmarks={bookmarks} removeBookmark={removeBookmark} />;
       case 'schedule-builder':
         return <ScheduleBuilderPage bookmarks={bookmarks} />;
-      case 'completed-courses':
+      case 'profile':
         return <CompletedCoursesPage />;
       default:
         return <SignInPage setActiveTab={setActiveTab} />;
