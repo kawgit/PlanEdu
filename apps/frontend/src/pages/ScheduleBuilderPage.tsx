@@ -11,19 +11,15 @@ import {
   Textarea, 
   Grid, 
   Box, 
-  ActionIcon, 
   Alert,
   Progress,
-  ScrollArea,
   Paper
 } from '@mantine/core';
 import { 
   IconRobot, 
   IconCalendar, 
-  IconBookmark, 
   IconRefresh, 
-  IconCheck, 
-  IconX, 
+  IconCheck,
   IconClock, 
   IconUsers,
   IconAlertCircle,
@@ -58,8 +54,6 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderPageProps> = ({ bookmarks = [
   const [userPrompt, setUserPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedSchedule, setGeneratedSchedule] = useState<GeneratedSchedule | null>(null);
-  const [showBookmarks, setShowBookmarks] = useState(false);
-  const [selectedBookmarks, setSelectedBookmarks] = useState<number[]>([]);
 
   const handleGenerateSchedule = async () => {
     if (!userPrompt.trim()) return;
@@ -89,22 +83,6 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderPageProps> = ({ bookmarks = [
     setGeneratedSchedule(mockSchedule);
     setIsGenerating(false);
   };
-
-  const toggleBookmarkSelection = (classId: number) => {
-    setSelectedBookmarks(prev => 
-      prev.includes(classId) 
-        ? prev.filter(id => id !== classId)
-        : [...prev, classId]
-    );
-  };
-
-
-  const examplePrompts = [
-    "Build me a balanced schedule for my first semester with a mix of STEM and liberal arts",
-    "Create a schedule focused on computer science prerequisites",
-    "I want to take 15 credits with no Friday classes",
-    "Build a schedule that includes my favorite psychology and economics classes"
-  ];
 
   return (
     <Container size="lg" p="lg">
@@ -155,105 +133,6 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderPageProps> = ({ bookmarks = [
               >
                 {isGenerating ? 'AI is thinking...' : 'Generate My Schedule'}
               </Button>
-            </Card>
-
-            {/* Example Prompts */}
-            <Card shadow="sm" p="md" radius="md" withBorder>
-              <Text size="sm" fw={600} mb="sm" c="dimmed">
-                Try these example prompts:
-              </Text>
-              <Stack gap="xs">
-                {examplePrompts.map((prompt, index) => (
-                  <Text
-                    key={index}
-                    size="sm"
-                    c="dimmed"
-                    style={{
-                      cursor: 'pointer',
-                      padding: '8px',
-                      borderRadius: '4px',
-                      transition: 'all 0.2s ease',
-                    }}
-                    styles={{
-                      root: {
-                        '&:hover': {
-                          backgroundColor: '#f8f9fa',
-                          color: '#CC0000',
-                        },
-                      },
-                    }}
-                    onClick={() => setUserPrompt(prompt)}
-                  >
-                    "{prompt}"
-                  </Text>
-                ))}
-              </Stack>
-            </Card>
-
-            {/* Bookmarked Classes */}
-            <Card shadow="sm" p="md" radius="md" withBorder>
-              <Group justify="space-between" mb="md">
-                <Group>
-                  <IconBookmark size={20} color="#CC0000" />
-                  <Text fw={600}>Your Bookmarked Classes</Text>
-                </Group>
-                <Button
-                  variant="subtle"
-                  size="xs"
-                  onClick={() => setShowBookmarks(!showBookmarks)}
-                >
-                  {showBookmarks ? 'Hide' : 'Show'} ({bookmarks.length})
-                </Button>
-              </Group>
-              
-              {showBookmarks && (
-                <ScrollArea.Autosize mah={300}>
-                  <Stack gap="sm">
-                    {bookmarks.map((course, index) => (
-                      <Paper
-                        key={index}
-                        p="sm"
-                        radius="md"
-                        style={{
-                          border: selectedBookmarks.includes(course.id) 
-                            ? '2px solid #CC0000' 
-                            : '1px solid #e9ecef',
-                          backgroundColor: selectedBookmarks.includes(course.id) 
-                            ? '#fff5f5' 
-                            : '#fff',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                        }}
-                        onClick={() => toggleBookmarkSelection(course.id)}
-                      >
-                        <Group justify="space-between">
-                          <Box>
-                            <Text fw={600} size="sm" c="bu-red">
-                              {course.school}-{course.department}-{course.number}
-                            </Text>
-                            <Text size="xs" c="dark">
-                              {course.title}
-                            </Text>
-                            <Text size="xs" c="dimmed">
-                              {course.school} - {course.department}
-                            </Text>
-                          </Box>
-                          <ActionIcon
-                            variant="subtle"
-                            color={selectedBookmarks.includes(course.id) ? 'red' : 'gray'}
-                          >
-                            {selectedBookmarks.includes(course.id) ? (
-                              <IconCheck size={16} />
-                            ) : (
-                              <IconX size={16} />
-                            )}
-                          </ActionIcon>
-                        </Group>
-                      </Paper>
-                    ))}
-                  </Stack>
-                </ScrollArea.Autosize>
-              )}
             </Card>
           </Stack>
         </Grid.Col>
