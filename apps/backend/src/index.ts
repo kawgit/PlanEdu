@@ -901,12 +901,15 @@ ONLY return the JSON array, no markdown, no explanation, no additional text.`;
 
     for (const course of courses) {
       try {
+        // Convert number to integer (in case it's a string from the API)
+        const courseNumber = parseInt(course.number.toString(), 10);
+        
         // First, look up the class in the Class table
         const classes = await sql`
           SELECT id FROM "Class" 
           WHERE school = ${course.school} 
             AND department = ${course.department} 
-            AND number = ${course.number}
+            AND number = ${courseNumber}
           LIMIT 1
         `;
 

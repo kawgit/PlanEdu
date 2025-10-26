@@ -484,8 +484,11 @@ export function calculateMathCSMajorCompletion(
   const invalidCourses: Array<{ course: CompletedCourse; reason: string }> = [];
   
   // Filter courses
+  console.log('\n=== Processing courses for Math and CS Major ===');
   for (const course of completedCourses) {
     const courseCode = formatCourse(course);
+    
+    console.log(`Checking: ${courseCode}, grade: "${course.grade}" (type: ${typeof course.grade}), isPassing: ${isPassingGrade(course.grade)}`);
     
     // Check if Metropolitan College
     if (isMetropolitanCollege(course)) {
@@ -493,6 +496,7 @@ export function calculateMathCSMajorCompletion(
         course,
         reason: 'Metropolitan College courses do not count toward Math and CS major'
       });
+      console.log(`  → Rejected: Metropolitan College`);
       continue;
     }
     
@@ -502,14 +506,22 @@ export function calculateMathCSMajorCompletion(
         course,
         reason: `Grade ${course.grade || 'N/A'} is below C minimum requirement`
       });
+      console.log(`  → Rejected: Grade too low`);
       continue;
     }
     
     validCourses.push(course);
+    console.log(`  → Accepted`);
   }
+  console.log(`\nValid courses (${validCourses.length}):`, validCourses.map(c => formatCourse(c)));
+  console.log(`Invalid courses (${invalidCourses.length}):`, invalidCourses.map(ic => `${formatCourse(ic.course)}: ${ic.reason}`));
+  console.log('==================================================\n');
   
   // Track which courses have been counted
   const countedCourses = new Set<string>();
+  
+  // Track MA sequence courses to prevent them from being used for Advanced MA
+  const maSequenceCourses = new Set<string>();
   
   // Initialize progress tracking
   const lowerDivision: LowerDivisionProgress = {
@@ -638,7 +650,7 @@ export function calculateMathCSMajorCompletion(
         req.completed = true;
         if (hasMA581) {
           req.completedCourses = ['MA 581'];
-          countedCourses.add('MA 581');
+          // Don't add MA 581 to countedCourses - it can double-count for MA Sequence
           specialRules.ma581Used = true;
         } else {
           req.completedCourses = ['CS 237'];
@@ -702,11 +714,27 @@ export function calculateMathCSMajorCompletion(
         !countedCourses.has(formatCourse(c))
       );
       
+      // Debug logging
+      console.log('Advanced CS requirement check:');
+      console.log('  All valid CS courses:', validCourses.filter(c => c.department === 'CS').map(c => formatCourse(c)));
+      console.log('  Advanced CS courses (>= 400):', validCourses
+        .filter(c => c.department === 'CS' && c.number >= 400)
+        .map(c => `${formatCourse(c)} (number: ${c.number}, type: ${typeof c.number})`));
+      console.log('  Counted courses:', Array.from(countedCourses));
+      console.log('  After filtering out counted:', advancedCSCourses.map(c => formatCourse(c)));
+      
       if (advancedCSCourses.length >= 2) {
         req.completed = true;
         req.completedCourses = advancedCSCourses.slice(0, 2).map(c => formatCourse(c));
         advancedCSCourses.slice(0, 2).forEach(c => countedCourses.add(formatCourse(c)));
         upperDivision.completed++;
+      } else if (advancedCSCourses.length === 1) {
+        // Partially complete - show progress
+        req.completedCourses = advancedCSCourses.map(c => formatCourse(c));
+        advancedCSCourses.forEach(c => countedCourses.add(formatCourse(c)));
+        console.log(`  Partially complete: 1 of 2 advanced CS courses`);
+      } else {
+        console.log(`  Not enough advanced CS courses: only ${advancedCSCourses.length} found (need 2)`);
       }
     } else if (req.name === 'MA Sequence') {
       // Must have one complete sequence from the options
@@ -728,6 +756,7 @@ export function calculateMathCSMajorCompletion(
           }
         } else {
           // Three-course sequence (any two of MA 581, MA 582, MA 583)
+          // MA 581 can double-count if it was used for Lower Division Probability
           const hasMA581 = validCourses.some(c => formatCourse(c) === 'MA 581');
           const hasMA582 = validCourses.some(c => formatCourse(c) === 'MA 582');
           const hasMA583 = validCourses.some(c => formatCourse(c) === 'MA 583');
@@ -740,26 +769,54 @@ export function calculateMathCSMajorCompletion(
           if (completedCourses.length >= 2) {
             req.completed = true;
             req.completedCourses = completedCourses.slice(0, 2);
-            completedCourses.slice(0, 2).forEach(course => countedCourses.add(course));
+            // Track MA sequence courses separately
+            completedCourses.slice(0, 2).forEach(course => {
+              maSequenceCourses.add(course);
+              // MA 581 can be double-counted, so we don't add it to countedCourses here
+              // Only add MA 582 and MA 583 if they're used
+              if (course !== 'MA 581') {
+                countedCourses.add(course);
+              }
+            });
             upperDivision.completed++;
             sequenceCompleted = true;
             break;
+          } else if (completedCourses.length === 1) {
+            // Partially complete - show progress
+            req.completedCourses = completedCourses;
+            completedCourses.forEach(course => {
+              maSequenceCourses.add(course);
+              // Don't add to countedCourses if it's MA 581 (can double-count)
+              if (course !== 'MA 581') {
+                countedCourses.add(course);
+              }
+            });
+            console.log(`  MA Sequence partially complete: 1 of 2 courses`);
+            sequenceCompleted = true; // Don't break, continue to check other sequences
           }
         }
       }
     } else if (req.name === 'Advanced MA') {
       // 2 additional MA courses at level 200 or above
-      const advancedMACourses = validCourses.filter(c => 
-        c.department === 'MA' && 
-        c.number >= 200 && 
-        !countedCourses.has(formatCourse(c))
-      );
+      // Don't count MA 581, MA 582, MA 583 if they're used in MA Sequence
+      const advancedMACourses = validCourses.filter(c => {
+        const courseCode = formatCourse(c);
+        return c.department === 'MA' && 
+               c.number >= 200 && 
+               !countedCourses.has(courseCode) &&
+               !maSequenceCourses.has(courseCode);
+      });
       
       if (advancedMACourses.length >= 2) {
         req.completed = true;
         req.completedCourses = advancedMACourses.slice(0, 2).map(c => formatCourse(c));
         advancedMACourses.slice(0, 2).forEach(c => countedCourses.add(formatCourse(c)));
         upperDivision.completed++;
+      } else if (advancedMACourses.length === 1) {
+        // Partially complete - show progress
+        req.completedCourses = advancedMACourses.map(c => formatCourse(c));
+        advancedMACourses.forEach(c => countedCourses.add(formatCourse(c)));
+        console.log(`  Partially complete: 1 of 2 advanced MA courses`);
       }
     }
   }

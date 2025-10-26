@@ -112,6 +112,7 @@ const MathCSMajorProgress: React.FC<MathCSMajorProgressProps> = ({ refreshTrigge
     requirement: RequirementProgress
   ) => {
     const isComplete = requirement.completed;
+    const hasPartialProgress = !isComplete && requirement.completedCourses.length > 0;
 
     return (
       <Box mb="md">
@@ -119,8 +120,11 @@ const MathCSMajorProgress: React.FC<MathCSMajorProgressProps> = ({ refreshTrigge
           <Text fw={600} size="sm">
             {requirement.name}
           </Text>
-          <Badge color={isComplete ? 'green' : 'blue'} variant="light">
-            {isComplete ? 'Completed' : 'Required'}
+          <Badge 
+            color={isComplete ? 'green' : hasPartialProgress ? 'yellow' : 'blue'} 
+            variant="light"
+          >
+            {isComplete ? 'Completed' : hasPartialProgress ? `In Progress (${requirement.completedCourses.length}/2)` : 'Required'}
           </Badge>
         </Group>
         <Text size="xs" c="dimmed" mb="xs">
@@ -128,12 +132,12 @@ const MathCSMajorProgress: React.FC<MathCSMajorProgressProps> = ({ refreshTrigge
         </Text>
         {requirement.completedCourses.length > 0 && (
           <Box mb="xs">
-            <Text size="xs" fw={600} c="green" mb={4}>
-              Completed:
+            <Text size="xs" fw={600} c={hasPartialProgress ? 'yellow.9' : 'green'} mb={4}>
+              {hasPartialProgress ? 'In Progress:' : 'Completed:'}
             </Text>
             <Group gap="xs">
               {requirement.completedCourses.map((course, idx) => (
-                <Badge key={idx} color="green" variant="light" size="sm">
+                <Badge key={idx} color={hasPartialProgress ? 'yellow' : 'green'} variant="light" size="sm">
                   <Group gap={4}>
                     <IconCheck size={12} />
                     {course}
@@ -146,7 +150,7 @@ const MathCSMajorProgress: React.FC<MathCSMajorProgressProps> = ({ refreshTrigge
         {!isComplete && (
           <Box>
             <Text size="xs" fw={600} c="dimmed" mb={4}>
-              Required courses:
+              {hasPartialProgress ? 'Still needed:' : 'Required courses:'}
             </Text>
             <Group gap="xs">
               {requirement.courses.map((course, idx) => (
