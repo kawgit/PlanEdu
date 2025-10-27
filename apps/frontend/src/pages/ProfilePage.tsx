@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, Select, Grid, Autocomplete, Loader, Alert } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
 import { IconTrash, IconUpload, IconPlus, IconSchool, IconTrophy, IconSearch, IconInfoCircle } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses } from '../utils/auth';
@@ -9,6 +8,33 @@ import CSMajorProgress from '../components/CSMajorProgress';
 import MathCSMajorProgress from '../components/MathCSMajorProgress';
 import HubProgress from '../components/HubProgress';
 import { useDebouncedValue } from '@mantine/hooks';
+
+// Generate graduation date options (January, May, and August for the next 10 years)
+const generateGraduationDates = (): { value: string; label: string }[] => {
+  const currentYear = new Date().getFullYear();
+  const dates: { value: string; label: string }[] = [];
+  
+  for (let i = 0; i < 10; i++) {
+    const year = currentYear + i;
+    // January graduation (end of Fall semester)
+    dates.push({
+      value: `${year}-01-31`,
+      label: `January ${year} (Fall)`
+    });
+    // May graduation (end of Spring semester)
+    dates.push({
+      value: `${year}-05-31`,
+      label: `May ${year} (Spring)`
+    });
+    // August graduation (end of Summer semester)
+    dates.push({
+      value: `${year}-08-31`,
+      label: `August ${year} (Summer)`
+    });
+  }
+  
+  return dates;
+};
 
 const ProfilePage: React.FC = () => {
   const [courses, setCourses] = useState<CompletedCourse[]>([]);
@@ -21,9 +47,12 @@ const ProfilePage: React.FC = () => {
   // Profile fields
   const [major, setMajor] = useState<string | null>(null);
   const [minor, setMinor] = useState<string | null>(null);
-  const [expectedGraduation, setExpectedGraduation] = useState<Date | null>(null);
+  const [expectedGraduation, setExpectedGraduation] = useState<string | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  
+  // Generate graduation date options
+  const graduationDates = generateGraduationDates();
 
   // Form state
   const [searchQuery, setSearchQuery] = useState('');
@@ -77,7 +106,27 @@ const ProfilePage: React.FC = () => {
         if (userData) {
           setMajor(userData.major || null);
           setMinor(userData.minor || null);
-          setExpectedGraduation(userData.target_graduation ? new Date(userData.target_graduation) : null);
+          
+          // Convert stored date to dropdown value format (YYYY-MM-DD)
+          if (userData.target_graduation) {
+            const date = new Date(userData.target_graduation);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            
+            // Match to either January, May, or August of that year
+            if (month <= 3) {
+              // January-March → January graduation
+              setExpectedGraduation(`${year}-01-31`);
+            } else if (month <= 6) {
+              // April-June → May graduation
+              setExpectedGraduation(`${year}-05-31`);
+            } else {
+              // July-December → August graduation
+              setExpectedGraduation(`${year}-08-31`);
+            }
+          } else {
+            setExpectedGraduation(null);
+          }
         }
       } catch (error) {
         console.error('Failed to load profile:', error);
@@ -99,7 +148,7 @@ const ProfilePage: React.FC = () => {
         await saveUserPreferences({
           major: major || undefined,
           minor: minor || undefined,
-          target_graduation: expectedGraduation ? expectedGraduation.toISOString() : undefined,
+          target_graduation: expectedGraduation ? new Date(expectedGraduation).toISOString() : undefined,
         });
       } catch (error) {
         console.error('Failed to save profile:', error);
@@ -276,20 +325,15 @@ const ProfilePage: React.FC = () => {
             />
           </Grid.Col>
           <Grid.Col span={4}>
-            <DateInput
+            <Select
               label="Expected Graduation"
               placeholder="Select graduation date"
+              data={graduationDates}
               value={expectedGraduation}
-              onChange={(value) => {
-                if (typeof value === 'string') {
-                  setExpectedGraduation(value ? new Date(value) : null);
-                } else {
-                  setExpectedGraduation(value);
-                }
-              }}
-              valueFormat="MMMM YYYY"
-              level="month"
+              onChange={setExpectedGraduation}
+              clearable
               disabled={isLoadingProfile}
+              searchable
             />
           </Grid.Col>
         </Grid>
