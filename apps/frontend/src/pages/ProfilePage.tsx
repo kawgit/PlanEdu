@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, Select, Grid, Autocomplete, Loader, Alert } from '@mantine/core';
+import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, Select, Grid, Autocomplete, Loader, Alert, FileButton } from '@mantine/core';
 import { IconTrash, IconUpload, IconPlus, IconSchool, IconTrophy, IconSearch, IconInfoCircle } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
-import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses } from '../utils/auth';
-import TranscriptUpload from '../components/TranscriptUpload';
+import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses, uploadTranscript } from '../utils/auth';
 import CSMajorProgress from '../components/CSMajorProgress';
 import MathCSMajorProgress from '../components/MathCSMajorProgress';
 import HubProgress from '../components/HubProgress';
@@ -41,8 +40,8 @@ const ProfilePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [showUploadForm, setShowUploadForm] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isUploadingTranscript, setIsUploadingTranscript] = useState(false);
   
   // Profile fields
   const [major, setMajor] = useState<string | null>(null);
@@ -249,6 +248,55 @@ const ProfilePage: React.FC = () => {
     return courses.length * 4;
   };
 
+  const handleTranscriptUpload = async (file: File | null) => {
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+      notifications.show({
+        title: 'Invalid File Type',
+        message: 'Please select an image or PDF file',
+        color: 'red',
+      });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      notifications.show({
+        title: 'File Too Large',
+        message: 'File size must be less than 10MB',
+        color: 'red',
+      });
+      return;
+    }
+
+    setIsUploadingTranscript(true);
+
+    try {
+      const result = await uploadTranscript(file);
+      
+      notifications.show({
+        title: 'Transcript Processed!',
+        message: `Successfully extracted ${result.coursesExtracted} courses and saved ${result.coursesInserted} to your profile.`,
+        color: 'green',
+        autoClose: 5000,
+      });
+
+      // Reload courses to show the newly added ones
+      await loadCourses();
+    } catch (err: any) {
+      notifications.show({
+        title: 'Upload Failed',
+        message: err.message || 'Failed to upload and process transcript',
+        color: 'red',
+        autoClose: 7000,
+      });
+    } finally {
+      setIsUploadingTranscript(false);
+    }
+  };
+
   if (!isUserLoggedIn()) {
     return (
       <Container size="md" p="lg" style={{ textAlign: 'center', paddingTop: '100px' }}>
@@ -350,14 +398,20 @@ const ProfilePage: React.FC = () => {
           </Box>
         </Group>
         <Group gap="sm" grow>
-          <Button
-            leftSection={<IconUpload size={18} />}
-            onClick={() => setShowUploadForm(!showUploadForm)}
-            color="green"
-            variant="light"
-          >
-            {showUploadForm ? 'Hide Upload' : 'Upload Transcript'}
-          </Button>
+          <FileButton onChange={handleTranscriptUpload} accept="image/*,application/pdf">
+            {(props) => (
+              <Button
+                {...props}
+                leftSection={<IconUpload size={18} />}
+                color="green"
+                variant="light"
+                loading={isUploadingTranscript}
+                disabled={isUploadingTranscript}
+              >
+                {isUploadingTranscript ? 'Processing...' : 'Upload Transcript'}
+              </Button>
+            )}
+          </FileButton>
           <Button
             leftSection={<IconPlus size={18} />}
             onClick={() => setShowAddForm(!showAddForm)}
@@ -368,13 +422,6 @@ const ProfilePage: React.FC = () => {
           </Button>
         </Group>
       </Card>
-
-      {/* Upload Form */}
-      {showUploadForm && (
-        <Box mb="lg">
-          <TranscriptUpload onUploadSuccess={loadCourses} />
-        </Box>
-      )}
 
       {/* Add Course Modal */}
       <Modal 
