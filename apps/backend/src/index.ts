@@ -168,177 +168,68 @@ app.put('/api/user/preferences', async (req, res) => {
 // Get classes with optional filters
 app.get('/api/classes', async (req, res) => {
   try {
-    const { school, department, keyword, studyAbroadLocation, limit = '1000' } = req.query;
+    const { school, department, keyword, limit = '1000' } = req.query;
     
     let classes;
     
-    // If filtering by study abroad location
-    if (studyAbroadLocation) {
-      const locationFilter = parseInt(studyAbroadLocation as string);
-      
-      if (school && department && keyword) {
-        const searchTerm = `%${keyword}%`;
-        classes = await sql`
-          SELECT DISTINCT c.* FROM "Class" c
-          JOIN locationclasses lc ON c.id = lc.classid
-          WHERE lc.locationid = ${locationFilter}
-            AND c."school" = ${school} 
-            AND c."department" = ${department}
-            AND (
-              c."title" ILIKE ${searchTerm} 
-              OR c."description" ILIKE ${searchTerm}
-              OR CAST(c."number" AS TEXT) ILIKE ${searchTerm}
-            )
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else if (school && department) {
-        classes = await sql`
-          SELECT DISTINCT c.* FROM "Class" c
-          JOIN locationclasses lc ON c.id = lc.classid
-          WHERE lc.locationid = ${locationFilter}
-            AND c."school" = ${school} 
-            AND c."department" = ${department}
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else if (school && keyword) {
-        const searchTerm = `%${keyword}%`;
-        classes = await sql`
-          SELECT DISTINCT c.* FROM "Class" c
-          JOIN locationclasses lc ON c.id = lc.classid
-          WHERE lc.locationid = ${locationFilter}
-            AND c."school" = ${school}
-            AND (
-              c."title" ILIKE ${searchTerm} 
-              OR c."description" ILIKE ${searchTerm}
-              OR c."department" ILIKE ${searchTerm}
-              OR CAST(c."number" AS TEXT) ILIKE ${searchTerm}
-            )
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else if (school) {
-        classes = await sql`
-          SELECT DISTINCT c.* FROM "Class" c
-          JOIN locationclasses lc ON c.id = lc.classid
-          WHERE lc.locationid = ${locationFilter}
-            AND c."school" = ${school}
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else if (keyword) {
-        const searchTerm = `%${keyword}%`;
-        classes = await sql`
-          SELECT DISTINCT c.* FROM "Class" c
-          JOIN locationclasses lc ON c.id = lc.classid
-          WHERE lc.locationid = ${locationFilter}
-            AND (
-              c."title" ILIKE ${searchTerm} 
-              OR c."description" ILIKE ${searchTerm}
-              OR c."school" ILIKE ${searchTerm}
-              OR c."department" ILIKE ${searchTerm}
-              OR CAST(c."number" AS TEXT) ILIKE ${searchTerm}
-              OR CONCAT(c."school", c."department", ' ', c."number") ILIKE ${searchTerm}
-            )
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else {
-        classes = await sql`
-          SELECT DISTINCT c.* FROM "Class" c
-          JOIN locationclasses lc ON c.id = lc.classid
-          WHERE lc.locationid = ${locationFilter}
-          LIMIT ${parseInt(limit as string)}
-        `;
-      }
-    } else {
-      // Original queries without study abroad filter
-      if (school && department && keyword) {
-        const searchTerm = `%${keyword}%`;
-        classes = await sql`
-          SELECT * FROM "Class" 
-          WHERE "school" = ${school} 
-            AND "department" = ${department}
-            AND (
-              "title" ILIKE ${searchTerm} 
-              OR "description" ILIKE ${searchTerm}
-              OR CAST("number" AS TEXT) ILIKE ${searchTerm}
-            )
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else if (school && department) {
-        classes = await sql`
-          SELECT * FROM "Class" 
-          WHERE "school" = ${school} AND "department" = ${department}
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else if (school && keyword) {
-        const searchTerm = `%${keyword}%`;
-        classes = await sql`
-          SELECT * FROM "Class" 
-          WHERE "school" = ${school}
-            AND (
-              "title" ILIKE ${searchTerm} 
-              OR "description" ILIKE ${searchTerm}
-              OR "department" ILIKE ${searchTerm}
-              OR CAST("number" AS TEXT) ILIKE ${searchTerm}
-            )
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else if (school) {
-        classes = await sql`
-          SELECT * FROM "Class" 
-          WHERE "school" = ${school}
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else if (keyword) {
-        const searchTerm = `%${keyword}%`;
-        classes = await sql`
-          SELECT * FROM "Class" 
-          WHERE "title" ILIKE ${searchTerm} 
+    if (school && department && keyword) {
+      const searchTerm = `%${keyword}%`;
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "school" = ${school} 
+          AND "department" = ${department}
+          AND (
+            "title" ILIKE ${searchTerm} 
             OR "description" ILIKE ${searchTerm}
-            OR "school" ILIKE ${searchTerm}
+            OR CAST("number" AS TEXT) ILIKE ${searchTerm}
+          )
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else if (school && department) {
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "school" = ${school} AND "department" = ${department}
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else if (school && keyword) {
+      const searchTerm = `%${keyword}%`;
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "school" = ${school}
+          AND (
+            "title" ILIKE ${searchTerm} 
+            OR "description" ILIKE ${searchTerm}
             OR "department" ILIKE ${searchTerm}
             OR CAST("number" AS TEXT) ILIKE ${searchTerm}
-            OR CONCAT("school", "department", ' ', "number") ILIKE ${searchTerm}
-          LIMIT ${parseInt(limit as string)}
-        `;
-      } else {
-        classes = await sql`
-          SELECT * FROM "Class" 
-          LIMIT ${parseInt(limit as string)}
-        `;
-      }
+          )
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else if (school) {
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "school" = ${school}
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else if (keyword) {
+      const searchTerm = `%${keyword}%`;
+      classes = await sql`
+        SELECT * FROM "Class" 
+        WHERE "title" ILIKE ${searchTerm} 
+          OR "description" ILIKE ${searchTerm}
+          OR "school" ILIKE ${searchTerm}
+          OR "department" ILIKE ${searchTerm}
+          OR CAST("number" AS TEXT) ILIKE ${searchTerm}
+          OR CONCAT("school", "department", ' ', "number") ILIKE ${searchTerm}
+        LIMIT ${parseInt(limit as string)}
+      `;
+    } else {
+      classes = await sql`
+        SELECT * FROM "Class" 
+        LIMIT ${parseInt(limit as string)}
+      `;
     }
     
-    // Fetch study abroad locations for all classes
-    const classIds = classes.map((c: any) => c.id);
-    const studyAbroadData = await sql`
-      SELECT 
-        lc.classid,
-        sal.locationid,
-        sal.name
-      FROM locationclasses lc
-      JOIN studyabroadlocations sal ON lc.locationid = sal.locationid
-      WHERE lc.classid = ANY(${classIds})
-      ORDER BY sal.name
-    `;
-    
-    // Group study abroad locations by class ID
-    const studyAbroadMap = new Map<number, Array<{id: number, name: string}>>();
-    for (const row of studyAbroadData) {
-      if (!studyAbroadMap.has(row.classid)) {
-        studyAbroadMap.set(row.classid, []);
-      }
-      studyAbroadMap.get(row.classid)?.push({
-        id: row.locationid,
-        name: row.name
-      });
-    }
-    
-    // Add study abroad locations to each class
-    const classesWithLocations = classes.map((cls: any) => ({
-      ...cls,
-      studyAbroadLocations: studyAbroadMap.get(cls.id) || []
-    }));
-    
-    res.json(classesWithLocations);
+    res.json(classes);
   } catch (error) {
     console.error('Database error:', error);
     res.status(500).json({ error: 'Failed to fetch classes' });
@@ -681,7 +572,7 @@ app.get('/api/recommendations', async (req, res) => {
             _hub_coverage: rec.hub_score
           }));
           
-          // Fetch hub areas and study abroad locations
+          // Fetch hub areas
           const courseIds = swiperCourses.map((c: any) => c.id);
           
           if (courseIds.length > 0) {
@@ -701,29 +592,9 @@ app.get('/api/recommendations', async (req, res) => {
               hubMap.get(row.classId).push(row.name);
             }
             
-            // Get study abroad locations
-            const studyAbroadData = await sql`
-              SELECT lc.classid, sal.locationid, sal.name
-              FROM locationclasses lc
-              JOIN studyabroadlocations sal ON lc.locationid = sal.locationid
-              WHERE lc.classid = ANY(${courseIds})
-            `;
-            
-            const studyAbroadMap = new Map();
-            for (const row of studyAbroadData) {
-              if (!studyAbroadMap.has(row.classid)) {
-                studyAbroadMap.set(row.classid, []);
-              }
-              studyAbroadMap.get(row.classid).push({
-                id: row.locationid,
-                name: row.name
-              });
-            }
-            
             // Add to courses
             swiperCourses.forEach((course: any) => {
               course.hub_areas = hubMap.get(course.id) || [];
-              course.studyAbroadLocations = studyAbroadMap.get(course.id) || [];
             });
           }
           
@@ -1471,78 +1342,6 @@ app.get('/api/user/math-cs-major-completion', async (req, res) => {
       error: 'Failed to calculate Math and CS major completion',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
-  }
-});
-
-// Get all study abroad locations
-app.get('/api/study-abroad/locations', async (req, res) => {
-  try {
-    const locations = await sql`
-      SELECT locationid as id, name
-      FROM studyabroadlocations
-      ORDER BY name
-    `;
-    
-    res.json(locations);
-  } catch (error) {
-    console.error('Error fetching study abroad locations:', error);
-    res.status(500).json({ error: 'Failed to fetch study abroad locations' });
-  }
-});
-
-// Get classes available for a specific study abroad location
-app.get('/api/study-abroad/classes', async (req, res) => {
-  try {
-    const { locationId } = req.query;
-    
-    if (!locationId) {
-      return res.status(400).json({ error: 'locationId is required' });
-    }
-    
-    const classes = await sql`
-      SELECT 
-        c.id,
-        c.school,
-        c.department,
-        c.number,
-        c.title,
-        c.description
-      FROM locationclasses lc
-      JOIN "Class" c ON lc.classid = c.id
-      WHERE lc.locationid = ${locationId}
-      ORDER BY c.school, c.department, c.number
-    `;
-    
-    res.json(classes);
-  } catch (error) {
-    console.error('Error fetching study abroad classes:', error);
-    res.status(500).json({ error: 'Failed to fetch study abroad classes' });
-  }
-});
-
-// Get study abroad locations for a specific class
-app.get('/api/study-abroad/locations-for-class', async (req, res) => {
-  try {
-    const { classId } = req.query;
-    
-    if (!classId) {
-      return res.status(400).json({ error: 'classId is required' });
-    }
-    
-    const locations = await sql`
-      SELECT 
-        sal.locationid as id,
-        sal.name
-      FROM locationclasses lc
-      JOIN studyabroadlocations sal ON lc.locationid = sal.locationid
-      WHERE lc.classid = ${classId}
-      ORDER BY sal.name
-    `;
-    
-    res.json(locations);
-  } catch (error) {
-    console.error('Error fetching locations for class:', error);
-    res.status(500).json({ error: 'Failed to fetch locations for class' });
   }
 });
 

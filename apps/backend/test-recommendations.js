@@ -62,9 +62,6 @@ async function testPersonalizedRecommendations() {
       if (rec.fulfills_hubs.length > 0) {
         console.log(`      - Fulfills ${rec.fulfills_hubs.length} missing hub(s)`);
       }
-      if (rec.studyAbroadLocations && rec.studyAbroadLocations.length > 0) {
-        console.log(`      - Available abroad: ${rec.studyAbroadLocations.map(l => l.name).join(', ')}`);
-      }
     });
     
     return true;

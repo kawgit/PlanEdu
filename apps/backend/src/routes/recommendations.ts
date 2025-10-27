@@ -89,39 +89,6 @@ router.get('/personalized', async (req: Request, res: Response) => {
     const requestedLimit = parseInt(limit as string);
     const recommendations = result.recommendations.slice(0, requestedLimit);
     
-    // Fetch study abroad locations for each recommended course
-    const classIds = recommendations.map(r => r.id);
-    
-    if (classIds.length > 0) {
-      const studyAbroadData = await sql`
-        SELECT 
-          lc.classid,
-          sal.locationid,
-          sal.name
-        FROM locationclasses lc
-        JOIN studyabroadlocations sal ON lc.locationid = sal.locationid
-        WHERE lc.classid = ANY(${classIds})
-        ORDER BY sal.name
-      `;
-      
-      // Group study abroad locations by class ID
-      const studyAbroadMap = new Map<number, Array<{id: number, name: string}>>();
-      for (const row of studyAbroadData) {
-        if (!studyAbroadMap.has(row.classid)) {
-          studyAbroadMap.set(row.classid, []);
-        }
-        studyAbroadMap.get(row.classid)?.push({
-          id: row.locationid,
-          name: row.name
-        });
-      }
-      
-      // Add study abroad info to recommendations
-      recommendations.forEach(rec => {
-        (rec as any).studyAbroadLocations = studyAbroadMap.get(rec.id) || [];
-      });
-    }
-    
     // Return recommendations with metadata
     res.json({
       success: true,
