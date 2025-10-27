@@ -15,7 +15,7 @@ export const users = pgTable("Users", {
 	embedding: vector({ dimensions: 1536 }),
 	embeddingUpdatedAt: timestamp("embedding_updated_at", { mode: 'string' }),
 }, (table) => [
-	index("users_embedding_idx").using("ivfflat", table.embedding.asc().nullsLast().op("vector_cosine_ops")).with({lists: "100"}),
+	index("users_embedding_idx").using("ivfflat", table.embedding.asc().nullsLast().op("vector_cosine_ops")).with({ lists: "100" }),
 ]);
 
 export const schedule = pgTable("Schedule", {
@@ -24,10 +24,10 @@ export const schedule = pgTable("Schedule", {
 	userId: integer().notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: "userId_constraint"
-		}),
+		columns: [table.userId],
+		foreignColumns: [users.id],
+		name: "userId_constraint"
+	}),
 ]);
 
 export const hubRequirement = pgTable("HubRequirement", {
@@ -56,10 +56,10 @@ export const scheduleToClassToSlot = pgTable("ScheduleToClassToSlot", {
 	classToSlotId: integer().notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.id],
-			foreignColumns: [schedule.id],
-			name: "stcts_schedule_fk"
-		}),
+		columns: [table.id],
+		foreignColumns: [schedule.id],
+		name: "stcts_schedule_fk"
+	}),
 	unique("stcts_schedule_cts_unique").on(table.scheduleId, table.classToSlotId),
 ]);
 
@@ -69,15 +69,15 @@ export const classToHubRequirement = pgTable("ClassToHubRequirement", {
 	hubRequirementId: integer().notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.classId],
-			foreignColumns: [classTable.id],
-			name: "cthr_class_fk"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.classId],
+		foreignColumns: [classTable.id],
+		name: "cthr_class_fk"
+	}).onUpdate("cascade").onDelete("cascade"),
 	foreignKey({
-			columns: [table.hubRequirementId],
-			foreignColumns: [hubRequirement.id],
-			name: "cthr_hubRequirement_fk"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.hubRequirementId],
+		foreignColumns: [hubRequirement.id],
+		name: "cthr_hubRequirement_fk"
+	}).onUpdate("cascade").onDelete("cascade"),
 	unique("cthr_class_hub_unique").on(table.classId, table.hubRequirementId),
 ]);
 
@@ -87,15 +87,15 @@ export const bookmark = pgTable("Bookmark", {
 	classId: integer().notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: "bookmark_user_fk"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.userId],
+		foreignColumns: [users.id],
+		name: "bookmark_user_fk"
+	}).onUpdate("cascade").onDelete("cascade"),
 	foreignKey({
-			columns: [table.classId],
-			foreignColumns: [classTable.id],
-			name: "bookmark_class_fk"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.classId],
+		foreignColumns: [classTable.id],
+		name: "bookmark_class_fk"
+	}).onUpdate("cascade").onDelete("cascade"),
 ]);
 
 export const userCompletedClass = pgTable("UserCompletedClass", {
@@ -105,15 +105,15 @@ export const userCompletedClass = pgTable("UserCompletedClass", {
 	grade: text(),
 }, (table) => [
 	foreignKey({
-			columns: [table.userId],
-			foreignColumns: [users.id],
-			name: "ucc_user_fk"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.userId],
+		foreignColumns: [users.id],
+		name: "ucc_user_fk"
+	}).onUpdate("cascade").onDelete("cascade"),
 	foreignKey({
-			columns: [table.classId],
-			foreignColumns: [classTable.id],
-			name: "ucc_class_fk"
-		}).onUpdate("cascade").onDelete("cascade"),
+		columns: [table.classId],
+		foreignColumns: [classTable.id],
+		name: "ucc_class_fk"
+	}).onUpdate("cascade").onDelete("cascade"),
 	unique("ucc_user_class_unique").on(table.userId, table.classId),
 ]);
 
@@ -129,14 +129,14 @@ export const locationclasses = pgTable("locationclasses", {
 	classid: integer().notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.locationid],
-			foreignColumns: [studyabroadlocations.locationid],
-			name: "fk_location"
-		}).onDelete("cascade"),
+		columns: [table.locationid],
+		foreignColumns: [studyabroadlocations.locationid],
+		name: "fk_location"
+	}).onDelete("cascade"),
 	foreignKey({
-			columns: [table.classid],
-			foreignColumns: [classTable.id],
-			name: "fk_class"
-		}).onDelete("cascade"),
-	primaryKey({ columns: [table.locationid, table.classid], name: "locationclasses_pkey"}),
+		columns: [table.classid],
+		foreignColumns: [classTable.id],
+		name: "fk_class"
+	}).onDelete("cascade"),
+	primaryKey({ columns: [table.locationid, table.classid], name: "locationclasses_pkey" }),
 ]);
