@@ -5,10 +5,7 @@ import {
 export const users = pgTable("Users", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"Users_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	googleId: text("google_id").notNull(),
 	major: text("major"),
 	minor: text("minor"),
@@ -26,10 +23,7 @@ export const users = pgTable("Users", {
 export const schedule = pgTable("Schedule", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"Schedule_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	name: text("name").notNull(),
 	userId: integer("userId").notNull(),
 }, (table) => [
@@ -43,10 +37,7 @@ export const schedule = pgTable("Schedule", {
 export const hubRequirement = pgTable("HubRequirement", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"HubRequirement_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	name: text("name").notNull(),
 }, (table) => [
 	unique("unique_hub_name").on(table.name),
@@ -55,10 +46,7 @@ export const hubRequirement = pgTable("HubRequirement", {
 export const classTable = pgTable("Class", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"Class_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	school: text("school").notNull(),
 	department: text("department").notNull(),
 	number: text("number").notNull(),
@@ -72,10 +60,7 @@ export const classTable = pgTable("Class", {
 export const section = pgTable("Section", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"Section_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	classId: integer("classId").notNull(),
 	name: text("name").notNull(),
 	year: integer("year").notNull(),
@@ -97,10 +82,7 @@ export const section = pgTable("Section", {
 export const scheduleToSection = pgTable("ScheduleToSection", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"ScheduleToSection_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	scheduleId: integer("scheduleId").notNull(),
 	sectionId: integer("sectionId").notNull(),
 }, (table) => [
@@ -120,10 +102,7 @@ export const scheduleToSection = pgTable("ScheduleToSection", {
 export const classToHubRequirement = pgTable("ClassToHubRequirement", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"ClassToHubRequirement_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	classId: integer("classId").notNull(),
 	hubRequirementId: integer("hubRequirementId").notNull(),
 }, (table) => [
@@ -143,10 +122,7 @@ export const classToHubRequirement = pgTable("ClassToHubRequirement", {
 export const bookmark = pgTable("Bookmark", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"Bookmark_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	userId: integer("userId").notNull(),
 	classId: integer("classId").notNull(),
 }, (table) => [
@@ -166,10 +142,7 @@ export const bookmark = pgTable("Bookmark", {
 export const userCompletedClass = pgTable("UserCompletedClass", {
 	id: integer("id")
 		.primaryKey()
-		.generatedAlwaysAsIdentity({
-			name: "\"UserCompletedClass_id_seq\"",
-			startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647
-		}),
+		.generatedAlwaysAsIdentity(),
 	userId: integer("userId").notNull(),
 	classId: integer("classId").notNull(),
 	grade: text("grade"),
