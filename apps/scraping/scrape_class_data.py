@@ -1,15 +1,18 @@
-#!/usr/bin/env python3
 import argparse
 import json
 import logging
 import re
 import sys
+import threading
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
 from bs4 import BeautifulSoup, Tag
 from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 # ------------------------
 # Logging
@@ -41,6 +44,28 @@ TIME_RANGE_RE = re.compile(
     re.IGNORECASE,
 )
 TIME_RE = re.compile(r"^\s*(\d{1,2})(?::(\d{2}))?\s*([ap]m)\s*$", re.IGNORECASE)
+
+# ------------------------
+# Thread-local session
+# ------------------------
+_thread_local = threading.local()
+
+def _get_session() -> requests.Session:
+    s = getattr(_thread_local, "session", None)
+    if s is None:
+        s = requests.Session()
+        retries = Retry(
+            total=3,
+            backoff_factor=0.5,
+            status_forcelist={429, 500, 502, 503, 504},
+            allowed_methods={"GET"},
+            raise_on_status=False,
+        )
+        adapter = HTTPAdapter(pool_connections=100, pool_maxsize=100, max_retries=retries)
+        s.mount("http://", adapter)
+        s.mount("https://", adapter)
+        _thread_local.session = s
+    return s
 
 # ------------------------
 # Utils
@@ -123,7 +148,6 @@ def parse_schedule_to_days_and_times(txt: str):
     return text or None, None, None
 
 def headers_map(table: Tag) -> Dict[str, int]:
-    # Use first row as header (th or td)
     rows = table.find_all("tr")
     if not rows:
         return {}
@@ -244,7 +268,8 @@ def parse_sections(main: Tag) -> List[Dict]:
     return all_sections
 
 def scrape_course(url: str) -> Dict:
-    resp = requests.get(url, timeout=30)
+    session = _get_session()
+    resp = session.get(url, timeout=30)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
 
@@ -270,10 +295,105 @@ def scrape_course(url: str) -> Dict:
     }
 
 # ------------------------
+# Ordered, periodic saver with MERGE
+# ------------------------
+class OrderedSaver:
+    """
+    Maintains input order across a *subset* of pending URLs, while merging with an
+    existing output file on every save.
+
+    - Tracks completion over the pending list (subset of all URLs).
+    - Only flushes the longest contiguous prefix of completed pending jobs.
+    - Merge rule on flush:
+        merged_map := existing_map ∪ newly_completed_prefix
+        file := [ merged_map[u] for u in all_urls if u in merged_map ]
+      This preserves original input order globally and avoids duplicates.
+    """
+    def __init__(
+        self,
+        all_urls: List[str],
+        existing_map: Dict[str, Dict],
+        pending_urls: List[str],
+        out_path: Path,
+        interval_sec: float = 5.0,
+    ):
+        self.all_urls = all_urls
+        self.existing_map = existing_map  # url -> record
+        self.pending_urls = pending_urls  # order we enforce prefix on
+        self.out_path = out_path
+        self.interval_sec = interval_sec
+
+        self.total = len(self.pending_urls)
+        self.completed = [False] * self.total
+        self.successes_by_index: List[Optional[Dict]] = [None] * self.total
+        self.cursor = 0  # within pending
+
+        self._lock = threading.Lock()
+        self._stop = threading.Event()
+        self._thread = threading.Thread(target=self._run, name="OrderedSaver", daemon=True)
+
+    def start(self):
+        self._thread.start()
+
+    def stop(self):
+        self._stop.set()
+        self._thread.join()
+        self.flush()
+
+    def mark_success(self, pending_idx: int, item: Dict):
+        with self._lock:
+            self.completed[pending_idx] = True
+            self.successes_by_index[pending_idx] = item
+
+    def mark_failure(self, pending_idx: int):
+        with self._lock:
+            self.completed[pending_idx] = True
+
+    def _advance_cursor_locked(self) -> Dict[str, Dict]:
+        """
+        Consume the contiguous prefix of completed pending jobs, returning a dict
+        of url->record for those newly confirmed successes. Failures are skipped.
+        """
+        newly_confirmed: Dict[str, Dict] = {}
+        while self.cursor < self.total and self.completed[self.cursor]:
+            item = self.successes_by_index[self.cursor]
+            if item is not None:
+                newly_confirmed[item["url"]] = item
+            self.cursor += 1
+        return newly_confirmed
+
+    def _build_merged_output_locked(self) -> List[Dict]:
+        # apply any new prefix successes
+        newly = self._advance_cursor_locked()
+        if newly:
+            self.existing_map.update(newly)
+
+        # emit in full input order
+        merged_list = [self.existing_map[u] for u in self.all_urls if u in self.existing_map]
+        return merged_list
+
+    def flush(self):
+        with self._lock:
+            merged_list = self._build_merged_output_locked()
+            data = json.dumps(merged_list, indent=2, ensure_ascii=False)
+
+        tmp = self.out_path.with_suffix(self.out_path.suffix + ".tmp")
+        try:
+            tmp.parent.mkdir(parents=True, exist_ok=True)
+            tmp.write_text(data)
+            tmp.replace(self.out_path)
+        except Exception as e:
+            log.error(f"Periodic save failed: {e}")
+
+    def _run(self):
+        while not self._stop.wait(self.interval_sec):
+            self.flush()
+
+# ------------------------
 # CLI
 # ------------------------
 def main():
-    parser = argparse.ArgumentParser(description="Scrape BU course pages.")
+    parser = argparse.ArgumentParser(description="Scrape BU course pages (multithreaded, resumable, ordered periodic saves).")
     parser.add_argument(
         "--input",
         default="data/class_urls.json",
@@ -284,6 +404,18 @@ def main():
         default="data/class_data.json",
         help="Path to output JSON (default: data/class_data.json)",
     )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=16,
+        help="Number of threads (default: 16)",
+    )
+    parser.add_argument(
+        "--save-interval",
+        type=float,
+        default=5.0,
+        help="Seconds between periodic saves (default: 5.0)",
+    )
     args = parser.parse_args()
 
     in_path = Path(args.input)
@@ -293,33 +425,90 @@ def main():
         log.error(f"Missing input file: {in_path}")
         sys.exit(1)
 
+    # Read input URLs
     try:
-        urls = json.loads(in_path.read_text())
-        if not isinstance(urls, list) or not all(isinstance(u, str) for u in urls):
+        all_urls: List[str] = json.loads(in_path.read_text())
+        if not isinstance(all_urls, list) or not all(isinstance(u, str) for u in all_urls):
             raise ValueError("Input JSON must be a list of strings (URLs).")
     except Exception as e:
         log.error(f"Failed to read/parse input JSON: {e}")
         sys.exit(1)
 
-    results: List[Dict] = []
-    for url in tqdm(urls, desc="Scraping courses"):
+    # Read existing output (resume)
+    existing_map: Dict[str, Dict] = {}
+    if out_path.exists():
         try:
-            results.append(scrape_course(url))
+            existing_data = json.loads(out_path.read_text())
+            if isinstance(existing_data, list):
+                for rec in existing_data:
+                    if isinstance(rec, dict) and "url" in rec and isinstance(rec["url"], str):
+                        existing_map[rec["url"]] = rec
+            else:
+                log.warning(f"Existing output is not a list, ignoring resume: {out_path}")
+        except Exception as e:
+            log.warning(f"Could not read/parse existing output ({out_path}), starting fresh: {e}")
+
+    # Determine pending work: only URLs not yet present in existing_map
+    pending_urls = [u for u in all_urls if u not in existing_map]
+    skipped = len(all_urls) - len(pending_urls)
+    if skipped:
+        log.info(f"Resume: {skipped} already processed; {len(pending_urls)} pending.")
+
+    if len(pending_urls) == 0:
+        # Nothing to do; still ensure output is in correct order and consistent
+        merged_list = [existing_map[u] for u in all_urls if u in existing_map]
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(merged_list, indent=2, ensure_ascii=False))
+        log.info(f"No pending URLs. Wrote merged file with {len(merged_list)} records → {out_path}")
+        return
+
+    saver = OrderedSaver(
+        all_urls=all_urls,
+        existing_map=existing_map,
+        pending_urls=pending_urls,
+        out_path=out_path,
+        interval_sec=args.save_interval,
+    )
+    saver.start()
+
+    progress = tqdm(total=len(pending_urls), desc="Scraping courses", unit="page")
+
+    # Map pending index for OrderedSaver and run workers
+    pending_index_by_url = {u: i for i, u in enumerate(pending_urls)}
+
+    def worker(url: str):
+        i = pending_index_by_url[url]
+        try:
+            item = scrape_course(url)
+            saver.mark_success(i, item)
         except requests.HTTPError as e:
             code = e.response.status_code if e.response is not None else "?"
             log.error(f"[HTTP {code}] {url}")
+            saver.mark_failure(i)
         except requests.RequestException as e:
             log.error(f"[NETWORK ERROR] {url}: {e}")
+            saver.mark_failure(i)
         except Exception as e:
             log.error(f"[PARSE ERROR] {url}: {e}")
+            saver.mark_failure(i)
+        finally:
+            progress.update(1)
 
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        out_path.write_text(json.dumps(results, indent=2, ensure_ascii=False))
-        log.info(f"Wrote {len(results)} courses → {out_path}")
-    except Exception as e:
-        log.error(f"Failed to write output JSON: {e}")
-        sys.exit(1)
+    with ThreadPoolExecutor(max_workers=max(1, args.workers)) as executor:
+        for url in pending_urls:
+            executor.submit(worker, url)
+
+    progress.close()
+    saver.stop()
+
+    # Final stats
+    total_now = len([u for u in all_urls if u in saver.existing_map])
+    total_failed = sum(1 for c, s in zip(saver.completed, saver.successes_by_index) if c and s is None)
+    total_pending_left = sum(1 for c in saver.completed if not c)
+    log.info(
+        f"Merged and wrote {total_now} records → {out_path} "
+        f"(new failures this run: {total_failed}, pending left: {total_pending_left})"
+    )
 
 if __name__ == "__main__":
     main()

@@ -20,9 +20,9 @@ def get_courses(url, i):
         text = li.get_text(separator=' ').strip()
         text = re.sub(r'\s+', ' ', text)
         if re.match(r'^[A-Z]{3,} [A-Z]+ \d+', text):
-            school, department, number = text.split()[:3]
+            school, department, number = text.lower().split()[:3]
             number = number.removesuffix(":")
-            course_url = f"{url}/{school.lower()}-{department.lower()}-{number}"
+            course_url = f"{url}/{school}-{department}-{number}"
             courses.append(course_url)
 
     return courses
