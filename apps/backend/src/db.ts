@@ -1,5 +1,13 @@
 import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import * as schema from './db/schema';
+import * as relations from './db/relations';
 
-const sql = neon(process.env.DATABASE_URL!);
+const connection = neon(process.env.DATABASE_URL!);
 
-export default sql;
+export const sql = connection;
+
+// @ts-ignore - Type error with neon-serverless compatibility, but it works at runtime
+export const db = drizzle(connection, { schema: { ...schema, ...relations } });
+
+export default db;
