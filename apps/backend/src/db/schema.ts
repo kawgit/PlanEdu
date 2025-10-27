@@ -1,9 +1,7 @@
 import {
 	pgTable, foreignKey, integer, text, unique, index, jsonb, date, vector, timestamp
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
-// ---------- Users ----------
 export const users = pgTable("Users", {
 	id: integer("id")
 		.primaryKey()
@@ -22,14 +20,9 @@ export const users = pgTable("Users", {
 	embedding: vector("embedding", { dimensions: 1536 }),
 	embeddingUpdatedAt: timestamp("embedding_updated_at", { mode: "string" }),
 }, (table) => [
-	// ivfflat over pgvector
-	index("users_embedding_idx")
-		.using("ivfflat", table.embedding.op("vector_cosine_ops"))
-		.with({ lists: "100" }),
 	unique("users_google_id_unique").on(table.googleId),
 ]);
 
-// ---------- Schedule ----------
 export const schedule = pgTable("Schedule", {
 	id: integer("id")
 		.primaryKey()
@@ -47,7 +40,6 @@ export const schedule = pgTable("Schedule", {
 	}).onDelete("cascade").onUpdate("cascade"),
 ]);
 
-// ---------- HubRequirement ----------
 export const hubRequirement = pgTable("HubRequirement", {
 	id: integer("id")
 		.primaryKey()
@@ -60,7 +52,6 @@ export const hubRequirement = pgTable("HubRequirement", {
 	unique("unique_hub_name").on(table.name),
 ]);
 
-// ---------- Class ----------
 export const classTable = pgTable("Class", {
 	id: integer("id")
 		.primaryKey()
@@ -70,17 +61,14 @@ export const classTable = pgTable("Class", {
 		}),
 	school: text("school").notNull(),
 	department: text("department").notNull(),
-	// If you want to allow non-numeric course "numbers", change to text("number").notNull()
-	number: integer("number").notNull(),
+	number: text("number").notNull(),
 	title: text("title").notNull(),
 	description: text("description").notNull(),
-	// Consider vector(...) if you plan ANN over classes as well; keeping your jsonb choice:
 	embedding: jsonb("embedding"),
 }, (table) => [
 	unique("class_school_dept_num_unique").on(table.school, table.department, table.number),
 ]);
 
-// ---------- Section ----------
 export const section = pgTable("Section", {
 	id: integer("id")
 		.primaryKey()
@@ -92,11 +80,11 @@ export const section = pgTable("Section", {
 	name: text("name").notNull(),
 	year: integer("year").notNull(),
 	season: text("season").notNull(),
-	instructor: text("instructor"), // made nullable for real-world gaps
+	instructor: text("instructor"),
 	location: text("location"),
-	days: text("days"),
-	startTime: text("startTime"),
-	endTime: text("endTime"),
+	days: text("days").notNull(),
+	startTime: text("startTime").notNull(),
+	endTime: text("endTime").notNull(),
 	notes: text("notes"),
 }, (table) => [
 	foreignKey({
@@ -104,13 +92,9 @@ export const section = pgTable("Section", {
 		foreignColumns: [classTable.id],
 		name: "section_class_fk",
 	}).onDelete("cascade").onUpdate("cascade"),
-	// Prevent duplicate sections as you defined (same class + name + term)
-	unique("section_unique_term").on(table.classId, table.name, table.year, table.season),
 ]);
 
-// ---------- ScheduleToSection ----------
 export const scheduleToSection = pgTable("ScheduleToSection", {
-	// Optional: you can drop this surrogate id and use composite PK instead.
 	id: integer("id")
 		.primaryKey()
 		.generatedAlwaysAsIdentity({
@@ -133,7 +117,6 @@ export const scheduleToSection = pgTable("ScheduleToSection", {
 	unique("stsec_schedule_section_unique").on(table.scheduleId, table.sectionId),
 ]);
 
-// ---------- ClassToHubRequirement ----------
 export const classToHubRequirement = pgTable("ClassToHubRequirement", {
 	id: integer("id")
 		.primaryKey()
@@ -157,7 +140,6 @@ export const classToHubRequirement = pgTable("ClassToHubRequirement", {
 	unique("cthr_class_hub_unique").on(table.classId, table.hubRequirementId),
 ]);
 
-// ---------- Bookmark ----------
 export const bookmark = pgTable("Bookmark", {
 	id: integer("id")
 		.primaryKey()
@@ -181,7 +163,6 @@ export const bookmark = pgTable("Bookmark", {
 	unique("bookmark_user_class_unique").on(table.userId, table.classId),
 ]);
 
-// ---------- UserCompletedClass ----------
 export const userCompletedClass = pgTable("UserCompletedClass", {
 	id: integer("id")
 		.primaryKey()
