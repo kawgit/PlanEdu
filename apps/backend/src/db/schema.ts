@@ -44,21 +44,43 @@ export const classTable = pgTable("Class", {
 	number: integer().notNull(),
 	title: text().notNull(),
 	description: text().notNull(),
-	csMajorScore: integer().default(0),
 	embedding: jsonb(),
+}, (table) => []);
+
+export const section = pgTable("Section", {
+	id: integer().primaryKey().generatedAlwaysAsIdentity({ name: "\"Class_id_seq\"", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647 }),
+	classId: integer().notNull(),
+	name: text().notNull(),
+	year: integer().notNull(),
+	season: text().notNull(),
+	instructor: text().notNull(),
+	location: text().notNull(),
+	days: text().notNull(),
+	startTime: text().notNull(),
+	endTime: text().notNull(),
+	notes: text().notNull(),
 }, (table) => [
-	index("idx_class_csMajorScore").using("btree", table.csMajorScore.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+		columns: [table.id],
+		foreignColumns: [classTable.id],
+		name: "section_class_fk"
+	}),
 ]);
 
-export const scheduleToClassToSlot = pgTable("ScheduleToClassToSlot", {
+export const scheduleToSection = pgTable("ScheduleToSection", {
 	id: integer().primaryKey().generatedAlwaysAsIdentity({ name: "\"ScheduleToClassToSlot_id_seq\"", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647 }),
 	scheduleId: integer().notNull(),
-	classToSlotId: integer().notNull(),
+	sectionId: integer().notNull(),
 }, (table) => [
 	foreignKey({
 		columns: [table.id],
 		foreignColumns: [schedule.id],
 		name: "stcts_schedule_fk"
+	}),
+	foreignKey({
+		columns: [table.id],
+		foreignColumns: [section.id],
+		name: "stcts_section_fk"
 	}),
 	unique("stcts_schedule_cts_unique").on(table.scheduleId, table.classToSlotId),
 ]);
@@ -117,26 +139,3 @@ export const userCompletedClass = pgTable("UserCompletedClass", {
 	unique("ucc_user_class_unique").on(table.userId, table.classId),
 ]);
 
-export const studyabroadlocations = pgTable("studyabroadlocations", {
-	locationid: serial().primaryKey().notNull(),
-	name: text().notNull(),
-}, (table) => [
-	unique("studyabroadlocations_name_key").on(table.name),
-]);
-
-export const locationclasses = pgTable("locationclasses", {
-	locationid: integer().notNull(),
-	classid: integer().notNull(),
-}, (table) => [
-	foreignKey({
-		columns: [table.locationid],
-		foreignColumns: [studyabroadlocations.locationid],
-		name: "fk_location"
-	}).onDelete("cascade"),
-	foreignKey({
-		columns: [table.classid],
-		foreignColumns: [classTable.id],
-		name: "fk_class"
-	}).onDelete("cascade"),
-	primaryKey({ columns: [table.locationid, table.classid], name: "locationclasses_pkey" }),
-]);
