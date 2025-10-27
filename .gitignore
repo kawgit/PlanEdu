@@ -37,5 +37,14 @@ yarn-error.log*
 .DS_Store
 *.pem
 
+# Python
 venv
 .scrape_cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+*.egg
