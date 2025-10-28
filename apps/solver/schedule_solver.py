@@ -134,9 +134,10 @@ obj = sum(1000 * took_course[id] for id in bookmarked_ids) + sum(took_course[cou
 model.Maximize(obj)
 
 solver = cp_model.CpSolver()
-solver.parameters.max_time_in_seconds = 10
+solver.parameters.max_time_in_seconds = 5
 solver.parameters.num_search_workers = 4
 solver.parameters.search_branching = cp_model.AUTOMATIC_SEARCH
+solver.parameters.log_search_progress = False
 
 solver.parameters.cp_model_presolve = False
 solver.parameters.symmetry_level = 0
