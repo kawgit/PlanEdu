@@ -135,7 +135,7 @@ model.Maximize(obj)
 
 solver = cp_model.CpSolver()
 solver.parameters.max_time_in_seconds = 10
-solver.parameters.num_search_workers = 1
+solver.parameters.num_search_workers = 4
 solver.parameters.search_branching = cp_model.AUTOMATIC_SEARCH
 
 solver.parameters.cp_model_presolve = False
