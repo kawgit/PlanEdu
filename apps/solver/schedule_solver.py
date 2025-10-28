@@ -17,14 +17,14 @@ with open("../scraping/data/class_data.json", "r") as f:
         course["name"] = f"{json_course['school']} {json_course['department']} {json_course['number']}: {json_course['title']}"
         course["slots_ids"] = []
         course["score"] = -len(course["name"]) # arbitrary toy score for now
-        
+
         for section in json_course["sections"]:
             slot = f"{section['days']} {section['startTime']} {section['endTime']}"
             if slot not in slots:
                 slots.append(slot)
-            
+
             course["slots_ids"].append(slots.index(slot))
-        
+
         courses.append(course)
 
 print("Loaded", len(courses), "courses and", len(slots), "slots")
@@ -35,25 +35,26 @@ def minutes_since_midnight(time_str):
 
 forbidden_slot_pairs = []
 for i in range(len(slots)):
-    for j in range(i+1, len(slots)):
+    for j in range(i, len(slots)):
         slot_i = slots[i]
         slot_j = slots[j]
-        
+
         slot_i_days, slot_i_start, slot_i_end = slot_i.split()
         slot_j_days, slot_j_start, slot_j_end = slot_j.split()
-        
+
         if slot_i_days != slot_j_days:
             continue
-        
+
         slot_i_start = minutes_since_midnight(slot_i_start)
         slot_i_end = minutes_since_midnight(slot_i_end)
         slot_j_start = minutes_since_midnight(slot_j_start)
         slot_j_end = minutes_since_midnight(slot_j_end)
-        
+
         if slot_i_start >= slot_j_end or slot_i_end <= slot_j_start:
             continue
-        
+
         forbidden_slot_pairs.append((i, j))
+        forbidden_slot_pairs.append((j, i))
 print("Created", len(forbidden_slot_pairs), "forbidden slot pairs")
 
 allowed_course_slot_pairs = []
@@ -135,8 +136,12 @@ model.Maximize(obj)
 solver = cp_model.CpSolver()
 solver.parameters.max_time_in_seconds = 10
 solver.parameters.num_search_workers = 8
-solver.parameters.search_branching = cp_model.PORTFOLIO_SEARCH
-solver.parameters.log_search_progress = True
+solver.parameters.search_branching = cp_model.AUTOMATIC_SEARCH
+
+solver.parameters.cp_model_presolve = False
+solver.parameters.symmetry_level = 0
+solver.parameters.cp_model_probing_level = 0
+solver.parameters.use_sat_inprocessing = False
 
 class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
     def __init__(self, objective_expr):
@@ -162,11 +167,10 @@ for semester in semesters:
     for course_seat_index in range(seats_per_semester):
         course_id = solver.Value(course_seats[semester][course_seat_index])
         print("  ", courses[course_id]["name"], end=" ")
-        
+
         if semester != next_semester:
             print()
             continue
-        
+
         slot_id = solver.Value(next_semester_slot_seats[course_seat_index])
         print(slots[slot_id])
-        
