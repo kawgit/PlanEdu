@@ -2,7 +2,8 @@ import json
 import time
 from ortools.sat.python import cp_model
 
-semesters = [f"{year} {season}" for year in range(2024, 2029) for season in ["Spring", "Fall"]][1:-1]
+num_years = 4
+semesters = [f"{year} {season}" for year in range(2024, 2024 + 1 + num_years) for season in ["Spring", "Fall"]][1:-1]
 seats_per_semester = 4
 next_semester = semesters[0]
 
