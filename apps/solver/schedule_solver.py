@@ -1,178 +1,227 @@
-import json
-import time
 from ortools.sat.python import cp_model
+from typing import Any, List, Dict, Set
 
-num_years = 4
-semesters = [f"{year} {season}" for year in range(2024, 2024 + 1 + num_years) for season in ["Spring", "Fall"]][1:-1]
-seats_per_semester = 4
-next_semester = semesters[0]
+from utils import ObjectiveLogger
 
-slots = []
-courses = []
+SemesterIndex = int
+CourseId = int
+SlotId = str
 
-with open("../scraping/data/class_data.json", "r") as f:
-    json_courses = json.load(f)
-    for i, json_course in enumerate(json_courses):
-        course = {}
-        course["id"] = i
-        course["name"] = f"{json_course['school']} {json_course['department']} {json_course['number']}: {json_course['title']}"
-        course["slots_ids"] = []
-        course["score"] = -len(course["name"]) # arbitrary toy score for now
-
-        for section in json_course["sections"]:
-            slot = f"{section['days']} {section['startTime']} {section['endTime']}"
-            if slot not in slots:
-                slots.append(slot)
-
-            course["slots_ids"].append(slots.index(slot))
-
-        courses.append(course)
-
-print("Loaded", len(courses), "courses and", len(slots), "slots")
-
-def minutes_since_midnight(time_str):
-    h, m = map(int, time_str.split(":"))
-    return h * 60 + m
-
-forbidden_slot_pairs = []
-for i in range(len(slots)):
-    for j in range(i, len(slots)):
-        slot_i = slots[i]
-        slot_j = slots[j]
-
-        slot_i_days, slot_i_start, slot_i_end = slot_i.split()
-        slot_j_days, slot_j_start, slot_j_end = slot_j.split()
-
-        if slot_i_days != slot_j_days:
-            continue
-
-        slot_i_start = minutes_since_midnight(slot_i_start)
-        slot_i_end = minutes_since_midnight(slot_i_end)
-        slot_j_start = minutes_since_midnight(slot_j_start)
-        slot_j_end = minutes_since_midnight(slot_j_end)
-
-        if slot_i_start >= slot_j_end or slot_i_end <= slot_j_start:
-            continue
-
-        forbidden_slot_pairs.append((i, j))
-        forbidden_slot_pairs.append((j, i))
-print("Created", len(forbidden_slot_pairs), "forbidden slot pairs")
-
-allowed_course_slot_pairs = []
-for course in courses:
-    for slot_id in course["slots_ids"]:
-        course_id = course["id"]
-        allowed_course_slot_pairs.append((course_id, slot_id))
-print("Created", len(allowed_course_slot_pairs), "allowed course slot pairs")
-
-bookmarked_names = ["CAS CS 523", "CAS CS 565", "CAS CS 505", "CAS CS 542", "CAS CS 541"]
-bookmarked_ids = []
-
-for i, course in enumerate(courses):
-    if any(bookmarked_name in course["name"] for bookmarked_name in bookmarked_names):
-        bookmarked_ids.append(i)
-
-model = cp_model.CpModel()
-
-def candidates_for(sem):
-    if sem == next_semester:
-        return [c["id"] for c in courses if c["slots_ids"]]
-    # heuristic: bookmarks + top-N by score
-    bookmarked = set(bookmarked_ids)
-    rest = sorted((i for i in range(len(courses)) if i not in bookmarked),
-                  key=lambda i: courses[i]["score"], reverse=True)
-    N = 100
-    return list(bookmarked) + rest[:N]
-
-course_seats = {}
-for semester in semesters:
-    course_seats[semester] = []
-    semester_candidates = cp_model.Domain.FromValues(candidates_for(semester))
-    for course_seat_index in range(seats_per_semester):
-        course_seats[semester].append(model.NewIntVarFromDomain(semester_candidates, f"course_seat_{semester}_{course_seat_index}"))
-course_seats_flattened = [seat for semester in semesters for seat in course_seats[semester]]
-
-next_semester_course_seats = course_seats[next_semester]
-
-next_semester_slot_seats = []
-for course_seat_index in range(seats_per_semester):
-    next_semester_slot_seats.append(model.NewIntVar(0, len(slots) - 1, f"slot_seat_{course_seat_index}"))
-
-# Do not allow any duplicate courses across different semesters
-model.AddAllDifferent(course_seats_flattened)
-
-# Only allow selection of slots that are allowed for the course
-for course_seat_index in range(seats_per_semester):
-    model.AddAllowedAssignments([next_semester_course_seats[course_seat_index], next_semester_slot_seats[course_seat_index]], allowed_course_slot_pairs)
-
-# Forbid selection of slots that collide with other slots
-for i in range(seats_per_semester):
-    for j in range(i + 1, seats_per_semester):
-        model.AddForbiddenAssignments([next_semester_slot_seats[i], next_semester_slot_seats[j]], forbidden_slot_pairs)
-
-# Define took course variables
-took_course = {}
-for course in courses:
-    id = course["id"]
-    took_course[id] = model.NewBoolVar(f"took_course_{id}")
+class ScheduleSolver:
+    def __init__(self, courses: List[Dict[str, Any]], slots: List[SlotId], completed_ids: Set[CourseId], num_future_semesters: int, num_courses_per_semester: int = 4):
+        self.courses = courses
+        self.slots = slots
+        self.all_ids = set(course["id"] for course in courses)
+        self.completed_ids = completed_ids
+        self.num_future_semesters = num_future_semesters
+        self.num_courses_per_semester = num_courses_per_semester
+        
+        assert self.completed_ids.issubset(self.all_ids)
+        
+        self.model = cp_model.CpModel()
+        
+        print("  Building decision space...")
+        # Build decision space
+        self._build_slot_vars()
+        self._build_course_vars()
+        
+        print("  Building intermediate variables...")
+        # Build intermediate variables
+        self._build_merged_slot_vars()
+        self._build_merged_course_vars()
+        
+        # Build constraints
+        print("  Building exactly one slot per course constraint...")
+        self._exactly_one_slot_per_course()
+        print("  Building no overlapping slots constraint...")
+        self._no_overlapping_slots()
+        print("  Building no duplicate courses constraint...")
+        self._no_duplicate_courses()
+        print("  Building max classes per semester constraint...")
+        self._enforce_num_courses_per_semester()
+        
+        print("  Building objective...")
+        # Build objective
+        self._build_objective()
+        
+        print("  Building solver...")
+        # Build solver
+        self._build_solver()
     
-    # Create list of bools representing if a given course seat matches the course
-    matches = []
-    for semester_seats in course_seats.values():
-        for course_seat in semester_seats:
-            match = model.NewBoolVar(f"match_{id}_{course_seat}")
-            model.Add(id == course_seat).OnlyEnforceIf(match)
-            model.Add(id != course_seat).OnlyEnforceIf(match.Not())
-            matches.append(match)
+    def _build_slot_vars(self):
+        self.slot_vars: Dict[CourseId, cp_model.IntVar] = {}        
+        candidates = self._select_semester_candidates(0)
+        for candidate in candidates:
+            course_id = candidate["id"]
+            self.slot_vars[course_id] = {}
+            for slot_id in candidate["slots_ids"]:
+                self.slot_vars[course_id][slot_id] = self.model.NewBoolVar(f"slot_{course_id}_{slot_id}")
+    
+    def _build_course_vars(self):
+        self.course_vars: Dict[SemesterIndex, Dict[CourseId, cp_model.BoolVarT]] = {}
+        for semester_index in range(self.num_future_semesters):
+            self.course_vars[semester_index] = {}
+            candidates = self._select_semester_candidates(semester_index)
+            for candidate in candidates:
+                course_id = candidate["id"]   
+                self.course_vars[semester_index][course_id] = self.model.NewBoolVar(f"course_{semester_index}_{course_id}")
+    
+    def _select_semester_candidates(self, semester_index: SemesterIndex):
+        
+        if semester_index == 0:
+            return self.courses
+        
+        candidate_courses = [course for course in self.courses if course["id"] not in self.completed_ids]
+        candidate_courses.sort(key=lambda course: course["score"], reverse=True)
+        candidate_courses = candidate_courses[:100]
+        
+        return candidate_courses
 
-    # Set took_course to true if any of the matches are true
-    model.AddBoolOr(matches + [took_course[id].Not()])
-    for match in matches:
-        model.AddImplication(match, took_course[id])
+    def _build_merged_slot_vars(self):
+        self.merged_slot_vars: Dict[SlotId, cp_model.BoolVarT] = {}
+        for slot in self.slots:
+            slot_vars = []
+            for course_id in self.slot_vars:
+                if slot in self.slot_vars[course_id]:
+                    slot_vars.append(self.slot_vars[course_id][slot])
+            
+            if len(slot_vars) == 0:
+                continue
+            
+            self.merged_slot_vars[slot] = self.model.NewBoolVar(f"merged_slot_{slot}")
+            self.model.AddAtMostOne(slot_vars)
+            self.model.AddMaxEquality(self.merged_slot_vars[slot], slot_vars)
 
-# Define objective function
-obj = sum(1000 * took_course[id] for id in bookmarked_ids) + sum(took_course[course["id"]] * course["score"] for course in courses)
-model.Maximize(obj)
+    def _build_merged_course_vars(self):
+        
+        self.merged_course_vars: Dict[CourseId, cp_model.BoolVarT] = {}
+        
+        for course in self.courses:
+            
+            course_id = course["id"]
+            course_vars = []
+            
+            for semester_index in range(self.num_future_semesters):
+                if course_id in self.course_vars[semester_index]:
+                    course_vars.append(self.course_vars[semester_index][course_id])
+            
+            if len(course_vars) == 0:
+                continue
+            
+            self.merged_course_vars[course_id] = self.model.NewBoolVar(f"took_{course_id}")
+            self.model.AddAtMostOne(course_vars)
+            self.model.AddMaxEquality(self.merged_course_vars[course_id], course_vars)
 
-solver = cp_model.CpSolver()
-solver.parameters.max_time_in_seconds = 5
-solver.parameters.num_search_workers = 4
-solver.parameters.search_branching = cp_model.AUTOMATIC_SEARCH
-solver.parameters.log_search_progress = False
+    def _exactly_one_slot_per_course(self):
+        for course_id in self.slot_vars:
+            course_slot_vars = self.slot_vars[course_id].values()
+            course_var = self.course_vars[0][course_id]
+            self.model.Add(sum(course_slot_vars) == course_var)
 
-solver.parameters.cp_model_presolve = False
-solver.parameters.symmetry_level = 0
-solver.parameters.cp_model_probing_level = 0
-solver.parameters.use_sat_inprocessing = False
+    def _no_overlapping_slots(self):
+        forbidden_slot_pairs = self._build_forbidden_slot_pairs()
+        
+        for slot_i, slot_j in forbidden_slot_pairs:
+            if slot_i not in self.merged_slot_vars or slot_j not in self.merged_slot_vars:
+                continue
+            
+            self.model.AddAtMostOne([self.merged_slot_vars[slot_i], self.merged_slot_vars[slot_j]])
+        
+    def _build_forbidden_slot_pairs(self):
+        
+        def minutes_since_midnight(time_str):
+            h, m = map(int, time_str.split(":"))
+            return h * 60 + m
 
-class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
-    def __init__(self, objective_expr):
-        super().__init__()
-        self._objective = objective_expr
-        self._start = time.time()
-        self._best = None
+        forbidden_slot_pairs = []
+        
+        for i in range(len(self.slots)):
+            for j in range(i + 1, len(self.slots)):
+                slot_i = self.slots[i]
+                slot_j = self.slots[j]
 
-    def on_solution_callback(self):
-        value = self.ObjectiveValue()  # works if model.Maximize/Minimize called
-        now = time.time() - self._start
-        if self._best is None or value > self._best:
-            self._best = value
-            print(f"[{now:6.2f}s]  New objective = {value:.3f}")
+                slot_i_days, slot_i_start, slot_i_end = slot_i.split()
+                slot_j_days, slot_j_start, slot_j_end = slot_j.split()
 
-print("Solving...")
-logger = ObjectiveLogger(model)
-res = solver.Solve(model, logger)
+                if slot_i_days != slot_j_days:
+                    continue
 
-print("Status:", solver.StatusName(res), "in", solver.WallTime(), "seconds with objective value", int(solver.ObjectiveValue()))
-for semester in semesters:
-    print(semester)
-    for course_seat_index in range(seats_per_semester):
-        course_id = solver.Value(course_seats[semester][course_seat_index])
-        print("  ", courses[course_id]["name"], end=" ")
+                slot_i_start = minutes_since_midnight(slot_i_start)
+                slot_i_end = minutes_since_midnight(slot_i_end)
+                slot_j_start = minutes_since_midnight(slot_j_start)
+                slot_j_end = minutes_since_midnight(slot_j_end)
 
-        if semester != next_semester:
-            print()
-            continue
+                if slot_i_start >= slot_j_end or slot_i_end <= slot_j_start:
+                    continue
 
-        slot_id = solver.Value(next_semester_slot_seats[course_seat_index])
-        print(slots[slot_id])
+                forbidden_slot_pairs.append((slot_i, slot_j))
+                
+        return forbidden_slot_pairs
+
+    def _no_duplicate_courses(self):
+        for course in self.courses:
+            
+            course_id = course["id"]
+            course_vars = []
+            
+            for semester_index in range(self.num_future_semesters):
+                if course_id in self.course_vars[semester_index]:
+                    course_vars.append(self.course_vars[semester_index][course_id])
+            
+            if len(course_vars) == 0:
+                continue
+            
+            self.model.AddAtMostOne(course_vars)
+
+    def _enforce_num_courses_per_semester(self):
+        for semester_index in range(self.num_future_semesters):
+            course_vars = self.course_vars[semester_index].values()
+            self.model.Add(sum(course_vars) == self.num_courses_per_semester)
+
+    def _build_objective(self):
+        self.objective = 0
+        for course in self.courses:
+            if course["id"] not in self.merged_course_vars:
+                continue
+            self.objective += self.merged_course_vars[course["id"]] * course["score"]
+        self.model.Maximize(self.objective)
+    
+    def _build_solver(self):
+        self.solver = cp_model.CpSolver()
+        self.solver.parameters.max_time_in_seconds = 5
+        self.solver.parameters.num_search_workers = 4
+        self.solver.parameters.search_branching = cp_model.AUTOMATIC_SEARCH
+        self.solver.parameters.log_search_progress = True
+        self.solver.parameters.cp_model_presolve = False
+        self.solver.parameters.symmetry_level = 0
+        self.solver.parameters.cp_model_probing_level = 0
+        self.solver.parameters.use_sat_inprocessing = False
+        
+    
+    def solve(self, time_limit: int = 5, verbose: bool = False):
+        
+        self.solver.parameters.max_time_in_seconds = time_limit
+        self.solver.parameters.log_search_progress = verbose
+        self.solver.Solve(self.model, ObjectiveLogger(self.objective))
+        
+        for semester_index in range(self.num_future_semesters):
+            print(f"Semester {semester_index}:")
+            for course in self.courses:
+                course_id = course["id"]
+                
+                if course_id not in self.course_vars[semester_index]:
+                    continue
+                
+                if self.solver.Value(self.course_vars[semester_index][course_id]):
+                    print(f"  {course['name']}", end=" ")
+                    
+                    if semester_index > 0:
+                        print()
+                        continue
+                    
+                    for slot_id in self.slot_vars[course_id]:
+                        if self.solver.Value(self.slot_vars[course_id][slot_id]):
+                            print(self.slots[slot_id], end=" ")
+                    
+                    print()
+ 
