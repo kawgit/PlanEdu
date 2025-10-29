@@ -74,22 +74,24 @@ const App: React.FC = () => {
   const addBookmark = async (course: BookmarkedClass) => {
     try {
       await addBookmarkAPI(course.id);
-      // Refresh bookmarks from database
-      const updatedBookmarks = await fetchUserBookmarks();
-      setBookmarks(updatedBookmarks);
+      // keep optimistic state; optionally refresh if you want canonical data
     } catch (error) {
       console.error('Failed to add bookmark:', error);
+      // revert optimistic update
+      setBookmarks(prev => prev.filter(b => b.id !== course.id));
     }
   };
 
   const removeBookmark = async (classId: number) => {
+    // Optimistic removal: remove locally first, revert on error
+    const previous = bookmarks;
+    setBookmarks(prev => prev.filter(b => b.id !== classId));
     try {
       await removeBookmarkAPI(classId);
-      // Refresh bookmarks from database
-      const updatedBookmarks = await fetchUserBookmarks();
-      setBookmarks(updatedBookmarks);
     } catch (error) {
       console.error('Failed to remove bookmark:', error);
+      // revert
+      setBookmarks(previous);
     }
   };
 

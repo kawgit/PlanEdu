@@ -11,7 +11,7 @@ import {
   Textarea, 
   Grid, 
   Alert,
-  Progress,
+  
   Paper,
   Select,
   Loader,
@@ -82,18 +82,24 @@ function minutesToTime(minutes: number): string {
   return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
 }
 
-const ScheduleBuilderPage: React.FC = () => {
+interface ScheduleBuilderProps {
+  bookmarks?: BookmarkedClass[];
+}
+
+const ScheduleBuilderPage: React.FC<ScheduleBuilderProps> = ({ bookmarks: initialBookmarks }) => {
   const [userPrompt, setUserPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedSchedule, setGeneratedSchedule] = useState<GeneratedSchedule | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [bookmarks, setBookmarks] = useState<BookmarkedClass[]>([]);
-  const [loadingBookmarks, setLoadingBookmarks] = useState(true);
+  const [bookmarks, setBookmarks] = useState<BookmarkedClass[]>(initialBookmarks || []);
+  const [loadingBookmarks, setLoadingBookmarks] = useState(initialBookmarks ? false : true);
   const [maxCoursesPerSemester, setMaxCoursesPerSemester] = useState<string>('4');
   const [selectedSemester, setSelectedSemester] = useState<string>('all');
 
-  // Fetch user's bookmarked courses on mount
+  // Fetch user's bookmarked courses on mount only if not provided via props
   useEffect(() => {
+    if (initialBookmarks) return; // already provided
+
     const fetchBookmarks = async () => {
       try {
         const googleId = getUserGoogleId();
@@ -120,7 +126,7 @@ const ScheduleBuilderPage: React.FC = () => {
     };
 
     fetchBookmarks();
-  }, []);
+  }, [initialBookmarks]);
 
   const handleGenerateSchedule = async () => {
     setIsGenerating(true);
@@ -324,7 +330,7 @@ const ScheduleBuilderPage: React.FC = () => {
                 <Text c="dimmed" size="sm">
                   Analyzing {bookmarks.length} courses and your preferences...
                 </Text>
-                <Progress value={100} color="bu-red" size="md" style={{ width: '100%' }} />
+                <Loader size="sm" color="bu-red" />
                 <Text size="xs" c="dimmed">
                   This may take a few seconds
                 </Text>

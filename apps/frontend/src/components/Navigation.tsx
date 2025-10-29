@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, UnstyledButton, Text, useMantineTheme } from '@mantine/core';
-import { IconCards, IconBookmark, IconCalendar, IconCertificate, IconMessageCircle } from '@tabler/icons-react';
+import { IconCards, IconBookmark, IconCertificate, IconCalendar } from '@tabler/icons-react';
 import { TabName } from '../App';
 
 interface NavigationProps {
@@ -81,7 +81,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
       <Box
         style={{
           display: 'flex',
-          maxWidth: '600px',
+          maxWidth: '420px',
           margin: '0 auto',
         }}
       >
@@ -90,12 +90,6 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
           label="Profile"
           active={activeTab === 'profile'}
           onClick={() => setActiveTab('profile')}
-        />
-        <NavItem
-          icon={<IconMessageCircle size={24} stroke={1.5} />}
-          label="Questions"
-          active={activeTab === 'questions'}
-          onClick={() => setActiveTab('questions')}
         />
         <NavItem
           icon={<IconCards size={24} stroke={1.5} />}
@@ -115,6 +109,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
           active={activeTab === 'schedule-builder'}
           onClick={() => setActiveTab('schedule-builder')}
         />
+        {/* More/secondary actions (Schedule, Questions) moved to Profile > More */}
       </Box>
     </Box>
   );

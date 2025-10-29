@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Title, Text, Card, Group, Badge, Button, Stack, Box, Loader } from '@mantine/core';
+import { Container, Title, Text, Card, Group, Badge, Button, Stack, Box, Loader, ActionIcon, Modal } from '@mantine/core';
 import { IconBookmark, IconX, IconClock, IconInfoCircle } from '@tabler/icons-react';
 import { getUserGoogleId } from '../utils/auth';
 import { BookmarkedClass } from '../App';
+import { track } from '../utils/analytics';
 import { notifications } from '@mantine/notifications';
 
 interface ClassCard {
@@ -26,16 +27,43 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [swipeCount, setSwipeCount] = useState(0);
+
   interface UserPreferences {
     major?: string;
     minor?: string;
     interests?: string;
   }
   const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('seenOnboarding') !== '1';
+    } catch { return true; }
+  });
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
 
   useEffect(() => {
     fetchUserPreferences();
     fetchRecommendedClasses();
+    // keyboard shortcuts
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        handleSwipe(true);
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        handleSwipe(false);
+      } else if (e.code === 'Enter') {
+        e.preventDefault();
+        openDetails();
+      }
+    };
+
+    window.addEventListener('keydown', onKey);
+
+    return () => {
+      window.removeEventListener('keydown', onKey);
+    };
   }, []);
 
   const fetchUserPreferences = async () => {
@@ -89,6 +117,9 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
   };
 
   const currentClass = classes[currentIndex];
+  const canonicalScore = currentClass
+    ? (currentClass.score ?? (currentClass as any)._recommendation_score ?? (currentClass as any).final_score ?? null)
+    : null;
 
   const handleSwipe = async (bookmarked: boolean) => {
     if (!currentClass) return;
@@ -116,6 +147,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
       if (bookmarked && addBookmark) {
         // Transform to match expected bookmark format
         const courseCode = `${currentClass.school} ${currentClass.department} ${currentClass.number}`;
+
         addBookmark(currentClass);
         
         notifications.show({
@@ -126,6 +158,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
       } else if (!bookmarked) {
         // Just move to the next card - no need to track discards
         // Optionally show a subtle notification
+        try { track('skip', { courseId: currentClass.id }); } catch {}
         notifications.show({
           title: 'Skipped',
           message: 'Moving to next course',
@@ -145,6 +178,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
       }
     } catch (error) {
       console.error('Error saving swipe:', error);
+      try { track('error', { action: 'swipe', message: (error as Error).message }); } catch {}
       notifications.show({
         title: 'Error',
         message: 'Failed to save your choice',
@@ -152,6 +186,38 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
       });
     }
   };
+
+  const openDetails = () => {
+    if (!currentClass) return;
+    setDetailsOpen(true);
+    try { track('open_details', { courseId: currentClass.id }); } catch {}
+  };
+
+  // Basic touch swipe for mobile (left/right)
+  useEffect(() => {
+    let startX: number | null = null;
+    const onTouchStart = (e: TouchEvent) => { startX = e.touches[0].clientX; };
+    const onTouchEnd = (e: TouchEvent) => {
+      if (startX === null) return;
+      const endX = (e.changedTouches && e.changedTouches[0].clientX) || 0;
+      const dx = endX - startX;
+      // swipe right = skip, swipe left = bookmark (comfortable mapping)
+      if (Math.abs(dx) > 50) {
+        if (dx > 0) handleSwipe(false);
+        else handleSwipe(true);
+      }
+      startX = null;
+    };
+
+    const el = document.querySelector('body');
+    el?.addEventListener('touchstart', onTouchStart, { passive: true });
+    el?.addEventListener('touchend', onTouchEnd);
+
+    return () => {
+      el?.removeEventListener('touchstart', onTouchStart as EventListener);
+      el?.removeEventListener('touchend', onTouchEnd as EventListener);
+    };
+  }, [currentIndex, classes]);
 
   if (loading) {
     return (
@@ -189,6 +255,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden', // Prevent page-level scrolling
+        background: 'transparent'
       }}
     >
       <Container 
@@ -235,71 +302,59 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
         </Box>
 
         {/* Card Stack Preview - grows to fill available space */}
-        <Box style={{ flex: 1, position: 'relative', minHeight: 0, marginBottom: '1rem', zIndex: 1, overflow: 'hidden' }}>
-          <Box style={{ position: 'relative', height: '100%', maxHeight: '500px', margin: '0 auto', overflow: 'hidden' }}>
-            {/* Background cards for depth */}
-            {[0.5, 0.7].map((opacity, idx) => (
-              <Card
-                key={idx}
-                shadow="md"
-                p="xl"
+          <Box style={{ flex: 1, position: 'relative', minHeight: 0, marginBottom: '1rem', zIndex: 1, overflow: 'hidden' }}>
+            <Box style={{ position: 'relative', height: '100%', maxHeight: '500px', margin: '0 auto', overflow: 'hidden' }}>
+              {/* Main card (minimal) */}
+        <Card
+                shadow="sm"
+                p="md"
                 radius="lg"
                 withBorder
                 style={{
                   position: 'absolute',
-                  top: `${(idx + 1) * 10}px`,
-                  left: '50%',
-                  transform: `translateX(-50%) scale(${0.95 + idx * 0.02})`,
-                  width: `${90 + idx * 5}%`,
-                  maxWidth: '400px',
+                  top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100%',
+          maxWidth: '420px',
                   maxHeight: '500px',
-                  opacity,
-                  zIndex: idx + 1,
+                  zIndex: 3,
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
                   overflow: 'hidden',
                 }}
               >
-                <Box style={{ height: '350px' }} />
-              </Card>
-            ))}
-
-            {/* Main card */}
-            <Card
-              shadow="xl"
-              p="xl"
-              radius="lg"
-              withBorder
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '100%',
-                maxWidth: '400px',
-                maxHeight: '500px',
-                zIndex: 3,
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-              }}
-            >
               <Stack gap="md" style={{ height: '100%', overflow: 'hidden' }}>
                 {/* Header */}
                 <Box style={{ flexShrink: 0 }}>
-                  <Badge color="red" variant="light" mb="xs">
-                    {hubArea}
-                  </Badge>
+                  <Text size="xs" c="dimmed" mb="xs">{hubArea}</Text>
                   <Title order={3} c="bu-red" mb="xs">
                     {courseCode}
                   </Title>
                   <Text fw={600} size="lg" mb="md">
                     {currentClass.title}
                   </Text>
+                  <Box style={{ position: 'absolute', right: 12, top: 12 }}>
+                    <ActionIcon size="sm" onClick={() => setHelpOpen(true)} aria-label="Help">
+                      <IconInfoCircle size={18} />
+                    </ActionIcon>
+                  </Box>
                 </Box>
 
                 {/* Description - scrollable if needed */}
-                <Box style={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
-                  <Text size="sm" c="dimmed" style={{ textAlign: 'left' }}>
+                <Box style={{ flex: 1, minHeight: 0 }}>
+                  <Text
+                    size="sm"
+                    c="dimmed"
+                    style={{
+                      textAlign: 'left',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}
+                  >
                     {currentClass.description || 'No description available.'}
                   </Text>
                 </Box>
@@ -312,9 +367,9 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
                       {credits} credits
                     </Text>
                   </Group>
-                  {currentClass.score && (
+                  {canonicalScore !== null && (
                     <Badge variant="light" color="green">
-                      {Math.min(100, Math.round(currentClass.score))}% Match
+                      {Math.min(100, Math.round(canonicalScore))}% Match
                     </Badge>
                   )}
                 </Group>
@@ -326,46 +381,60 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
         {/* Bottom section - buttons and status */}
         <Box style={{ flexShrink: 0, position: 'relative', zIndex: 10, paddingTop: '1rem', background: 'transparent' }}>
           {/* Swipe Buttons */}
-          <Group justify="center" gap="xl" mb="md" style={{ position: 'relative', zIndex: 11 }}>
-            <Button
-              variant="outline"
+          <Group justify="center" gap="md" mb="md" style={{ position: 'relative', zIndex: 11, padding: '12px 0' }}>
+            <ActionIcon
+              variant="transparent"
               color="gray"
               size="xl"
-              radius="xl"
-              leftSection={<IconX size={24} />}
               onClick={() => handleSwipe(false)}
-              style={{ 
-                width: '180px', 
-                minHeight: '60px',
-                display: 'flex',
-                alignItems: 'center',
-                transition: 'all 0.3s ease',
-                opacity: 1,
-                backgroundColor: 'white'
-              }}
+              aria-label="Discard course"
+              title="Discard"
+              style={{ width: 56, height: 56 }}
             >
-              Discard
-            </Button>
+              <IconX size={24} />
+            </ActionIcon>
 
             <Button
               variant="filled"
               color="bu-red"
               size="xl"
               radius="xl"
-              leftSection={<IconBookmark size={24} />}
+              leftSection={<IconBookmark size={20} />}
               onClick={() => handleSwipe(true)}
+              aria-label="Bookmark course"
               style={{ 
-                width: '180px',
-                minHeight: '60px',
+                minWidth: 180,
+                minHeight: 56,
                 display: 'flex',
-                alignItems: 'center',
-                transition: 'all 0.3s ease',
-                opacity: 1
+                alignItems: 'center'
               }}
             >
               Bookmark
             </Button>
           </Group>
+
+          <Modal opened={showOnboarding} onClose={() => { setShowOnboarding(false); try { localStorage.setItem('seenOnboarding', '1'); } catch {} }} title="Welcome">
+            <Text>Swipe to discover, tap Bookmark to save — recommendations are personalized for you.</Text>
+            <Button mt="md" fullWidth onClick={() => { setShowOnboarding(false); try { localStorage.setItem('seenOnboarding', '1'); } catch {} }}>Got it</Button>
+          </Modal>
+
+          <Modal opened={helpOpen} onClose={() => setHelpOpen(false)} title="Tips">
+            <Stack>
+              <Text size="sm">• Tap Bookmark to save a class.</Text>
+              <Text size="sm">• Use Space to bookmark, Arrow → to skip.</Text>
+              <Text size="sm">• Open course details with Enter.</Text>
+            </Stack>
+          </Modal>
+
+          <Modal opened={detailsOpen} onClose={() => setDetailsOpen(false)} title={currentClass ? `${currentClass.school}-${currentClass.department}-${currentClass.number}` : 'Details'} size="lg">
+            {currentClass ? (
+              <Stack>
+                <Text fw={700}>{currentClass.title}</Text>
+                <Text size="sm" c="dimmed">{currentClass.description}</Text>
+                <Button color="bu-red" onClick={() => { handleSwipe(true); setDetailsOpen(false); }}>Bookmark</Button>
+              </Stack>
+            ) : null}
+          </Modal>
 
           <Text size="xs" c="dimmed" style={{ opacity: 1, position: 'relative', zIndex: 11 }}>
             {currentIndex + 1} / {classes.length} • {swipeCount} swipes today
