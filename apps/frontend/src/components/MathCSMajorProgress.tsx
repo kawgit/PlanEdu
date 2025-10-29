@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Title, Text, Progress, Group, Badge, Box, Accordion, List, Loader, Alert, RingProgress, Center } from '@mantine/core';
-import { IconInfoCircle, IconCheck, IconX, IconAlertCircle, IconTrophy, IconMath } from '@tabler/icons-react';
+import { Card, Title, Text, Group, Badge, Box, Accordion, List, Loader, Alert, RingProgress, Center } from '@mantine/core';
+import { IconInfoCircle, IconCheck, IconAlertCircle, IconTrophy, IconMath } from '@tabler/icons-react';
 import { isUserLoggedIn, getUserGoogleId } from '../utils/auth';
 
 interface CompletedCourse {

@@ -16,7 +16,6 @@ import {
   Select,
   Loader,
   Table,
-  Divider
 } from '@mantine/core';
 import { 
   IconRobot, 
@@ -318,7 +317,7 @@ const ScheduleBuilderPage: React.FC = () => {
                 <Text c="dimmed" size="sm">
                   Analyzing {bookmarks.length} courses and your preferences...
                 </Text>
-                <Progress value={undefined} color="bu-red" size="md" style={{ width: '100%' }} />
+                <Progress value={100} color="bu-red" size="md" style={{ width: '100%' }} />
                 <Text size="xs" c="dimmed">
                   This may take a few seconds
                 </Text>

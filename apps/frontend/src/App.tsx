@@ -51,7 +51,7 @@ const App: React.FC = () => {
         if (mounted) {
           setBookmarks(bookmarksData);
         }
-      } catch (e) {
+      } catch {
         // ignore - user may not be logged in
         if (mounted) {
           setBookmarks([]);
@@ -96,7 +96,7 @@ const App: React.FC = () => {
       case 'bookmarks':
         return <BookmarksPage setActiveTab={setActiveTab} bookmarks={bookmarks} removeBookmark={removeBookmark} />;
       case 'schedule-builder':
-        return <ScheduleBuilderPage bookmarks={bookmarks} />;
+        return <ScheduleBuilderPage />;
       case 'profile':
         return <ProfilePage />;
       default:
