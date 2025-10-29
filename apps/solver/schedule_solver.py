@@ -29,9 +29,9 @@ class ScheduleSolver:
         self._build_merged_course_vars()
         
         # Build constraints
-        self._exactly_one_slot_per_course()
-        self._no_overlapping_slots()
-        self._no_duplicate_courses()
+        self._enforce_exactly_one_slot_per_course()
+        self._enforce_no_overlapping_slots()
+        self._enforce_no_duplicate_courses()
         self._enforce_num_courses_per_semester()
         
         # Build objective
@@ -104,13 +104,13 @@ class ScheduleSolver:
             self.model.AddAtMostOne(course_vars)
             self.model.AddMaxEquality(self.merged_course_vars[course_id], course_vars)
 
-    def _exactly_one_slot_per_course(self):
+    def _enforce_exactly_one_slot_per_course(self):
         for course_id in self.slot_vars:
             course_slot_vars = self.slot_vars[course_id].values()
             course_var = self.course_vars[0][course_id]
             self.model.Add(sum(course_slot_vars) == course_var)
 
-    def _no_overlapping_slots(self):
+    def _enforce_no_overlapping_slots(self):
         forbidden_slot_pairs = self._build_forbidden_slot_pairs()
         
         for slot_i, slot_j in forbidden_slot_pairs:
@@ -150,7 +150,7 @@ class ScheduleSolver:
                 
         return forbidden_slot_pairs
 
-    def _no_duplicate_courses(self):
+    def _enforce_no_duplicate_courses(self):
         for course in self.courses:
             
             course_id = course["id"]
