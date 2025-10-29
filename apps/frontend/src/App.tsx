@@ -10,6 +10,14 @@ import ScheduleBuilderPage from './pages/ScheduleBuilderPage';
 import ProfilePage from './pages/ProfilePage';
 
 export type TabName = 'signin' | 'questions' | 'swiper' | 'bookmarks' | 'schedule-builder' | 'profile';
+export interface BookmarkedClass {
+  id: number;
+  school: string;
+  department: string;
+  number: number;
+  title: string;
+  description?: string;
+}
 
 const App: React.FC = () => {
   // Check if user is logged in and restore last active tab
@@ -29,7 +37,7 @@ const App: React.FC = () => {
     return 'questions';
   });
   // Shared bookmarks state - loaded from database
-  const [bookmarks, setBookmarks] = useState<Array<any>>([]);
+  const [bookmarks, setBookmarks] = useState<BookmarkedClass[]>([]);
 
   // Save active tab to localStorage whenever it changes
   useEffect(() => {
@@ -63,7 +71,7 @@ const App: React.FC = () => {
     };
   }, []);
 
-  const addBookmark = async (course: any) => {
+  const addBookmark = async (course: BookmarkedClass) => {
     try {
       await addBookmarkAPI(course.id);
       // Refresh bookmarks from database

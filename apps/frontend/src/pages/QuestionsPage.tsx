@@ -3,7 +3,8 @@ import { Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader, Selec
 import { IconSend, IconRobot, IconUser, IconFilter, IconBook, IconBookmark, IconBookmarkFilled, IconTrash, IconWorld, IconMapPin } from '@tabler/icons-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { getUserGoogleId, fetchUserFromDB, fetchCompletedCourses } from '../utils/auth';
+import { getUserGoogleId, fetchUserFromDB, fetchCompletedCourses, CompletedCourse } from '../utils/auth';
+import { BookmarkedClass } from '../App';
 
 interface Message {
   type: 'user' | 'ai';
@@ -21,14 +22,14 @@ interface ClassOffering {
   department: string;
   number: number;
   title: string;
-  description: string;
+  description?: string;
   studyAbroadLocations?: StudyAbroadLocation[];
 }
 
 interface QuestionsPageProps {
-  addBookmark?: (course: any) => void;
+  addBookmark?: (course: ClassOffering) => void;
   removeBookmark?: (classId: number) => void;
-  bookmarks?: Array<any>;
+  bookmarks?: BookmarkedClass[];
 }
 
 const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookmark, bookmarks = [] }) => {
@@ -57,8 +58,13 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
   const [selectedStudyAbroadLocation, setSelectedStudyAbroadLocation] = useState<string | null>(null);
   
   // User profile data
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [completedCourses, setCompletedCourses] = useState<any[]>([]);
+  interface UserProfile {
+    major?: string;
+    minor?: string;
+    interests?: string;
+  }
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [completedCourses, setCompletedCourses] = useState<CompletedCourse[]>([]);
   
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 
@@ -260,7 +266,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                   };
                   return newMessages;
                 });
-              } catch (e) {
+              } catch {
                 // Skip invalid JSON
               }
             }

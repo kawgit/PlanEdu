@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Title, Text, Card, Group, Badge, Button, Stack, Box, Loader } from '@mantine/core';
 import { IconBookmark, IconX, IconClock, IconInfoCircle } from '@tabler/icons-react';
 import { getUserGoogleId } from '../utils/auth';
+import { BookmarkedClass } from '../App';
 import { notifications } from '@mantine/notifications';
 
 interface ClassCard {
@@ -17,7 +18,7 @@ interface ClassCard {
 }
 
 interface ClassSwiperPageProps {
-  addBookmark?: (course: any) => void;
+  addBookmark?: (course: BookmarkedClass) => void;
 }
 
 const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
@@ -25,7 +26,12 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [swipeCount, setSwipeCount] = useState(0);
-  const [userPreferences, setUserPreferences] = useState<any>(null);
+  interface UserPreferences {
+    major?: string;
+    minor?: string;
+    interests?: string;
+  }
+  const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
 
   useEffect(() => {
     fetchUserPreferences();
@@ -110,10 +116,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
       if (bookmarked && addBookmark) {
         // Transform to match expected bookmark format
         const courseCode = `${currentClass.school} ${currentClass.department} ${currentClass.number}`;
-        addBookmark({
-          ...currentClass,
-          code: courseCode,
-        });
+        addBookmark(currentClass);
         
         notifications.show({
           title: 'Course Bookmarked!',

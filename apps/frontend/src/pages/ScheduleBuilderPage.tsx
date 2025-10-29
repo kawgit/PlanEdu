@@ -57,6 +57,11 @@ interface ScheduleCourse {
   professorRating: number;
 }
 
+interface ConstraintInfo {
+  kind: string;
+  mode: string;
+}
+
 interface GeneratedSchedule {
   success: boolean;
   status: string;
@@ -64,7 +69,7 @@ interface GeneratedSchedule {
   allCourses: ScheduleCourse[];
   objectiveScores?: Record<string, number>;
   totalCourses: number;
-  parsedConstraints: any[];
+  parsedConstraints: ConstraintInfo[];
   message: string;
 }
 
@@ -106,9 +111,10 @@ const ScheduleBuilderPage: React.FC = () => {
         const data = await response.json();
         setBookmarks(data);
         setLoadingBookmarks(false);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching bookmarks:', err);
-        setError(err.message || 'Failed to load bookmarks');
+        const message = err instanceof Error ? err.message : 'Failed to load bookmarks';
+        setError(message);
         setLoadingBookmarks(false);
       }
     };
@@ -160,9 +166,10 @@ const ScheduleBuilderPage: React.FC = () => {
       } else {
         setGeneratedSchedule(result);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error generating schedule:', err);
-      setError(err.message || 'An error occurred while generating the schedule');
+      const message = err instanceof Error ? err.message : 'An error occurred while generating the schedule';
+      setError(message);
     } finally {
       setIsGenerating(false);
     }

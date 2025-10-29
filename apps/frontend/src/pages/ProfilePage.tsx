@@ -56,9 +56,17 @@ const ProfilePage: React.FC = () => {
   // Form state
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 300);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  interface SearchedClass {
+    id: number;
+    school: string;
+    department: string;
+    number: number;
+    title: string;
+    description?: string;
+  }
+  const [searchResults, setSearchResults] = useState<SearchedClass[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<SearchedClass | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
 
   useEffect(() => {
@@ -176,8 +184,9 @@ const ProfilePage: React.FC = () => {
       setError(null);
       // Trigger refresh of CS major progress
       setRefreshTrigger(prev => prev + 1);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load courses');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to load courses';
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -192,10 +201,10 @@ const ProfilePage: React.FC = () => {
         message: `${courseName} has been removed from your completed courses`,
         color: 'green',
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       notifications.show({
         title: 'Error',
-        message: err.message || 'Failed to delete course',
+        message: err instanceof Error ? err.message : 'Failed to delete course',
         color: 'red',
       });
     }
@@ -230,10 +239,10 @@ const ProfilePage: React.FC = () => {
         message: `${courseCode} has been added to your completed courses`,
         color: 'green',
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       notifications.show({
         title: 'Error',
-        message: err.message || 'Failed to add course',
+        message: err instanceof Error ? err.message : 'Failed to add course',
         color: 'red',
       });
     }
@@ -285,10 +294,10 @@ const ProfilePage: React.FC = () => {
 
       // Reload courses to show the newly added ones
       await loadCourses();
-    } catch (err: any) {
+    } catch (err: unknown) {
       notifications.show({
         title: 'Upload Failed',
-        message: err.message || 'Failed to upload and process transcript',
+        message: err instanceof Error ? err.message : 'Failed to upload and process transcript',
         color: 'red',
         autoClose: 7000,
       });

@@ -57,8 +57,9 @@ const TranscriptUpload: React.FC<TranscriptUploadProps> = ({ onUploadSuccess }) 
       if (onUploadSuccess) {
         onUploadSuccess();
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to upload transcript');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to upload transcript';
+      setError(message);
     } finally {
       setUploading(false);
     }

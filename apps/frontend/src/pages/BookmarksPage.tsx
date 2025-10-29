@@ -1,12 +1,12 @@
 import React from 'react';
 import { Container, Title, Text, Card, Badge, Group, Stack, ActionIcon, Button, Box, Alert } from '@mantine/core';
 import { IconBookmarkOff, IconExternalLink, IconSparkles, IconInfoCircle } from '@tabler/icons-react';
-import { TabName } from '../App';
+import { TabName, BookmarkedClass } from '../App';
 import { isUserLoggedIn } from '../utils/auth';
 
 interface BookmarksPageProps {
   setActiveTab?: (tab: TabName) => void;
-  bookmarks?: Array<any>;
+  bookmarks?: BookmarkedClass[];
   removeBookmark?: (classId: number) => void;
 }
 
