@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader, Select, ScrollArea, Badge, ActionIcon, Tooltip } from '@mantine/core';
-import { IconSend, IconRobot, IconUser, IconFilter, IconBook, IconBookmark, IconBookmarkFilled, IconTrash, IconWorld, IconMapPin } from '@tabler/icons-react';
+import { Title, Text, Paper, TextInput, Button, Group, Box, Stack, Loader, Select, ScrollArea, Badge, ActionIcon } from '@mantine/core';
+import { IconSend, IconRobot, IconUser, IconFilter, IconBook, IconBookmark, IconBookmarkFilled, IconTrash } from '@tabler/icons-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getUserGoogleId, fetchUserFromDB, fetchCompletedCourses, CompletedCourse } from '../utils/auth';
@@ -11,10 +11,6 @@ interface Message {
   content: string;
 }
 
-interface StudyAbroadLocation {
-  id: number;
-  name: string;
-}
 
 interface ClassOffering {
   id: number;
@@ -23,7 +19,6 @@ interface ClassOffering {
   number: number;
   title: string;
   description?: string;
-  studyAbroadLocations?: StudyAbroadLocation[];
 }
 
 interface QuestionsPageProps {
@@ -54,8 +49,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
   const [schools, setSchools] = useState<string[]>([]);
   const [departments, setDepartments] = useState<string[]>([]);
   const [loadingClasses, setLoadingClasses] = useState<boolean>(false);
-  const [studyAbroadLocations, setStudyAbroadLocations] = useState<StudyAbroadLocation[]>([]);
-  const [selectedStudyAbroadLocation, setSelectedStudyAbroadLocation] = useState<string | null>(null);
+  
   
   // User profile data
   interface UserProfile {
@@ -127,7 +121,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
     loadUserData();
   }, []);
 
-  // Load schools, departments, and study abroad locations on mount
+  // Load schools and departments on mount
   useEffect(() => {
     fetch(`${backendUrl}/api/schools`)
       .then(res => res.json())
@@ -138,16 +132,11 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
       .then(res => res.json())
       .then(data => setDepartments(data))
       .catch(err => console.error('Error loading departments:', err));
-    
-    fetch(`${backendUrl}/api/study-abroad/locations`)
-      .then(res => res.json())
-      .then(data => setStudyAbroadLocations(data))
-      .catch(err => console.error('Error loading study abroad locations:', err));
   }, [backendUrl]);
 
   // Fetch classes when filters change
   useEffect(() => {
-    if (!selectedSchool && !selectedDepartment && !keywordSearch && !selectedStudyAbroadLocation) {
+    if (!selectedSchool && !selectedDepartment && !keywordSearch) {
       return;
     }
 
@@ -157,10 +146,6 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
     if (selectedSchool) params.append('school', selectedSchool);
     if (selectedDepartment) params.append('department', selectedDepartment);
     if (keywordSearch.trim()) params.append('keyword', keywordSearch.trim());
-    // Only apply study abroad filter if a specific location is selected
-    if (selectedStudyAbroadLocation) {
-      params.append('studyAbroadLocation', selectedStudyAbroadLocation);
-    }
     
     fetch(`${backendUrl}/api/classes?${params}`)
       .then(res => res.json())
@@ -185,7 +170,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
         console.error('Error loading classes:', err);
         setLoadingClasses(false);
       });
-  }, [selectedSchool, selectedDepartment, keywordSearch, selectedStudyAbroadLocation, backendUrl]);
+  }, [selectedSchool, selectedDepartment, keywordSearch, backendUrl]);
 
   // Update departments when school changes
   useEffect(() => {
@@ -302,22 +287,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
           </Group>
           
           <Stack gap="md">
-            <Select
-              label="Study Abroad Location (Optional)"
-              placeholder="🏛️ BU Charles River Campus (All Classes)"
-              value={selectedStudyAbroadLocation}
-              onChange={setSelectedStudyAbroadLocation}
-              data={studyAbroadLocations.map(loc => ({ 
-                value: loc.id.toString(), 
-                label: loc.name
-              }))}
-              searchable
-              clearable
-              leftSection={<IconWorld size={16} />}
-              styles={{
-                label: { fontWeight: 600, color: '#CC0000' }
-              }}
-            />
+            
             
             <Select
               label="School"
@@ -350,7 +320,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
               <Badge size="lg" color="bu-red" variant="light">
                 {filteredClasses.length} classes found
               </Badge>
-              {(selectedSchool || selectedDepartment || keywordSearch || selectedStudyAbroadLocation) && (
+              {(selectedSchool || selectedDepartment || keywordSearch) && (
                 <Button
                   size="xs"
                   variant="subtle"
@@ -359,7 +329,6 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                     setSelectedSchool('CAS');
                     setSelectedDepartment('CS');
                     setKeywordSearch('');
-                    setSelectedStudyAbroadLocation(null);
                   }}
                 >
                   Reset Filters
@@ -453,28 +422,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                     <Text size="xs" c="dimmed" lineClamp={2} mb="xs">
                       {cls.description}
                     </Text>
-                    {cls.studyAbroadLocations && cls.studyAbroadLocations.length > 0 && (
-                      <Group gap={4} mt="xs">
-                        <Tooltip label="Available study abroad locations" position="top">
-                          <IconMapPin size={14} color="#228be6" />
-                        </Tooltip>
-                        {cls.studyAbroadLocations.slice(0, 2).map((loc, idx) => (
-                          <Badge key={idx} size="xs" color="blue" variant="light">
-                            {loc.name}
-                          </Badge>
-                        ))}
-                        {cls.studyAbroadLocations.length > 2 && (
-                          <Tooltip 
-                            label={cls.studyAbroadLocations.slice(2).map(l => l.name).join(', ')}
-                            position="top"
-                          >
-                            <Badge size="xs" color="blue" variant="outline">
-                              +{cls.studyAbroadLocations.length - 2} more
-                            </Badge>
-                          </Tooltip>
-                        )}
-                      </Group>
-                    )}
+                    
                   </Paper>
                 );
               })
@@ -526,16 +474,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
           </Group>
           <Text size="sm" c="dimmed">
             Ask questions about the {filteredClasses.length} filtered classes
-            {!selectedStudyAbroadLocation && (
-              <Text component="span" size="xs" c="green" fw={500} ml="xs">
-                • Viewing BU Charles River Campus classes
-              </Text>
-            )}
-            {selectedStudyAbroadLocation && (
-              <Text component="span" size="xs" c="blue" fw={500} ml="xs">
-                • Filtered by study abroad location
-              </Text>
-            )}
+            
             {addBookmark && (
               <Text component="span" size="xs" c="dimmed" ml="xs">
                 • Click the bookmark icon on any class to save it

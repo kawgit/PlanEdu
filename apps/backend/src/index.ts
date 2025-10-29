@@ -126,7 +126,7 @@ app.get('/api/user', async (req, res) => {
   }
 });
 
-// Update user preferences (major, minor, target_graduation, incoming_credits, interests, study_abroad_interest, preferred_course_load)
+// Update user preferences (major, minor, target_graduation, incoming_credits, interests, preferred_course_load)
 app.put('/api/user/preferences', async (req, res) => {
   try {
     const { 
@@ -136,7 +136,6 @@ app.put('/api/user/preferences', async (req, res) => {
       target_graduation,
       incoming_credits,
       interests,
-      study_abroad_interest,
       preferred_course_load
     } = req.body;
 
@@ -153,7 +152,6 @@ app.put('/api/user/preferences', async (req, res) => {
         target_graduation = ${target_graduation || null},
         incoming_credits = ${incoming_credits || null},
         interests = ${interests || null},
-        study_abroad_interest = ${study_abroad_interest || null},
         preferred_course_load = ${preferred_course_load || null}
       WHERE google_id = ${googleId}
     `;
@@ -319,9 +317,6 @@ app.post('/api/gemini/chat', async (req, res) => {
       }
       if (userProfile.interests) {
         context += `- Interests: ${userProfile.interests}\n`;
-      }
-      if (userProfile.study_abroad_interest) {
-        context += `- Study Abroad Interest: ${userProfile.study_abroad_interest}\n`;
       }
       if (userProfile.preferred_course_load) {
         context += `- Preferred Course Load: ${userProfile.preferred_course_load}\n`;

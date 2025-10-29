@@ -81,7 +81,7 @@ export const fetchUserFromDB = async () => {
 };
 
 /**
- * Save user preferences (major, minor, target_graduation, incoming_credits, interests, study_abroad_interest, preferred_course_load)
+ * Save user preferences (major, minor, target_graduation, incoming_credits, interests, preferred_course_load)
  */
 export const saveUserPreferences = async (preferences: {
   major?: string;
@@ -89,7 +89,6 @@ export const saveUserPreferences = async (preferences: {
   target_graduation?: string;
   incoming_credits?: number;
   interests?: string;
-  study_abroad_interest?: string;
   preferred_course_load?: string;
 }) => {
   const googleId = getUserGoogleId();
