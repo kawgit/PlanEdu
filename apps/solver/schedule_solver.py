@@ -205,15 +205,12 @@ class ScheduleSolver:
                     continue
                 
                 if self.solver.Value(self.course_vars[semester_index][course_id]):
-                    print(f"  {course['name']}", end=" ")
                     
-                    if semester_index > 0:
-                        print()
-                        continue
+                    if semester_index == 0:
+                        for slot_id in self.slot_vars[course_id]:
+                            if self.solver.Value(self.slot_vars[course_id][slot_id]):
+                                print(f"{self.slots[slot_id]:<15}", end=" ")
+                                break
                     
-                    for slot_id in self.slot_vars[course_id]:
-                        if self.solver.Value(self.slot_vars[course_id][slot_id]):
-                            print(self.slots[slot_id], end=" ")
-                    
-                    print()
+                    print(course['name'])
  
