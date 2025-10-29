@@ -1,5 +1,5 @@
 from ortools.sat.python import cp_model
-from typing import Any, List, Dict, Set
+from typing import Any, List, Dict, Literal, Set
 
 from utils import ObjectiveLogger
 
@@ -190,11 +190,11 @@ class ScheduleSolver:
         self.solver.parameters.use_sat_inprocessing = False
         
     
-    def solve(self, time_limit: int = 5, verbose: bool = False):
+    def solve(self, time_limit: int = 5, verbosity: Literal["none", "minimal", "detailed"] = "none"):
         
         self.solver.parameters.max_time_in_seconds = time_limit
-        self.solver.parameters.log_search_progress = verbose
-        self.solver.Solve(self.model, ObjectiveLogger(self.objective))
+        self.solver.parameters.log_search_progress = verbosity == "detailed"
+        self.solver.Solve(self.model, ObjectiveLogger(self.objective) if verbosity == "minimal" else None)
         
         for semester_index in range(self.num_future_semesters):
             print(f"Semester {semester_index}:")

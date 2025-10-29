@@ -3,8 +3,8 @@ from utils import load_courses_and_slots, map_course_names_to_ids
 
 # Settings
 
-num_future_semesters = 4
-num_seats_per_semester = 4
+num_future_semesters = 8
+num_courses_per_semester = 4
 
 bookmarked_names = [
     "CAS CS 523",
@@ -46,9 +46,7 @@ for course in courses:
 print(f"Loaded {len(courses)} courses, {len(slots)} slots, {len(bookmarked_ids)} bookmarked courses, and {len(completed_ids)} completed courses.")
 
 print("Initializing solver...")
-solver = ScheduleSolver(courses, slots, completed_ids, num_future_semesters, num_seats_per_semester)
+solver = ScheduleSolver(courses, slots, completed_ids, num_future_semesters, num_courses_per_semester)
 
 print("Solving...")
-solution = solver.solve(time_limit=1, verbose=False)
-
-print(solution)
+solver.solve(time_limit=1, verbosity="detailed")
