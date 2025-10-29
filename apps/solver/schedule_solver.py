@@ -20,31 +20,23 @@ class ScheduleSolver:
         
         self.model = cp_model.CpModel()
         
-        print("  Building decision space...")
         # Build decision space
         self._build_slot_vars()
         self._build_course_vars()
         
-        print("  Building intermediate variables...")
         # Build intermediate variables
         self._build_merged_slot_vars()
         self._build_merged_course_vars()
         
         # Build constraints
-        print("  Building exactly one slot per course constraint...")
         self._exactly_one_slot_per_course()
-        print("  Building no overlapping slots constraint...")
         self._no_overlapping_slots()
-        print("  Building no duplicate courses constraint...")
         self._no_duplicate_courses()
-        print("  Building max classes per semester constraint...")
         self._enforce_num_courses_per_semester()
         
-        print("  Building objective...")
         # Build objective
         self._build_objective()
         
-        print("  Building solver...")
         # Build solver
         self._build_solver()
     
