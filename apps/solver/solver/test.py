@@ -1,20 +1,20 @@
 from schedule_solver import ScheduleSolver
-from utils import load_courses_and_slots, map_course_names_to_ids
+from utils import load_courses_and_slots
 
 # Settings
 
 num_future_semesters = 8
 num_courses_per_semester = 4
 
-bookmarked_names = [
+bookmarked_ids = {
     "CAS CS 523",
     "CAS CS 565",
     "CAS CS 505",
     "CAS CS 542",
     "CAS CS 541",
-]
+}
 
-completed_names = [
+completed_ids = {
     "CAS MA 115",
     "CAS PO 151",
     "CAS PY 212",
@@ -30,17 +30,14 @@ completed_names = [
     "CAS LS 212",
     "CAS MA 123",
     "CAS MA 124",
-]
+}
 
 # Rest of script
 
 courses, slots = load_courses_and_slots()
 
-completed_ids = map_course_names_to_ids(courses, completed_names)
-bookmarked_ids = map_course_names_to_ids(courses, bookmarked_names)
-
 for course_id, course in courses.items():
-    if course["id"] in bookmarked_ids:
+    if course_id in bookmarked_ids:
         course["score"] += 1000
 
 print(f"Loaded {len(courses)} courses, {len(slots)} slots, {len(bookmarked_ids)} bookmarked courses, and {len(completed_ids)} completed courses.")

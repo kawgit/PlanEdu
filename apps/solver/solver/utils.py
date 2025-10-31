@@ -13,12 +13,9 @@ def load_courses_and_slots():
     with open(data_path, "r") as f:
         json_courses = json.load(f)
         for i, json_course in enumerate(json_courses):
-            if not json_course["sections"]:
-                continue
-            
             course = {}
             
-            course["id"] = i
+            course["id"] = f"{json_course['school']} {json_course['department']} {json_course['number']}"
             course["name"] = f"{json_course['school']} {json_course['department']} {json_course['number']}: {json_course['title']}"
             course["slots_ids"] = []
             course["units"] = 4 # hueristic for now, should actually scrape this in the future
@@ -34,13 +31,6 @@ def load_courses_and_slots():
             courses[course["id"]] = course
             
     return courses, slots
-
-def map_course_names_to_ids(courses, names):
-    ids = set()
-    for course_id, course in courses.items():
-        if any(name in course["name"] for name in names):
-            ids.add(course_id)
-    return ids
 
 class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
     def __init__(self, objective_expr):

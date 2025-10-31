@@ -4,7 +4,7 @@ from typing import Any, List, Dict, Literal, Set
 from utils import ObjectiveLogger
 
 SemesterIndex = int
-CourseId = int
+CourseId = str
 SlotId = str
 
 class ScheduleSolver:
