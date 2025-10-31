@@ -7,7 +7,7 @@ from ortools.sat.python import cp_model
 
 def load_courses_and_slots():
     slots = []
-    courses = []
+    courses = {}
 
     data_path = Path(__file__).parent.parent / "data" / "class_data.json"
     with open(data_path, "r") as f:
@@ -31,15 +31,15 @@ def load_courses_and_slots():
 
                 course["slots_ids"].append(slots.index(slot))
 
-            courses.append(course)
+            courses[course["id"]] = course
             
     return courses, slots
 
 def map_course_names_to_ids(courses, names):
     ids = set()
-    for course in courses:
+    for course_id, course in courses.items():
         if any(name in course["name"] for name in names):
-            ids.add(course["id"])
+            ids.add(course_id)
     return ids
 
 class ObjectiveLogger(cp_model.CpSolverSolutionCallback):

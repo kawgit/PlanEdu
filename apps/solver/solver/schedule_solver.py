@@ -8,15 +8,14 @@ CourseId = int
 SlotId = str
 
 class ScheduleSolver:
-    def __init__(self, courses: List[Dict[str, Any]], slots: List[SlotId], completed_ids: Set[CourseId], num_future_semesters: int, num_courses_per_semester: int = 4):
+    def __init__(self, courses: Dict[CourseId, Dict[str, Any]], slots: List[SlotId], completed_ids: Set[CourseId], num_future_semesters: int, num_courses_per_semester: int = 4):
         self.courses = courses
         self.slots = slots
-        self.all_ids = set(course["id"] for course in courses)
         self.completed_ids = completed_ids
         self.num_future_semesters = num_future_semesters
         self.num_courses_per_semester = num_courses_per_semester
         
-        assert self.completed_ids.issubset(self.all_ids)
+        assert self.completed_ids.issubset(self.courses.keys())
         
         self.model = cp_model.CpModel()
         
@@ -45,20 +44,19 @@ class ScheduleSolver:
     
     def _build_slot_vars(self):
         self.slot_vars: Dict[CourseId, cp_model.IntVar] = {}        
-        candidates = self._select_semester_candidates(0)
-        for candidate in candidates:
-            course_id = candidate["id"]
+        candidate_ids = self._select_semester_candidates(0)
+        for course_id in candidate_ids:
+            course = self.courses[course_id]
             self.slot_vars[course_id] = {}
-            for slot_id in candidate["slots_ids"]:
+            for slot_id in course["slots_ids"]:
                 self.slot_vars[course_id][slot_id] = self.model.NewBoolVar(f"slot_{course_id}_{slot_id}")
     
     def _build_course_vars(self):
         self.course_vars: Dict[SemesterIndex, Dict[CourseId, cp_model.BoolVarT]] = {}
         for semester_index in range(self.num_future_semesters):
             self.course_vars[semester_index] = {}
-            candidates = self._select_semester_candidates(semester_index)
-            for candidate in candidates:
-                course_id = candidate["id"]   
+            candidate_ids = self._select_semester_candidates(semester_index)
+            for course_id in candidate_ids:
                 self.course_vars[semester_index][course_id] = self.model.NewBoolVar(f"course_{semester_index}_{course_id}")
     
     def _select_semester_candidates(self, semester_index: SemesterIndex):
@@ -71,7 +69,7 @@ class ScheduleSolver:
         consider.
         """
         
-        return self.courses
+        return self.courses.keys()
 
     def _build_merged_slot_vars(self):
         self.merged_slot_vars: Dict[SlotId, cp_model.BoolVarT] = {}
@@ -92,9 +90,8 @@ class ScheduleSolver:
         
         self.merged_course_vars: Dict[CourseId, cp_model.BoolVarT] = {}
         
-        for course in self.courses:
+        for course_id in self.courses.keys():
             
-            course_id = course["id"]
             course_vars = []
             
             for semester_index in range(self.num_future_semesters):
@@ -155,9 +152,8 @@ class ScheduleSolver:
         return forbidden_slot_pairs
 
     def _enforce_no_duplicate_courses(self):
-        for course in self.courses:
+        for course_id in self.courses.keys():
             
-            course_id = course["id"]
             course_vars = []
             
             for semester_index in range(self.num_future_semesters):
@@ -176,19 +172,19 @@ class ScheduleSolver:
 
     def _hint_high_score_courses(self):
         
-        course_ids = list(range(len(self.courses)))
-        course_ids.sort(key=lambda id: self.courses[id]["score"], reverse=True)
+        course_ids = list(self.courses.keys())
+        course_ids.sort(key=lambda course_id: self.courses[course_id]["score"], reverse=True)
         courses_ids_to_hint = course_ids[:self.num_courses_per_semester * self.num_future_semesters]
         
         for course_id in courses_ids_to_hint:
-            self.model.AddHint(self.merged_course_vars[self.courses[course_id]["id"]], 1)
+            self.model.AddHint(self.merged_course_vars[course_id], 1)
 
     def _build_objective(self):
         self.objective = 0
-        for course in self.courses:
-            if course["id"] not in self.merged_course_vars:
+        for course_id, course in self.courses.items():
+            if course_id not in self.merged_course_vars:
                 continue
-            self.objective += self.merged_course_vars[course["id"]] * course["score"]
+            self.objective += self.merged_course_vars[course_id] * course["score"]
         self.model.Maximize(self.objective)
     
     def _build_solver(self):
@@ -210,8 +206,7 @@ class ScheduleSolver:
         
         for semester_index in range(self.num_future_semesters):
             print(f"Semester {semester_index}:")
-            for course in self.courses:
-                course_id = course["id"]
+            for course_id, course in self.courses.items():
                 
                 if course_id not in self.course_vars[semester_index]:
                     continue

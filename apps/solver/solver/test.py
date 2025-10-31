@@ -39,7 +39,7 @@ courses, slots = load_courses_and_slots()
 completed_ids = map_course_names_to_ids(courses, completed_names)
 bookmarked_ids = map_course_names_to_ids(courses, bookmarked_names)
 
-for course in courses:
+for course_id, course in courses.items():
     if course["id"] in bookmarked_ids:
         course["score"] += 1000
 
