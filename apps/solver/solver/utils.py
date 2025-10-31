@@ -1,13 +1,16 @@
 import json
 import time
+from pathlib import Path
 
 from ortools.sat.python import cp_model
+
 
 def load_courses_and_slots():
     slots = []
     courses = []
 
-    with open("../scraping/data/class_data.json", "r") as f:
+    data_path = Path(__file__).parent.parent / "data" / "class_data.json"
+    with open(data_path, "r") as f:
         json_courses = json.load(f)
         for i, json_course in enumerate(json_courses):
             if not json_course["sections"]:

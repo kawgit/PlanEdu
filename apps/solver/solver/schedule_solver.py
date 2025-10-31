@@ -188,7 +188,6 @@ class ScheduleSolver:
         self.solver.parameters.symmetry_level = 0
         self.solver.parameters.cp_model_probing_level = 0
         self.solver.parameters.use_sat_inprocessing = False
-        
     
     def solve(self, time_limit: int = 5, verbosity: Literal["none", "minimal", "detailed"] = "none"):
         
