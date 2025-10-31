@@ -34,6 +34,9 @@ class ScheduleSolver:
         self._enforce_no_duplicate_courses()
         self._enforce_num_courses_per_semester()
         
+        # Build hints
+        self._hint_high_score_courses()
+        
         # Build objective
         self._build_objective()
         
@@ -60,14 +63,15 @@ class ScheduleSolver:
     
     def _select_semester_candidates(self, semester_index: SemesterIndex):
         
-        if semester_index == 0:
-            return self.courses
+        """
+        For now we won't filter out any courses. If we wanted to filter courses,
+        we would need to do so in a way that ensures we don't make any unfiltered
+        courses unreachable by filtering out prerequisites. On the other hand,
+        filtering may speed stuff up if there's a lot of courses we don't need to
+        consider.
+        """
         
-        candidate_courses = [course for course in self.courses if course["id"] not in self.completed_ids]
-        candidate_courses.sort(key=lambda course: course["score"], reverse=True)
-        candidate_courses = candidate_courses[:100]
-        
-        return candidate_courses
+        return self.courses
 
     def _build_merged_slot_vars(self):
         self.merged_slot_vars: Dict[SlotId, cp_model.BoolVarT] = {}
@@ -169,6 +173,15 @@ class ScheduleSolver:
         for semester_index in range(self.num_future_semesters):
             course_vars = self.course_vars[semester_index].values()
             self.model.Add(sum(course_vars) == self.num_courses_per_semester)
+
+    def _hint_high_score_courses(self):
+        
+        course_ids = list(range(len(self.courses)))
+        course_ids.sort(key=lambda id: self.courses[id]["score"], reverse=True)
+        courses_ids_to_hint = course_ids[:self.num_courses_per_semester * self.num_future_semesters]
+        
+        for course_id in courses_ids_to_hint:
+            self.model.AddHint(self.merged_course_vars[self.courses[course_id]["id"]], 1)
 
     def _build_objective(self):
         self.objective = 0
