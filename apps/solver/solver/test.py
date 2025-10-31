@@ -66,19 +66,19 @@ groups["BS CS A-D"] = set(groups["BS CS A"] | groups["BS CS B"] | groups["BS CS 
 
 graduation_constraints = {
     "all_from_group_a": {
-        "group": "BS CS A",
+        "group_id": "BS CS A",
         "count": len(groups["BS CS A"]),
     },
     "at_least_2_from_group_b": {
-        "group": "BS CS B",
+        "group_id": "BS CS B",
         "count": 2,
     },
     "at_least_2_from_group_c": {
-        "group": "BS CS C",
+        "group_id": "BS CS C",
         "count": 2,
     },
     "at_least_15_from_all_groups": {
-        "group": "BS CS A-D",
+        "group_id": "BS CS A-D",
         "count": 15
     }
 }
@@ -89,4 +89,4 @@ print("Initializing solver...")
 solver = ScheduleSolver(courses, slots, groups, graduation_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
 
 print("Solving...")
-solver.solve(time_limit=5, verbosity="detailed")
+solver.solve(time_limit=3, verbosity="detailed")

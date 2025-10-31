@@ -184,9 +184,9 @@ class ScheduleSolver:
             
     def _enforce_graduation_constraints(self):
         for constraint_id, constraint in self.graduation_constraints.items():
-            group = constraint["group"]
+            group_id = constraint["group_id"]
             count = constraint["count"]
-            course_vars = [self.merged_course_vars[course_id] for course_id in self.groups[group]]
+            course_vars = [self.merged_course_vars[course_id] for course_id in self.groups[group_id]]
             self.model.Add(sum(course_vars) >= count)
 
     def _hint_high_score_courses(self):
