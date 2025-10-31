@@ -83,10 +83,43 @@ graduation_constraints = {
     }
 }
 
-print(f"Loaded {len(courses)} courses, {len(slots)} slots, {len(bookmarked_ids)} bookmarked courses, and {len(completed_ids)} completed courses.")
-
-print("Initializing solver...")
-solver = ScheduleSolver(courses, slots, groups, graduation_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
-
-print("Solving...")
-solver.solve(time_limit=3, verbosity="detailed")
+prerequisite_constraints = {
+    "CAS CS 532": {
+        "type": "or",
+        "children": [
+            "pre CAS CS 541",
+            "pre CAS CS 542"
+        ]
+    },
+    "CAS CS 565": {
+        "pre junior standing"
+    },
+    "CAS CS 505": {
+        "pre CAS CS 365"
+    },
+    "CAS CS 542": {
+        "pre CAS CS 365"
+    },
+    "CAS CS 541": {
+        "type": "and",
+        "children": [
+            "pre CAS CS 111",
+            {
+                "type": "or",
+                "children": [
+                    "pre CAS CS 132",
+                    "pre CAS MA 242",
+                    "pre CAS EK 103"
+                ]
+            },
+            {
+                "type": "or",
+                "children": [
+                    "pre CAS CS 237",
+                    "pre CAS MA 581",
+                    "pre CAS EK 381"
+                ]
+            }
+        ]
+    }
+}
