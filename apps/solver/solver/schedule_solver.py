@@ -3,14 +3,25 @@ from typing import Any, List, Dict, Literal, Set
 
 from utils import ObjectiveLogger
 
-SemesterIndex = int
+GroupId = str
 CourseId = str
 SlotId = str
+SemesterIndex = int
 
 class ScheduleSolver:
-    def __init__(self, courses: Dict[CourseId, Dict[str, Any]], slots: List[SlotId], completed_ids: Set[CourseId], num_future_semesters: int, num_courses_per_semester: int = 4):
+    def __init__(self,
+                 courses: Dict[CourseId, Dict[str, Any]],
+                 slots: List[SlotId],
+                 groups: Dict[GroupId, Set[CourseId]],
+                 graduation_constraints: Dict[GroupId, Dict[str, Any]], 
+                 completed_ids: Set[CourseId],
+                 num_future_semesters: int,
+                 num_courses_per_semester: int = 4):
+        
         self.courses = courses
         self.slots = slots
+        self.groups = groups
+        self.graduation_constraints = graduation_constraints
         self.completed_ids = completed_ids
         self.num_future_semesters = num_future_semesters
         self.num_courses_per_semester = num_courses_per_semester
@@ -32,6 +43,7 @@ class ScheduleSolver:
         self._enforce_no_overlapping_slots()
         self._enforce_no_duplicate_courses()
         self._enforce_num_courses_per_semester()
+        self._enforce_graduation_constraints()
         
         # Build hints
         self._hint_high_score_courses()
@@ -169,6 +181,13 @@ class ScheduleSolver:
         for semester_index in range(self.num_future_semesters):
             course_vars = self.course_vars[semester_index].values()
             self.model.Add(sum(course_vars) == self.num_courses_per_semester)
+            
+    def _enforce_graduation_constraints(self):
+        for constraint_id, constraint in self.graduation_constraints.items():
+            group = constraint["group"]
+            count = constraint["count"]
+            course_vars = [self.merged_course_vars[course_id] for course_id in self.groups[group]]
+            self.model.Add(sum(course_vars) >= count)
 
     def _hint_high_score_courses(self):
         

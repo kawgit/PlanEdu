@@ -15,6 +15,10 @@ def load_courses_and_slots():
         for i, json_course in enumerate(json_courses):
             course = {}
             
+            course["school"] = json_course["school"]
+            course["department"] = json_course["department"]
+            course["number"] = json_course["number"]
+            
             course["id"] = f"{json_course['school']} {json_course['department']} {json_course['number']}"
             course["name"] = f"{json_course['school']} {json_course['department']} {json_course['number']}: {json_course['title']}"
             course["slots_ids"] = []
@@ -45,3 +49,6 @@ class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
         if self._best is None or value > self._best:
             self._best = value
             print(f"[{now:6.2f}s]  New objective = {value:.3f}")
+
+def extract_course_number(course_id: str) -> int:
+    return int("".join(filter(str.isdigit, course_id)))
