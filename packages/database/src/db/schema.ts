@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
 	pgTable, foreignKey, integer, text, unique, index, jsonb, date, vector, timestamp
 } from "drizzle-orm/pg-core";
@@ -34,34 +35,25 @@ export const schedule = pgTable("Schedule", {
 	}).onDelete("cascade").onUpdate("cascade"),
 ]);
 
-export const hubRequirement = pgTable("HubRequirement", {
-	id: integer("id")
-		.primaryKey()
-		.generatedAlwaysAsIdentity(),
-	name: text("name").notNull(),
-}, (table) => [
-	unique("unique_hub_name").on(table.name),
-]);
-
-export const classTable = pgTable("Class", {
-	id: integer("id")
-		.primaryKey()
-		.generatedAlwaysAsIdentity(),
+export const courseTable = pgTable("Course", {
 	school: text("school").notNull(),
 	department: text("department").notNull(),
 	number: text("number").notNull(),
+	id: text("id").generatedAlwaysAs(
+		sql`("school" || ' ' || "department" || ' ' || "number")`
+	).primaryKey(),
 	title: text("title").notNull(),
 	description: text("description").notNull(),
 	embedding: jsonb("embedding"),
 }, (table) => [
-	unique("class_school_dept_num_unique").on(table.school, table.department, table.number),
+	unique("course_school_dept_num_unique").on(table.school, table.department, table.number),
 ]);
 
 export const section = pgTable("Section", {
 	id: integer("id")
 		.primaryKey()
 		.generatedAlwaysAsIdentity(),
-	classId: integer("classId").notNull(),
+	courseId: text("courseId").notNull(),
 	name: text("name").notNull(),
 	year: integer("year").notNull(),
 	season: text("season").notNull(),
@@ -73,9 +65,9 @@ export const section = pgTable("Section", {
 	notes: text("notes"),
 }, (table) => [
 	foreignKey({
-		columns: [table.classId],
-		foreignColumns: [classTable.id],
-		name: "section_class_fk",
+		columns: [table.courseId],
+		foreignColumns: [courseTable.id],
+		name: "section_course_fk",
 	}).onDelete("cascade").onUpdate("cascade"),
 ]);
 
@@ -99,32 +91,12 @@ export const scheduleToSection = pgTable("ScheduleToSection", {
 	unique("stsec_schedule_section_unique").on(table.scheduleId, table.sectionId),
 ]);
 
-export const classToHubRequirement = pgTable("ClassToHubRequirement", {
-	id: integer("id")
-		.primaryKey()
-		.generatedAlwaysAsIdentity(),
-	classId: integer("classId").notNull(),
-	hubRequirementId: integer("hubRequirementId").notNull(),
-}, (table) => [
-	foreignKey({
-		columns: [table.classId],
-		foreignColumns: [classTable.id],
-		name: "cthr_class_fk",
-	}).onUpdate("cascade").onDelete("cascade"),
-	foreignKey({
-		columns: [table.hubRequirementId],
-		foreignColumns: [hubRequirement.id],
-		name: "cthr_hubRequirement_fk",
-	}).onUpdate("cascade").onDelete("cascade"),
-	unique("cthr_class_hub_unique").on(table.classId, table.hubRequirementId),
-]);
-
 export const bookmark = pgTable("Bookmark", {
 	id: integer("id")
 		.primaryKey()
 		.generatedAlwaysAsIdentity(),
 	userId: integer("userId").notNull(),
-	classId: integer("classId").notNull(),
+	courseId: text("courseId").notNull(),
 }, (table) => [
 	foreignKey({
 		columns: [table.userId],
@@ -132,19 +104,19 @@ export const bookmark = pgTable("Bookmark", {
 		name: "bookmark_user_fk",
 	}).onUpdate("cascade").onDelete("cascade"),
 	foreignKey({
-		columns: [table.classId],
-		foreignColumns: [classTable.id],
-		name: "bookmark_class_fk",
+		columns: [table.courseId],
+		foreignColumns: [courseTable.id],
+		name: "bookmark_course_fk",
 	}).onUpdate("cascade").onDelete("cascade"),
-	unique("bookmark_user_class_unique").on(table.userId, table.classId),
+	unique("bookmark_user_course_unique").on(table.userId, table.courseId),
 ]);
 
-export const userCompletedClass = pgTable("UserCompletedClass", {
+export const userCompletedCourse = pgTable("UserCompletedCourse", {
 	id: integer("id")
 		.primaryKey()
 		.generatedAlwaysAsIdentity(),
 	userId: integer("userId").notNull(),
-	classId: integer("classId").notNull(),
+	courseId: text("courseId").notNull(),
 	grade: text("grade"),
 }, (table) => [
 	foreignKey({
@@ -153,9 +125,36 @@ export const userCompletedClass = pgTable("UserCompletedClass", {
 		name: "ucc_user_fk",
 	}).onUpdate("cascade").onDelete("cascade"),
 	foreignKey({
-		columns: [table.classId],
-		foreignColumns: [classTable.id],
-		name: "ucc_class_fk",
+		columns: [table.courseId],
+		foreignColumns: [courseTable.id],
+		name: "ucc_course_fk",
 	}).onUpdate("cascade").onDelete("cascade"),
-	unique("ucc_user_class_unique").on(table.userId, table.classId),
+	unique("ucc_user_course_unique").on(table.userId, table.courseId),
+]);
+
+export const prerequisite = pgTable("Prerequisite", {
+	name: text("name").primaryKey().notNull(),
+	type: text("type").notNull(),
+	content: jsonb("payload").notNull(),
+});
+
+export const courseGroup = pgTable("CourseGroup", {
+	name: text("name").primaryKey(),
+});
+
+export const courseGroupToCourse = pgTable("CourseGroupToCourse", {
+	courseGroupId: text("courseGroupId").notNull(),
+	courseId: text("courseId").notNull(),
+}, (table) => [
+	foreignKey({
+		columns: [table.courseGroupId],
+		foreignColumns: [courseGroup.name],
+		name: "cgtc_courseGroup_fk",
+	}).onUpdate("cascade").onDelete("cascade"),
+	foreignKey({
+		columns: [table.courseId],
+		foreignColumns: [courseTable.id],
+		name: "cgtc_course_fk",
+	}).onUpdate("cascade").onDelete("cascade"),
+	unique("cgtc_courseGroup_course_unique").on(table.courseGroupId, table.courseId),
 ]);
