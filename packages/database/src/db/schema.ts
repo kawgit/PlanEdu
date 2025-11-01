@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
 	pgTable, foreignKey, integer, text, unique, index, jsonb, date, vector, timestamp
 } from "drizzle-orm/pg-core";
@@ -39,9 +38,7 @@ export const courseTable = pgTable("Course", {
 	school: text("school").notNull(),
 	department: text("department").notNull(),
 	number: text("number").notNull(),
-	id: text("id").generatedAlwaysAs(
-		sql`("school" || ' ' || "department" || ' ' || "number")`
-	).primaryKey(),
+	id: text("id").primaryKey().notNull(),
 	title: text("title").notNull(),
 	description: text("description").notNull(),
 	embedding: jsonb("embedding"),

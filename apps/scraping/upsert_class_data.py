@@ -8,9 +8,9 @@ from psycopg2.extras import execute_values
 from tqdm import tqdm
 
 UPSERT_CLASS_SQL = """
-INSERT INTO "Class" ("school", "department", "number", "title", "description", "embedding")
-VALUES (%s, %s, %s, %s, %s, NULL)
-ON CONFLICT ("school", "department", "number")
+INSERT INTO "Course" ("id", "school", "department", "number", "title", "description", "embedding")
+VALUES (%s, %s, %s, %s, %s, %s, NULL)
+ON CONFLICT ("id")
 DO UPDATE SET
   "title" = EXCLUDED."title",
   "description" = EXCLUDED."description"
@@ -19,7 +19,7 @@ RETURNING "id";
 
 INSERT_SECTIONS_SQL_TEMPLATE = """
 INSERT INTO "Section"
-("classId","name","year","season","instructor","location","days","startTime","endTime","notes")
+("courseId","name","year","season","instructor","location","days","startTime","endTime","notes")
 VALUES %s
 RETURNING "id";
 """
@@ -65,9 +65,11 @@ def main():
     total_sections = 0
 
     for course in tqdm(data, desc="Upserting classes", unit="class"):
+        course_id = f"{course['school']} {course['department']} {course['number']}"
         cur.execute(
             UPSERT_CLASS_SQL,
             (
+                course_id,
                 course["school"],
                 course["department"],
                 course["number"],
