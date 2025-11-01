@@ -192,7 +192,7 @@ class ScheduleSolver:
             self.model.Add(sum(course_vars) >= count)
 
     def _enforce_prerequisite_constraints(self):
-        for 
+        pass
 
     def _hint_high_score_courses(self):
         
