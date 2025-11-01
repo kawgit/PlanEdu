@@ -1,5 +1,5 @@
 from schedule_solver import ScheduleSolver
-from utils import extract_course_number, load_courses_and_slots
+from utils import extract_course_number, load_courses_and_slots, load_hubs
 
 num_future_semesters = 8
 num_courses_per_semester = 4
@@ -64,23 +64,43 @@ groups["BS CS D"] = {course["id"] for course in courses.values() if belongs_to_g
 
 groups["BS CS A-D"] = set(groups["BS CS A"] | groups["BS CS B"] | groups["BS CS C"] | groups["BS CS D"])
 
-graduation_constraints = {
-    "all_from_group_a": {
-        "group_id": "BS CS A",
-        "count": len(groups["BS CS A"]),
-    },
-    "at_least_2_from_group_b": {
-        "group_id": "BS CS B",
-        "count": 2,
-    },
-    "at_least_2_from_group_c": {
-        "group_id": "BS CS C",
-        "count": 2,
-    },
-    "at_least_15_from_all_groups": {
-        "group_id": "BS CS A-D",
-        "count": 15
-    }
+groups.update(load_hubs())
+
+graduation_constraint = {
+    "id": "graduation",
+    "type": "and",
+    "children": [
+        {
+            "id": "all from group A",
+            "type": "group",
+            "group_id": "BS CS A",
+            "count": len(groups["BS CS A"]),
+        },
+        {
+            "id": "at least 2 from group B",
+            "type": "group",
+            "group_id": "BS CS B",
+            "count": 2,
+        },
+        {
+            "id": "at least 2 from group C",
+            "type": "group",
+            "group_id": "BS CS C",
+            "count": 2,
+        },
+        {
+            "id": "at least 15 from all groups",
+            "type": "group",
+            "group_id": "BS CS A-D",
+            "count": 15
+        },
+        {
+            "id": "Hub: Philosophical, Aesthetic, and Historical Interpretation",
+            "type": "group",
+            "group_id": "load_hubs",
+            "count": 1,
+        },
+    ]
 }
 
 prerequisite_constraints = {
@@ -121,14 +141,14 @@ prerequisite_constraints = {
                 ]
             }
         ]
-    }
+    },
 }
 
 
 print(f"Loaded {len(courses)} courses, {len(slots)} slots, {len(bookmarked_ids)} bookmarked courses, and {len(completed_ids)} completed courses.")
 
 print("Initializing solver...")
-solver = ScheduleSolver(courses, slots, groups, graduation_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
+solver = ScheduleSolver(courses, slots, groups, graduation_constraints, prerequisite_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
 
 print("Solving...")
 solver.solve(time_limit=3, verbosity="detailed")

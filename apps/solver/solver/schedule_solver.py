@@ -14,6 +14,7 @@ class ScheduleSolver:
                  slots: List[SlotId],
                  groups: Dict[GroupId, Set[CourseId]],
                  graduation_constraints: Dict[GroupId, Dict[str, Any]], 
+                 prerequisite_constraints: Dict[CourseId, Dict[str, Any]],
                  completed_ids: Set[CourseId],
                  num_future_semesters: int,
                  num_courses_per_semester: int = 4):
@@ -43,6 +44,7 @@ class ScheduleSolver:
         self._enforce_no_overlapping_slots()
         self._enforce_no_duplicate_courses()
         self._enforce_num_courses_per_semester()
+        self._enforce_prerequisite_constraints()
         self._enforce_graduation_constraints()
         
         # Build hints
@@ -183,11 +185,14 @@ class ScheduleSolver:
             self.model.Add(sum(course_vars) == self.num_courses_per_semester)
             
     def _enforce_graduation_constraints(self):
-        for constraint_id, constraint in self.graduation_constraints.items():
+        for constraint in self.graduation_constraints.values():
             group_id = constraint["group_id"]
             count = constraint["count"]
             course_vars = [self.merged_course_vars[course_id] for course_id in self.groups[group_id]]
             self.model.Add(sum(course_vars) >= count)
+
+    def _enforce_prerequisite_constraints(self):
+        for 
 
     def _hint_high_score_courses(self):
         

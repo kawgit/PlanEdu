@@ -36,6 +36,12 @@ def load_courses_and_slots():
             
     return courses, slots
 
+def load_hubs():
+    with open(Path(__file__).parent.parent / "data" / "hub_to_classes.json", "r") as f:
+        hub_to_classes = json.load(f)
+        
+    return hub_to_classes
+
 class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
     def __init__(self, objective_expr):
         super().__init__()

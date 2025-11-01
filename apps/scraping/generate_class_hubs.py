@@ -110,8 +110,7 @@ def main():
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {}
         for class_info in sampled_classes:
-            class_code = class_info['url']
-            # class_code = f"{class_info['school']} {class_info['department']} {class_info['number']}"
+            class_code = f"{class_info['school']} {class_info['department']} {class_info['number']}"
             description = class_info.get("description", "")
             if not description:
                 continue
