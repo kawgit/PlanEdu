@@ -3,130 +3,28 @@
     "type": "and",
     "children": [
         {
-            "id": "Philosophical Inquiry and Life's Meanings",
+            "id": "all from group A",
             "type": "group",
-            "group_id": "Philosophical Inquiry and Life's Meanings",
-            "count": 1
+            "group_id": "BS CS A",
+            "count": 5
         },
         {
-            "id": "Aesthetic Exploration",
+            "id": "at least 2 from group B",
             "type": "group",
-            "group_id": "Aesthetic Exploration",
-            "count": 1
-        },
-        {
-            "id": "Historical Consciousness",
-            "type": "group",
-            "group_id": "Historical Consciousness",
-            "count": 1
-        },
-        {
-            "id": "Scientific Inquiry I",
-            "type": "group",
-            "group_id": "Scientific Inquiry I",
-            "count": 1
-        },
-        {
-            "id": "Scientific Inquiry II",
-            "type": "group",
-            "group_id": "Scientific Inquiry II",
-            "count": 1
-        },
-        {
-            "id": "Social Inquiry I",
-            "type": "group",
-            "group_id": "Social Inquiry I",
-            "count": 1
-        },
-        {
-            "id": "Social Inquiry II",
-            "type": "group",
-            "group_id": "Social Inquiry II",
-            "count": 1
-        },
-        {
-            "id": "Quantitative Reasoning I",
-            "type": "group",
-            "group_id": "Quantitative Reasoning I",
-            "count": 1
-        },
-        {
-            "id": "Quantitative Reasoning II",
-            "type": "group",
-            "group_id": "Quantitative Reasoning II",
-            "count": 1
-        },
-        {
-            "id": "The Individual in Community",
-            "type": "group",
-            "group_id": "The Individual in Community",
-            "count": 1
-        },
-        {
-            "id": "Global Citizenship and Intercultural Literacy",
-            "type": "group",
-            "group_id": "Global Citizenship and Intercultural Literacy",
+            "group_id": "BS CS B",
             "count": 2
         },
         {
-            "id": "Ethical Reasoning",
+            "id": "at least 2 from group C",
             "type": "group",
-            "group_id": "Ethical Reasoning",
-            "count": 1
-        },
-        {
-            "id": "First-Year Writing Seminar",
-            "type": "group",
-            "group_id": "First-Year Writing Seminar",
-            "count": 1
-        },
-        {
-            "id": "Writing, Research, and Inquiry",
-            "type": "group",
-            "group_id": "Writing, Research, and Inquiry",
-            "count": 1
-        },
-        {
-            "id": "Writing-Intensive Course",
-            "type": "group",
-            "group_id": "Writing-Intensive Course",
+            "group_id": "BS CS C",
             "count": 2
         },
         {
-            "id": "Oral and/or Signed Communication",
+            "id": "at least 15 from all groups",
             "type": "group",
-            "group_id": "Oral and/or Signed Communication",
-            "count": 1
-        },
-        {
-            "id": "Digital/Multimedia Expression",
-            "type": "group",
-            "group_id": "Digital/Multimedia Expression",
-            "count": 1
-        },
-        {
-            "id": "Critical Thinking",
-            "type": "group",
-            "group_id": "Critical Thinking",
-            "count": 2
-        },
-        {
-            "id": "Research and Information Literacy",
-            "type": "group",
-            "group_id": "Research and Information Literacy",
-            "count": 2
-        },
-        {
-            "id": "Teamwork/Collaboration",
-            "type": "group",
-            "group_id": "Teamwork/Collaboration",
-            "count": 2
-        },
-        {
-            "id": "Creativity/Innovation",
-            "type": "group",
-            "group_id": "Creativity/Innovation",
-            "count": 2
+            "group_id": "BS CS A-D",
+            "count": 15
         }
     ]
 }

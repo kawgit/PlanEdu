@@ -65,93 +65,91 @@ groups["BS CS D"] = {course["id"] for course in courses.values() if belongs_to_g
 
 groups["BS CS A-D"] = set(groups["BS CS A"] | groups["BS CS B"] | groups["BS CS C"] | groups["BS CS D"])
 
-print(groups)
+groups.update(load_hubs())
 
-# groups.update(load_hubs())
+graduation_constraint = {
+    "id": "graduation",
+    "type": "and",
+    "children": [
+        {
+            "id": "all from group A",
+            "type": "group",
+            "group_id": "BS CS A",
+            "count": len(groups["BS CS A"]),
+        },
+        {
+            "id": "at least 2 from group B",
+            "type": "group",
+            "group_id": "BS CS B",
+            "count": 2,
+        },
+        {
+            "id": "at least 2 from group C",
+            "type": "group",
+            "group_id": "BS CS C",
+            "count": 2,
+        },
+        {
+            "id": "at least 15 from all groups",
+            "type": "group",
+            "group_id": "BS CS A-D",
+            "count": 15
+        },
+        {
+            "id": "Hub: Philosophical, Aesthetic, and Historical Interpretation",
+            "type": "group",
+            "group_id": "load_hubs",
+            "count": 1,
+        },
+    ]
+}
 
-# graduation_constraint = {
-#     "id": "graduation",
-#     "type": "and",
-#     "children": [
-#         {
-#             "id": "all from group A",
-#             "type": "group",
-#             "group_id": "BS CS A",
-#             "count": len(groups["BS CS A"]),
-#         },
-#         {
-#             "id": "at least 2 from group B",
-#             "type": "group",
-#             "group_id": "BS CS B",
-#             "count": 2,
-#         },
-#         {
-#             "id": "at least 2 from group C",
-#             "type": "group",
-#             "group_id": "BS CS C",
-#             "count": 2,
-#         },
-#         {
-#             "id": "at least 15 from all groups",
-#             "type": "group",
-#             "group_id": "BS CS A-D",
-#             "count": 15
-#         },
-#         {
-#             "id": "Hub: Philosophical, Aesthetic, and Historical Interpretation",
-#             "type": "group",
-#             "group_id": "load_hubs",
-#             "count": 1,
-#         },
-#     ]
-# }
-
-# prerequisite_constraints = {
-#     "CAS CS 532": {
-#         "type": "or",
-#         "children": [
-#             "pre CAS CS 541",
-#             "pre CAS CS 542"
-#         ]
-#     },
-#     "CAS CS 565": {
-#         "pre junior standing"
-#     },
-#     "CAS CS 505": {
-#         "pre CAS CS 365"
-#     },
-#     "CAS CS 542": {
-#         "pre CAS CS 365"
-#     },
-#     "CAS CS 541": {
-#         "type": "and",
-#         "children": [
-#             "pre CAS CS 111",
-#             {
-#                 "type": "or",
-#                 "children": [
-#                     "pre CAS CS 132",
-#                     "pre CAS MA 242",
-#                     "pre CAS EK 103"
-#                 ]
-#             },
-#             {
-#                 "type": "or",
-#                 "children": [
-#                     "pre CAS CS 237",
-#                     "pre CAS MA 581",
-#                     "pre CAS EK 381"
-#                 ]
-#             }
-#         ]
-#     },
-# }
+prerequisite_constraints = {
+    "CAS CS 532": {
+        "type": "or",
+        "children": [
+            "pre CAS CS 541",
+            "pre CAS CS 542"
+        ]
+    },
+    "CAS CS 565": {
+        "pre junior standing"
+    },
+    "CAS CS 505": {
+        "pre CAS CS 365"
+    },
+    "CAS CS 542": {
+        "pre CAS CS 365"
+    },
+    "CAS CS 541": {
+        "type": "and",
+        "children": [
+            "pre CAS CS 111",
+            {
+                "type": "or",
+                "children": [
+                    "pre CAS CS 132",
+                    "pre CAS MA 242",
+                    "pre CAS EK 103"
+                ]
+            },
+            {
+                "type": "or",
+                "children": [
+                    "pre CAS CS 237",
+                    "pre CAS MA 581",
+                    "pre CAS EK 381"
+                ]
+            }
+        ]
+    },
+}
 
 
-# print(f"Loaded {len(courses)} courses, {len(slots)} slots, {len(bookmarked_ids)} bookmarked courses, and {len(completed_ids)} completed courses.")
+print(f"Loaded {len(courses)} courses, {len(slots)} slots, {len(bookmarked_ids)} bookmarked courses, and {len(completed_ids)} completed courses.")
 
-# print("Initializing solver...")
-# solver = ScheduleSolver(courses, slots, groups, graduation_constraints, prerequisite_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
+print("Initializing solver...")
+solver = ScheduleSolver(courses, slots, groups, graduation_constraints, prerequisite_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
 
-# print("Solving...")
-# solver.solve(time_limit=3, verbosity="detailed")
+print("Solving...")
+solver.solve(time_limit=3, verbosity="detailed")
