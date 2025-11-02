@@ -214,12 +214,14 @@ class ScheduleSolver:
                 self.model.AddMaxEquality(var, child_vars)
             case "not":
                 child_var = self._evaluate_constraint(constraint["child"], semester_index)
-                self.model.AddAtMostOne([var, child_var])
+                self.model.Add(var + child_var == 1)
             case "group":
                 group_vars = [self.merged_course_vars[semester_index][course_id] for course_id in self.groups[constraint["group_id"]]]
                 self.model.Add(sum(group_vars) >= constraint["count"])
             case "course":
                 self.model.Add(var == self.merged_course_vars[semester_index][constraint["course_id"]])
+            case "standing":
+                pass
             case _:
                 raise ValueError(f"Invalid constraint type: {constraint['type']}")
         
