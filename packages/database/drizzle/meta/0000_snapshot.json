@@ -1,5 +1,5 @@
 {
-  "id": "b8ef4338-835f-496a-9f12-e1ca201980bc",
+  "id": "185755c7-26ca-4125-96aa-eaf9452eb0d1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -15,7 +15,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "\"Bookmark_id_seq\"",
+            "name": "Bookmark_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -31,9 +31,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "classId": {
-          "name": "classId",
-          "type": "integer",
+        "courseId": {
+          "name": "courseId",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }
@@ -53,12 +53,12 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "bookmark_class_fk": {
-          "name": "bookmark_class_fk",
+        "bookmark_course_fk": {
+          "name": "bookmark_course_fk",
           "tableFrom": "Bookmark",
-          "tableTo": "Class",
+          "tableTo": "Course",
           "columnsFrom": [
-            "classId"
+            "courseId"
           ],
           "columnsTo": [
             "id"
@@ -69,12 +69,12 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "bookmark_user_class_unique": {
-          "name": "bookmark_user_class_unique",
+        "bookmark_user_course_unique": {
+          "name": "bookmark_user_course_unique",
           "nullsNotDistinct": false,
           "columns": [
             "userId",
-            "classId"
+            "courseId"
           ]
         }
       },
@@ -82,27 +82,98 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.Class": {
-      "name": "Class",
+    "public.CourseGroup": {
+      "name": "CourseGroup",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
+        "name": {
+          "name": "name",
+          "type": "text",
           "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "type": "always",
-            "name": "\"Class_id_seq\"",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.CourseGroupToCourse": {
+      "name": "CourseGroupToCourse",
+      "schema": "",
+      "columns": {
+        "courseGroupId": {
+          "name": "courseGroupId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
+        "courseId": {
+          "name": "courseId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "cgtc_courseGroup_fk": {
+          "name": "cgtc_courseGroup_fk",
+          "tableFrom": "CourseGroupToCourse",
+          "tableTo": "CourseGroup",
+          "columnsFrom": [
+            "courseGroupId"
+          ],
+          "columnsTo": [
+            "name"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "cgtc_course_fk": {
+          "name": "cgtc_course_fk",
+          "tableFrom": "CourseGroupToCourse",
+          "tableTo": "Course",
+          "columnsFrom": [
+            "courseId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "CourseGroupToCourse_courseGroupId_courseId_pk": {
+          "name": "CourseGroupToCourse_courseGroupId_courseId_pk",
+          "columns": [
+            "courseGroupId",
+            "courseId"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "cgtc_courseGroup_course_unique": {
+          "name": "cgtc_courseGroup_course_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "courseGroupId",
+            "courseId"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.Course": {
+      "name": "Course",
+      "schema": "",
+      "columns": {
         "school": {
           "name": "school",
           "type": "text",
@@ -119,6 +190,12 @@
           "name": "number",
           "type": "text",
           "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
           "notNull": true
         },
         "title": {
@@ -144,8 +221,8 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "class_school_dept_num_unique": {
-          "name": "class_school_dept_num_unique",
+        "course_school_dept_num_unique": {
+          "name": "course_school_dept_num_unique",
           "nullsNotDistinct": false,
           "columns": [
             "school",
@@ -158,108 +235,25 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.ClassToHubRequirement": {
-      "name": "ClassToHubRequirement",
+    "public.Prerequisite": {
+      "name": "Prerequisite",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "type": "always",
-            "name": "\"ClassToHubRequirement_id_seq\"",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
-        },
-        "classId": {
-          "name": "classId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "hubRequirementId": {
-          "name": "hubRequirementId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "cthr_class_fk": {
-          "name": "cthr_class_fk",
-          "tableFrom": "ClassToHubRequirement",
-          "tableTo": "Class",
-          "columnsFrom": [
-            "classId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        },
-        "cthr_hubRequirement_fk": {
-          "name": "cthr_hubRequirement_fk",
-          "tableFrom": "ClassToHubRequirement",
-          "tableTo": "HubRequirement",
-          "columnsFrom": [
-            "hubRequirementId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "cthr_class_hub_unique": {
-          "name": "cthr_class_hub_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "classId",
-            "hubRequirementId"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.HubRequirement": {
-      "name": "HubRequirement",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "type": "always",
-            "name": "\"HubRequirement_id_seq\"",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
-        },
         "name": {
           "name": "name",
           "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true
         }
@@ -267,15 +261,7 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "unique_hub_name": {
-          "name": "unique_hub_name",
-          "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -291,7 +277,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "\"Schedule_id_seq\"",
+            "name": "Schedule_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -347,7 +333,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "\"ScheduleToSection_id_seq\"",
+            "name": "ScheduleToSection_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -425,7 +411,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "\"Section_id_seq\"",
+            "name": "Section_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -435,9 +421,9 @@
             "cycle": false
           }
         },
-        "classId": {
-          "name": "classId",
-          "type": "integer",
+        "courseId": {
+          "name": "courseId",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -498,12 +484,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "section_class_fk": {
-          "name": "section_class_fk",
+        "section_course_fk": {
+          "name": "section_course_fk",
           "tableFrom": "Section",
-          "tableTo": "Class",
+          "tableTo": "Course",
           "columnsFrom": [
-            "classId"
+            "courseId"
           ],
           "columnsTo": [
             "id"
@@ -518,8 +504,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.UserCompletedClass": {
-      "name": "UserCompletedClass",
+    "public.UserCompletedCourse": {
+      "name": "UserCompletedCourse",
       "schema": "",
       "columns": {
         "id": {
@@ -529,7 +515,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "\"UserCompletedClass_id_seq\"",
+            "name": "UserCompletedCourse_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -545,9 +531,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "classId": {
-          "name": "classId",
-          "type": "integer",
+        "courseId": {
+          "name": "courseId",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -562,7 +548,7 @@
       "foreignKeys": {
         "ucc_user_fk": {
           "name": "ucc_user_fk",
-          "tableFrom": "UserCompletedClass",
+          "tableFrom": "UserCompletedCourse",
           "tableTo": "Users",
           "columnsFrom": [
             "userId"
@@ -573,12 +559,12 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "ucc_class_fk": {
-          "name": "ucc_class_fk",
-          "tableFrom": "UserCompletedClass",
-          "tableTo": "Class",
+        "ucc_course_fk": {
+          "name": "ucc_course_fk",
+          "tableFrom": "UserCompletedCourse",
+          "tableTo": "Course",
           "columnsFrom": [
-            "classId"
+            "courseId"
           ],
           "columnsTo": [
             "id"
@@ -589,12 +575,12 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "ucc_user_class_unique": {
-          "name": "ucc_user_class_unique",
+        "ucc_user_course_unique": {
+          "name": "ucc_user_course_unique",
           "nullsNotDistinct": false,
           "columns": [
             "userId",
-            "classId"
+            "courseId"
           ]
         }
       },
@@ -613,7 +599,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "\"Users_id_seq\"",
+            "name": "Users_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",

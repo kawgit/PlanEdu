@@ -1,5 +1,5 @@
 import {
-	pgTable, foreignKey, integer, text, unique, index, jsonb, date, vector, timestamp
+	pgTable, foreignKey, integer, text, unique, jsonb, date, vector, timestamp, primaryKey
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("Users", {
@@ -142,16 +142,18 @@ export const courseGroup = pgTable("CourseGroup", {
 export const courseGroupToCourse = pgTable("CourseGroupToCourse", {
 	courseGroupId: text("courseGroupId").notNull(),
 	courseId: text("courseId").notNull(),
-}, (table) => [
-	foreignKey({
+}, (table) => ({
+	pk: primaryKey({ columns: [table.courseGroupId, table.courseId] }),
+	courseGroupFk: foreignKey({
 		columns: [table.courseGroupId],
 		foreignColumns: [courseGroup.name],
 		name: "cgtc_courseGroup_fk",
 	}).onUpdate("cascade").onDelete("cascade"),
-	foreignKey({
+	courseFk: foreignKey({
 		columns: [table.courseId],
 		foreignColumns: [courseTable.id],
 		name: "cgtc_course_fk",
 	}).onUpdate("cascade").onDelete("cascade"),
-	unique("cgtc_courseGroup_course_unique").on(table.courseGroupId, table.courseId),
-]);
+	uniqueConstraint: unique("cgtc_courseGroup_course_unique")
+        .on(table.courseGroupId, table.courseId),
+}));
