@@ -8,13 +8,15 @@ CourseId = str
 SlotId = str
 SemesterIndex = int
 
+Constraint = Dict[str, Any]
+
 class ScheduleSolver:
     def __init__(self,
                  courses: Dict[CourseId, Dict[str, Any]],
                  slots: List[SlotId],
                  groups: Dict[GroupId, Set[CourseId]],
-                 prerequisite_constraints: Dict[CourseId, Dict[str, Any]],
-                 graduation_constraints: Dict[GroupId, Dict[str, Any]], 
+                 prerequisite_constraints: Dict[CourseId, Constraint],
+                 graduation_constraints: Constraint, 
                  completed_ids: Set[CourseId],
                  num_future_semesters: int,
                  num_courses_per_semester: int = 4):

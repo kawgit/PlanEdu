@@ -59,7 +59,11 @@ def load_graduation_constraints():
         with open(Path(__file__).parent.parent / "data" / f"{file_name}.json", "r") as f:
             constraints.append(json.load(f))
             
-    return constraints
+    return {
+        "id": "Graduation Requirements",
+        "type": "and",
+        "children": constraints
+    }
 
 class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
     def __init__(self, objective_expr):
