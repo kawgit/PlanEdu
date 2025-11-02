@@ -38,7 +38,7 @@ def load_courses_and_slots():
 
 def load_groups():
     
-    file_names = ["hub_groups.json", "major_groups.json"]
+    file_names = ["hub_groups", "major_groups"]
     groups = {}
     
     for file_name in file_names:
@@ -52,7 +52,7 @@ def load_prerequisite_constraints():
         return json.load(f)
 
 def load_graduation_constraints():
-    file_names = ["hub_constraints.json", "major_constraints.json"]
+    file_names = ["hub_constraints", "major_constraints"]
     constraints = []
     
     for file_name in file_names:

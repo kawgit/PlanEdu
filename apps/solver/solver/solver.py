@@ -1,3 +1,4 @@
+from email.policy import default
 from ortools.sat.python import cp_model
 from typing import Any, List, Dict, Literal, Set
 
@@ -7,7 +8,6 @@ GroupId = str
 CourseId = str
 SlotId = str
 SemesterIndex = int
-
 Constraint = Dict[str, Any]
 
 class ScheduleSolver:
@@ -48,7 +48,9 @@ class ScheduleSolver:
         self._enforce_no_duplicate_courses()
         self._enforce_num_courses_per_semester()
         self._enforce_prerequisite_constraints()
-        self._enforce_graduation_constraints()
+        print("Building graduation constraints...")
+        self._enforce_graduation_constraints(self.graduation_constraints)
+        print("Finished building graduation constraints...")
         
         # Build hints
         self._hint_high_score_courses()
@@ -60,7 +62,7 @@ class ScheduleSolver:
         self._build_solver()
     
     def _build_slot_vars(self):
-        self.slot_vars: Dict[CourseId, cp_model.IntVar] = {}        
+        self.slot_vars: Dict[CourseId, Dict[SlotId, cp_model.BoolVarT]] = {}        
         candidate_ids = self._select_semester_candidates(0)
         for course_id in candidate_ids:
             course = self.courses[course_id]
@@ -190,13 +192,37 @@ class ScheduleSolver:
     def _enforce_prerequisite_constraints(self):
         pass
             
-    def _enforce_graduation_constraints(self):
-        for constraint in self.graduation_constraints.values():
-            group_id = constraint["group_id"]
-            count = constraint["count"]
-            course_vars = [self.merged_course_vars[course_id] for course_id in self.groups[group_id]]
-            self.model.Add(sum(course_vars) >= count)
-
+    def _enforce_graduation_constraints(self, constraint: Constraint):
+        
+        graduation_var = self._evaluate_constraint(constraint)
+        self.model.Add(graduation_var == 1)
+        
+    def _evaluate_constraint(self, constraint: Constraint):
+        
+        var = self.model.NewBoolVar(f"constraint_{constraint['id']}")
+        
+        match (constraint["type"]):
+            case "and":
+                assert constraint["children"] != []
+                child_vars = [self._evaluate_constraint(child) for child in constraint["children"]]
+                self.model.AddMultiplicationEquality(var, child_vars)
+            case "or":
+                assert constraint["children"] != []
+                child_vars = [self._evaluate_constraint(child) for child in constraint["children"]]
+                self.model.AddMaxEquality(var, child_vars)
+            case "not":
+                child_var = self._evaluate_constraint(constraint["child"])
+                self.model.Add(var + child_var == 1)
+            case "group":
+                group_vars = [self.merged_course_vars[course_id] for course_id in self.groups[constraint["group_id"]]]
+                self.model.Add(sum(group_vars) >= constraint["count"])
+            case "course":
+                self.model.Add(var == self.merged_course_vars[constraint["course_id"]])
+            case _:
+                raise ValueError(f"Invalid constraint type: {constraint['type']}")
+        
+        return var
+    
     def _hint_high_score_courses(self):
         
         course_ids = list(self.courses.keys())

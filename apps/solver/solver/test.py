@@ -46,4 +46,4 @@ print("Initializing solver...")
 solver = ScheduleSolver(courses, slots, groups, prerequisite_constraints, graduation_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
 
 print("Solving...")
-solver.solve(time_limit=3, verbosity="detailed")
+solver.solve(time_limit=5, verbosity="detailed")
