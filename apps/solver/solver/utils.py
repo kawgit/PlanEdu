@@ -47,6 +47,10 @@ def load_groups():
         
     return groups
 
+def load_prerequisite_constraints():
+    with open(Path(__file__).parent.parent / "data" / "prerequisite_constraints.json", "r") as f:
+        return json.load(f)
+
 def load_graduation_constraints():
     file_names = ["hub_constraints.json", "major_constraints.json"]
     constraints = []
@@ -56,10 +60,6 @@ def load_graduation_constraints():
             constraints.append(json.load(f))
             
     return constraints
-
-def load_prerequisite_constraints():
-    with open(Path(__file__).parent.parent / "data" / "prerequisite_constraints.json", "r") as f:
-        return json.load(f)
 
 class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
     def __init__(self, objective_expr):

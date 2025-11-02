@@ -184,6 +184,9 @@ class ScheduleSolver:
         for semester_index in range(self.num_future_semesters):
             course_vars = self.course_vars[semester_index].values()
             self.model.Add(sum(course_vars) == self.num_courses_per_semester)
+
+    def _enforce_prerequisite_constraints(self):
+        pass
             
     def _enforce_graduation_constraints(self):
         for constraint in self.graduation_constraints.values():
@@ -191,9 +194,6 @@ class ScheduleSolver:
             count = constraint["count"]
             course_vars = [self.merged_course_vars[course_id] for course_id in self.groups[group_id]]
             self.model.Add(sum(course_vars) >= count)
-
-    def _enforce_prerequisite_constraints(self):
-        pass
 
     def _hint_high_score_courses(self):
         

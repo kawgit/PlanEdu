@@ -1,4 +1,4 @@
-from schedule_solver import ScheduleSolver
+from solver import ScheduleSolver
 from utils import load_graduation_constraints, load_courses_and_slots, load_groups, load_prerequisite_constraints
 
 num_future_semesters = 8
@@ -37,8 +37,8 @@ for course_id, course in courses.items():
         course["score"] += 1000
 
 groups = load_groups()
-graduation_constraints = load_graduation_constraints()
 prerequisite_constraints = load_prerequisite_constraints()
+graduation_constraints = load_graduation_constraints()
 
 print(f"Loaded {len(courses)} courses, {len(slots)} slots, {len(bookmarked_ids)} bookmarked courses, and {len(completed_ids)} completed courses.")
 
