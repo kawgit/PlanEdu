@@ -49,9 +49,7 @@ class ScheduleSolver:
         self._enforce_num_courses_per_semester()
         self._enforce_completed_courses()
         self._enforce_prerequisite_constraints()
-        print("Building graduation constraints...")
         self._enforce_graduation_constraints(self.graduation_constraints)
-        print("Finished building graduation constraints...")
         
         # Build hints
         self._hint_high_score_courses()
