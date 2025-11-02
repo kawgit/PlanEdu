@@ -28,6 +28,7 @@ class ScheduleSolver:
         self.completed_ids = completed_ids
         self.num_future_semesters = num_future_semesters
         self.num_courses_per_semester = num_courses_per_semester
+        self.last_semester_index = num_future_semesters - 1
         
         assert self.completed_ids.issubset(self.courses.keys())
         
@@ -46,6 +47,7 @@ class ScheduleSolver:
         self._enforce_no_overlapping_slots()
         self._enforce_no_duplicate_courses()
         self._enforce_num_courses_per_semester()
+        self._enforce_completed_courses()
         self._enforce_prerequisite_constraints()
         print("Building graduation constraints...")
         self._enforce_graduation_constraints(self.graduation_constraints)
@@ -62,8 +64,7 @@ class ScheduleSolver:
     
     def _build_slot_vars(self):
         self.slot_vars: Dict[CourseId, Dict[SlotId, cp_model.BoolVarT]] = {}        
-        candidate_ids = self._select_semester_candidates(0)
-        for course_id in candidate_ids:
+        for course_id in self.courses.keys():
             course = self.courses[course_id]
             self.slot_vars[course_id] = {}
             for slot_id in course["slots_ids"]:
@@ -71,23 +72,10 @@ class ScheduleSolver:
     
     def _build_course_vars(self):
         self.course_vars: Dict[SemesterIndex, Dict[CourseId, cp_model.BoolVarT]] = {}
-        for semester_index in range(self.num_future_semesters):
+        for semester_index in range(-1, self.num_future_semesters):
             self.course_vars[semester_index] = {}
-            candidate_ids = self._select_semester_candidates(semester_index)
-            for course_id in candidate_ids:
+            for course_id in self.courses.keys():
                 self.course_vars[semester_index][course_id] = self.model.NewBoolVar(f"course_{semester_index}_{course_id}")
-    
-    def _select_semester_candidates(self, semester_index: SemesterIndex):
-        
-        """
-        For now we won't filter out any courses. If we wanted to filter courses,
-        we would need to do so in a way that ensures we don't make any unfiltered
-        courses unreachable by filtering out prerequisites. On the other hand,
-        filtering may speed stuff up if there's a lot of courses we don't need to
-        consider.
-        """
-        
-        return self.courses.keys()
 
     def _build_merged_slot_vars(self):
         self.merged_slot_vars: Dict[SlotId, cp_model.BoolVarT] = {}
@@ -106,22 +94,27 @@ class ScheduleSolver:
 
     def _build_merged_course_vars(self):
         
-        self.merged_course_vars: Dict[CourseId, cp_model.BoolVarT] = {}
+        self.merged_course_vars: Dict[SemesterIndex, Dict[CourseId, cp_model.BoolVarT]] = {}
+        
+        for semester_index in range(-1, self.num_future_semesters):
+            self.merged_course_vars[semester_index] = {}
         
         for course_id in self.courses.keys():
             
             course_vars = []
             
-            for semester_index in range(self.num_future_semesters):
+            for semester_index in range(-1, self.num_future_semesters):
                 if course_id in self.course_vars[semester_index]:
                     course_vars.append(self.course_vars[semester_index][course_id])
-            
-            if len(course_vars) == 0:
-                continue
-            
-            self.merged_course_vars[course_id] = self.model.NewBoolVar(f"took_{course_id}")
-            self.model.AddAtMostOne(course_vars)
-            self.model.AddMaxEquality(self.merged_course_vars[course_id], course_vars)
+                
+                merged_var = self.model.NewBoolVar(f"merged_course_{semester_index}_{course_id}")
+                
+                if len(course_vars) == 0:
+                    self.model.Add(merged_var == 0)
+                else:
+                    self.model.AddMaxEquality(merged_var, course_vars)
+                    
+                self.merged_course_vars[semester_index][course_id] = merged_var
 
     def _enforce_exactly_one_slot_per_course(self):
         for course_id in self.slot_vars:
@@ -188,35 +181,45 @@ class ScheduleSolver:
             course_vars = self.course_vars[semester_index].values()
             self.model.Add(sum(course_vars) == self.num_courses_per_semester)
 
+    def _enforce_completed_courses(self):
+        for course_id in self.completed_ids:
+            self.model.Add(self.course_vars[-1][course_id] == 1)
+
     def _enforce_prerequisite_constraints(self):
         pass
     
     def _enforce_graduation_constraints(self, constraint: Constraint):
         
-        graduation_var = self._evaluate_constraint(constraint)
+        graduation_var = self._evaluate_constraint(constraint, self.last_semester_index)
         self.model.Add(graduation_var == 1)
         
-    def _evaluate_constraint(self, constraint: Constraint):
+    def _evaluate_constraint(self, constraint: Constraint, semester_index: SemesterIndex):
+        
+        if constraint["type"] == "when":
+            new_semester_index = semester_index + constraint["offset"]
+            new_semester_index = max(new_semester_index, -1)
+            new_semester_index = min(new_semester_index, self.last_semester_index)
+            return self._evaluate_constraint(constraint["child"], new_semester_index)
         
         var = self.model.NewBoolVar(f"constraint_{constraint['id']}")
         
         match (constraint["type"]):
             case "and":
                 assert constraint["children"] != []
-                child_vars = [self._evaluate_constraint(child) for child in constraint["children"]]
+                child_vars = [self._evaluate_constraint(child, semester_index) for child in constraint["children"]]
                 self.model.AddMultiplicationEquality(var, child_vars)
             case "or":
                 assert constraint["children"] != []
-                child_vars = [self._evaluate_constraint(child) for child in constraint["children"]]
+                child_vars = [self._evaluate_constraint(child, semester_index) for child in constraint["children"]]
                 self.model.AddMaxEquality(var, child_vars)
             case "not":
-                child_var = self._evaluate_constraint(constraint["child"])
-                self.model.Add(var + child_var == 1)
+                child_var = self._evaluate_constraint(constraint["child"], semester_index)
+                self.model.AddAtMostOne([var, child_var])
             case "group":
-                group_vars = [self.merged_course_vars[course_id] for course_id in self.groups[constraint["group_id"]]]
+                group_vars = [self.merged_course_vars[semester_index][course_id] for course_id in self.groups[constraint["group_id"]]]
                 self.model.Add(sum(group_vars) >= constraint["count"])
             case "course":
-                self.model.Add(var == self.merged_course_vars[constraint["course_id"]])
+                self.model.Add(var == self.merged_course_vars[semester_index][constraint["course_id"]])
             case _:
                 raise ValueError(f"Invalid constraint type: {constraint['type']}")
         
@@ -229,7 +232,7 @@ class ScheduleSolver:
         courses_ids_to_hint = course_ids[:self.num_courses_per_semester * self.num_future_semesters]
         
         for course_id in courses_ids_to_hint:
-            self.model.AddHint(self.merged_course_vars[course_id], 1)
+            self.model.AddHint(self.merged_course_vars[self.last_semester_index][course_id], 1)
 
     def _build_objective(self):
         self.objective = 0
