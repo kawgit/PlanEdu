@@ -1,4 +1,3 @@
-from email.policy import default
 from ortools.sat.python import cp_model
 from typing import Any, List, Dict, Literal, Set
 
@@ -191,7 +190,7 @@ class ScheduleSolver:
 
     def _enforce_prerequisite_constraints(self):
         pass
-            
+    
     def _enforce_graduation_constraints(self, constraint: Constraint):
         
         graduation_var = self._evaluate_constraint(constraint)
