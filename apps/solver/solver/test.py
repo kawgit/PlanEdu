@@ -43,7 +43,7 @@ prerequisite_constraints = load_prerequisite_constraints()
 print(f"Loaded {len(courses)} courses, {len(slots)} slots, {len(bookmarked_ids)} bookmarked courses, and {len(completed_ids)} completed courses.")
 
 print("Initializing solver...")
-solver = ScheduleSolver(courses, slots, groups, graduation_constraints, prerequisite_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
+solver = ScheduleSolver(courses, slots, groups, prerequisite_constraints, graduation_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
 
 print("Solving...")
 solver.solve(time_limit=3, verbosity="detailed")

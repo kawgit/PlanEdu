@@ -13,8 +13,8 @@ class ScheduleSolver:
                  courses: Dict[CourseId, Dict[str, Any]],
                  slots: List[SlotId],
                  groups: Dict[GroupId, Set[CourseId]],
-                 graduation_constraints: Dict[GroupId, Dict[str, Any]], 
                  prerequisite_constraints: Dict[CourseId, Dict[str, Any]],
+                 graduation_constraints: Dict[GroupId, Dict[str, Any]], 
                  completed_ids: Set[CourseId],
                  num_future_semesters: int,
                  num_courses_per_semester: int = 4):
@@ -22,6 +22,7 @@ class ScheduleSolver:
         self.courses = courses
         self.slots = slots
         self.groups = groups
+        self.prerequisite_constraints = prerequisite_constraints
         self.graduation_constraints = graduation_constraints
         self.completed_ids = completed_ids
         self.num_future_semesters = num_future_semesters
