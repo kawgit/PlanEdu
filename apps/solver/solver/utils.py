@@ -36,11 +36,30 @@ def load_courses_and_slots():
             
     return courses, slots
 
-def load_hubs():
-    with open(Path(__file__).parent.parent / "data" / "hub_to_classes.json", "r") as f:
-        hub_to_classes = json.load(f)
+def load_groups():
+    
+    file_names = ["hub_groups.json", "major_groups.json"]
+    groups = {}
+    
+    for file_name in file_names:
+        with open(Path(__file__).parent.parent / "data" / f"{file_name}.json", "r") as f:
+            groups.update(json.load(f))
         
-    return hub_to_classes
+    return groups
+
+def load_graduation_constraints():
+    file_names = ["hub_constraints.json", "major_constraints.json"]
+    constraints = []
+    
+    for file_name in file_names:
+        with open(Path(__file__).parent.parent / "data" / f"{file_name}.json", "r") as f:
+            constraints.append(json.load(f))
+            
+    return constraints
+
+def load_prerequisite_constraints():
+    with open(Path(__file__).parent.parent / "data" / "prerequisite_constraints.json", "r") as f:
+        return json.load(f)
 
 class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
     def __init__(self, objective_expr):

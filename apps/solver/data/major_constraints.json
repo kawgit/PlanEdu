@@ -1,0 +1,30 @@
+{
+    "id": "BA CS Major Requirements",
+    "type": "and",
+    "children": [
+        {
+            "id": "all from group A",
+            "type": "group",
+            "group_id": "BS CS A",
+            "count": 5
+        },
+        {
+            "id": "at least 2 from group B",
+            "type": "group",
+            "group_id": "BS CS B",
+            "count": 2
+        },
+        {
+            "id": "at least 2 from group C",
+            "type": "group",
+            "group_id": "BS CS C",
+            "count": 2
+        },
+        {
+            "id": "at least 15 from all groups",
+            "type": "group",
+            "group_id": "BS CS A-D",
+            "count": 15
+        }
+    ]
+}
