@@ -30,7 +30,7 @@ courses, slots = load_courses_and_slots()
 
 for course_id, course in courses.items():
     if course_id in bookmarked_ids:
-        course["score"] += 1000
+        course["score"] += 10000
 
 for course_id in completed_ids:
     assert course_id in courses, f"Course {course_id} not found in courses"

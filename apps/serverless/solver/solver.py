@@ -293,7 +293,7 @@ class ScheduleSolver:
             for semester_index in range(self.num_future_semesters):
                 if course_id not in self.course_vars[semester_index]:
                     continue
-                self.objective += self.course_vars[semester_index][course_id] * course["score"] * (5 / (self.num_future_semesters + 5))
+                self.objective += self.course_vars[semester_index][course_id] * course["score"] * (10 / (self.num_future_semesters + 5))
         self.model.Maximize(self.objective)
     
     def _build_solver(self):
