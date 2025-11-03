@@ -207,7 +207,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS AH 533": {
@@ -308,7 +309,8 @@
           "junior",
           "senior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS AH 596": {
@@ -321,7 +323,8 @@
           "junior",
           "senior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS AN 280": {
@@ -3484,6 +3487,7 @@
           "senior"
         ]
       },
+      {},
       {
         "type": "or",
         "children": [
@@ -3507,7 +3511,8 @@
             "values": [
               "MSc./M.A. standing in BU Wheelock"
             ]
-          }
+          },
+          {}
         ]
       }
     ]
@@ -7738,7 +7743,8 @@
             "course_id": "CAS CS 585"
           }
         ]
-      }
+      },
+      null
     ]
   },
   "CAS CS 552": {
@@ -9964,7 +9970,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS EE 585": {
@@ -12149,7 +12156,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 425": {
@@ -12161,7 +12169,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 432": {
@@ -12248,7 +12257,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 503": {
@@ -12362,7 +12372,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 509": {
@@ -12487,7 +12498,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 526": {
@@ -12648,7 +12660,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 553": {
@@ -12670,7 +12683,8 @@
             "values": [
               "junior"
             ]
-          }
+          },
+          {}
         ]
       },
       {
@@ -12718,7 +12732,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 558": {
@@ -12746,7 +12761,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 563": {
@@ -12786,7 +12802,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 566": {
@@ -12876,7 +12893,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 579": {
@@ -12888,7 +12906,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 582": {
@@ -13001,7 +13020,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS IR 587": {
@@ -14355,7 +14375,8 @@
       {
         "type": "course",
         "course_id": "CAS LG 112"
-      }
+      },
+      "placement test results"
     ]
   },
   "CAS LG 112": {
@@ -14556,7 +14577,8 @@
       {
         "type": "course",
         "course_id": "CAS LH 211"
-      }
+      },
+      null
     ]
   },
   "CAS LH 211": {
@@ -14646,7 +14668,8 @@
       {
         "type": "course",
         "course_id": "CAS LH 212"
-      }
+      },
+      null
     ]
   },
   "CAS LH 330": {
@@ -15323,7 +15346,8 @@
       {
         "type": "course",
         "course_id": "CAS LP 212"
-      }
+      },
+      "advanced Portuguese proficiency"
     ]
   },
   "CAS LP 308": {
@@ -15865,7 +15889,8 @@
             "count": 2
           }
         ]
-      }
+      },
+      null
     ]
   },
   "CAS LS 579": {
@@ -20522,7 +20547,8 @@
             "course_id": "CAS PH 100"
           }
         ]
-      }
+      },
+      null
     ]
   },
   "CAS PH 427": {
@@ -21369,7 +21395,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS PO 390": {
@@ -21432,6 +21459,9 @@
             ]
           }
         ]
+      },
+      {
+        "type": "null"
       }
     ]
   },
@@ -21847,7 +21877,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS PO 566": {
@@ -23803,6 +23834,9 @@
             ]
           }
         ]
+      },
+      {
+        "type": "null"
       }
     ]
   },
@@ -24459,7 +24493,8 @@
         "values": [
           "junior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS SO 460": {
@@ -25237,7 +25272,8 @@
         "values": [
           "senior"
         ]
-      }
+      },
+      null
     ]
   },
   "CAS WS 442": {
@@ -27688,7 +27724,8 @@
       {
         "type": "course",
         "course_id": "CFA MT 635"
-      }
+      },
+      {}
     ]
   },
   "CFA MT 621": {
@@ -27797,7 +27834,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 121"
-      }
+      },
+      null
     ]
   },
   "CFA TH 134": {
@@ -27848,7 +27886,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 120"
-      }
+      },
+      null
     ]
   },
   "CFA TH 225": {
@@ -27952,7 +27991,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 279"
-      }
+      },
+      null
     ]
   },
   "CFA TH 305": {
@@ -28515,7 +28555,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 519"
-      }
+      },
+      null
     ]
   },
   "CFA TH 530": {
@@ -28524,7 +28565,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 529"
-      }
+      },
+      null
     ]
   },
   "CFA TH 539": {
@@ -28589,7 +28631,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 612"
-      }
+      },
+      null
     ]
   },
   "CFA TH 569": {
@@ -28674,7 +28717,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 581"
-      }
+      },
+      {}
     ]
   },
   "CFA TH 583": {
@@ -28723,7 +28767,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 607"
-      }
+      },
+      null
     ]
   },
   "CFA TH 610": {
@@ -28977,7 +29022,8 @@
       {
         "type": "course",
         "course_id": "CFA TH 638"
-      }
+      },
+      null
     ]
   },
   "CFA TH 738": {
@@ -33009,6 +33055,9 @@
         "values": [
           "graduate"
         ]
+      },
+      {
+        "type": "null"
       }
     ]
   },
@@ -33040,7 +33089,8 @@
         "values": [
           "graduate"
         ]
-      }
+      },
+      null
     ]
   },
   "ENG EC 585": {
@@ -34482,7 +34532,8 @@
             "values": [
               "graduate"
             ]
-          }
+          },
+          null
         ]
       },
       {
@@ -34533,7 +34584,8 @@
         "values": [
           "senior"
         ]
-      }
+      },
+      null
     ]
   },
   "ENG ME 545": {
@@ -34605,7 +34657,8 @@
         "values": [
           "graduate"
         ]
-      }
+      },
+      null
     ]
   },
   "ENG ME 544": {
@@ -35232,7 +35285,8 @@
         "values": [
           "graduate"
         ]
-      }
+      },
+      null
     ]
   },
   "ENG ME 726": {
@@ -35993,6 +36047,9 @@
                 "pre-prospectus PhD"
               ]
             }
+          },
+          {
+            "type": "null"
           }
         ]
       }
@@ -36057,7 +36114,8 @@
             "course_id": "CAS MA 242"
           }
         ]
-      }
+      },
+      null
     ]
   },
   "ENG SE 523": {
@@ -36136,7 +36194,8 @@
         "values": [
           "graduate"
         ]
-      }
+      },
+      null
     ]
   },
   "ENG SE 545": {
@@ -42208,7 +42267,8 @@
         "values": [
           "MS-SLP"
         ]
-      }
+      },
+      null
     ]
   },
   "SAR SH 715": {
@@ -42232,7 +42292,8 @@
         "values": [
           "graduate"
         ]
-      }
+      },
+      null
     ]
   },
   "SAR SH 727": {
@@ -42256,7 +42317,8 @@
         "values": [
           "MS-SLP"
         ]
-      }
+      },
+      null
     ]
   },
   "SAR SH 733": {

@@ -1,7 +1,8 @@
+import random
 from ortools.sat.python import cp_model
 from typing import Any, List, Dict, Literal, Set
 
-from utils import ObjectiveLogger
+from utils import ObjectiveLogger, stoi
 
 GroupId = str
 CourseId = str
@@ -29,6 +30,7 @@ class ScheduleSolver:
         self.num_future_semesters = num_future_semesters
         self.num_courses_per_semester = num_courses_per_semester
         self.last_semester_index = num_future_semesters - 1
+        self.vars_to_hint: Set[cp_model.BoolVarT] = set()
         
         assert self.completed_ids.issubset(self.courses.keys())
         
@@ -48,11 +50,13 @@ class ScheduleSolver:
         self._enforce_no_duplicate_courses()
         self._enforce_num_courses_per_semester()
         self._enforce_completed_courses()
-        self._enforce_prerequisite_constraints()
+        self._enforce_prerequisite_constraints(self.prerequisite_constraints)
         self._enforce_graduation_constraints(self.graduation_constraints)
         
         # Build hints
-        self._hint_high_score_courses()
+        self._hint_courses(list(self.courses.keys()), 8)
+        self._hint_constraint(self.graduation_constraints)
+        self._add_hints()
         
         # Build objective
         self._build_objective()
@@ -165,7 +169,7 @@ class ScheduleSolver:
             
             course_vars = []
             
-            for semester_index in range(self.num_future_semesters):
+            for semester_index in range(-1, self.num_future_semesters):
                 if course_id in self.course_vars[semester_index]:
                     course_vars.append(self.course_vars[semester_index][course_id])
             
@@ -180,66 +184,116 @@ class ScheduleSolver:
             self.model.Add(sum(course_vars) == self.num_courses_per_semester)
 
     def _enforce_completed_courses(self):
-        for course_id in self.completed_ids:
-            self.model.Add(self.course_vars[-1][course_id] == 1)
+        for course_id, course_var in self.course_vars[-1].items():
+            self.model.Add(course_var == (1 if course_id in self.completed_ids else 0))
 
-    def _enforce_prerequisite_constraints(self):
-        pass
+    def _enforce_prerequisite_constraints(self, prerequisite_constraints: Dict[CourseId, Constraint]):
+        
+        for course_id, constraint in prerequisite_constraints.items():
+            for semester_index in range(self.num_future_semesters):
+                prerequisite_var = self._evaluate_constraint(constraint, semester_index - 1)
+                if prerequisite_var is not None:
+                    self.model.AddImplication(self.course_vars[semester_index][course_id], prerequisite_var)
     
     def _enforce_graduation_constraints(self, constraint: Constraint):
         
         graduation_var = self._evaluate_constraint(constraint, self.last_semester_index)
+        assert graduation_var is not None
         self.model.Add(graduation_var == 1)
-        
+
     def _evaluate_constraint(self, constraint: Constraint, semester_index: SemesterIndex):
         
-        if constraint["type"] == "when":
-            new_semester_index = semester_index + constraint["offset"]
-            new_semester_index = max(new_semester_index, -1)
-            new_semester_index = min(new_semester_index, self.last_semester_index)
-            return self._evaluate_constraint(constraint["child"], new_semester_index)
+        try:
+            if constraint["type"] == "when":
+                new_semester_index = semester_index + constraint["offset"]
+                new_semester_index = max(new_semester_index, -1)
+                new_semester_index = min(new_semester_index, self.last_semester_index)
+                return self._evaluate_constraint(constraint["child"], new_semester_index)
+            
+            var = self.model.NewBoolVar(f"constraint_{constraint['id'] if 'id' in constraint else random.randint(0, 1000000)}")
+            
+            match (constraint["type"]):
+                case "and":
+                    assert constraint["children"] != []
+                    child_vars = [self._evaluate_constraint(child, semester_index) for child in constraint["children"]]
+                    child_vars = [child_var for child_var in child_vars if child_var is not None]
+                    if len(child_vars) != 0:
+                        self.model.AddMultiplicationEquality(var, child_vars)
+                case "or":
+                    assert constraint["children"] != []
+                    child_vars = [self._evaluate_constraint(child, semester_index) for child in constraint["children"]]
+                    child_vars = [child_var for child_var in child_vars if child_var is not None]
+                    if len(child_vars) != 0:
+                        self.model.AddMaxEquality(var, child_vars)
+                case "not":
+                    child_var = self._evaluate_constraint(constraint["child"], semester_index)
+                    if child_var is not None:
+                        self.model.Add(var + child_var == 1)
+                case "range":
+                    course_ids = self._find_course_ids_in_range(constraint["school"], constraint["department"], constraint["min_number"], constraint["max_number"])
+                    range_vars = [self.merged_course_vars[semester_index][course_id] for course_id in course_ids]
+                    if len(range_vars) != 0:
+                        self.model.Add(sum(range_vars) >= constraint["count"]).OnlyEnforceIf(var)
+                        self.model.Add(sum(range_vars) <= constraint["count"] - 1).OnlyEnforceIf(var.Not())
+                case "group":
+                    if constraint["group_id"] not in self.groups:
+                        raise ValueError(f"Group not found: {constraint['group_id']}")
+                    group_vars = [self.merged_course_vars[semester_index][course_id] for course_id in self.groups[constraint["group_id"]]]
+                    if len(group_vars) != 0:
+                        self.model.Add(sum(group_vars) >= constraint["count"]).OnlyEnforceIf(var)
+                        self.model.Add(sum(group_vars) <= constraint["count"] - 1).OnlyEnforceIf(var.Not())
+                case "course":
+                    if constraint["course_id"] not in self.merged_course_vars[semester_index]:
+                        raise ValueError(f"Course not found in merged course vars for semester {semester_index}: {constraint['course_id']}")
+                    self.model.Add(var == self.merged_course_vars[semester_index][constraint["course_id"]])
+                case "attribute":
+                    pass # TODO: Implement attribute / standing constraints
+                case _:
+                    raise ValueError(f"Invalid constraint type: {constraint['type']}")
+            
+            return var
         
-        var = self.model.NewBoolVar(f"constraint_{constraint['id']}")
-        
-        match (constraint["type"]):
-            case "and":
-                assert constraint["children"] != []
-                child_vars = [self._evaluate_constraint(child, semester_index) for child in constraint["children"]]
-                self.model.AddMultiplicationEquality(var, child_vars)
-            case "or":
-                assert constraint["children"] != []
-                child_vars = [self._evaluate_constraint(child, semester_index) for child in constraint["children"]]
-                self.model.AddMaxEquality(var, child_vars)
-            case "not":
-                child_var = self._evaluate_constraint(constraint["child"], semester_index)
-                self.model.Add(var + child_var == 1)
-            case "group":
-                group_vars = [self.merged_course_vars[semester_index][course_id] for course_id in self.groups[constraint["group_id"]]]
-                self.model.Add(sum(group_vars) >= constraint["count"])
-            case "course":
-                self.model.Add(var == self.merged_course_vars[semester_index][constraint["course_id"]])
-            case "standing":
-                pass
-            case _:
-                raise ValueError(f"Invalid constraint type: {constraint['type']}")
-        
-        return var
+        except Exception as e:
+            print("Warning: Error evaluating constraint:", e)
+            return None
     
-    def _hint_high_score_courses(self):
-        
-        course_ids = list(self.courses.keys())
-        course_ids.sort(key=lambda course_id: self.courses[course_id]["score"], reverse=True)
-        courses_ids_to_hint = course_ids[:self.num_courses_per_semester * self.num_future_semesters]
-        
-        for course_id in courses_ids_to_hint:
-            self.model.AddHint(self.merged_course_vars[self.last_semester_index][course_id], 1)
+    def _find_course_ids_in_range(self, school: str, department: str, min_number: int, max_number: int):
+        course_ids = []
+        for course_id, course in self.courses.items():
+            if course["school"] == school and course["department"] == department and stoi(course["number"]) >= min_number and stoi(course["number"]) <= max_number:
+                course_ids.append(course_id)
+        return course_ids
+    
+    def _hint_constraint(self, constraint: Constraint):
+        if constraint["type"] == "course":
+            self._hint_courses([constraint["course_id"]])
+        elif constraint["type"] == "group":
+            self._hint_courses(list(self.groups[constraint["group_id"]]), constraint["count"])
+        elif "child" in constraint and constraint["child"] != None:
+            self._hint_constraint(constraint["child"])
+        elif "children" in constraint and constraint["children"] != []:
+            for child in constraint["children"]:
+                self._hint_constraint(child)
+    
+    def _hint_courses(self, course_ids: List[CourseId], top_k: int = None):
+        if top_k is not None:
+            course_ids.sort(key=lambda course_id: self.courses[course_id]["score"], reverse=True)
+            course_ids = course_ids[:top_k]
+            
+        for course_id in course_ids:
+            self.vars_to_hint.add(self.merged_course_vars[self.last_semester_index][course_id])
+
+    def _add_hints(self):
+        for var in self.vars_to_hint:
+            self.model.AddHint(var, 1)
 
     def _build_objective(self):
         self.objective = 0
         for course_id, course in self.courses.items():
-            if course_id not in self.merged_course_vars:
-                continue
-            self.objective += self.merged_course_vars[course_id] * course["score"]
+            for semester_index in range(self.num_future_semesters):
+                if course_id not in self.course_vars[semester_index]:
+                    continue
+                self.objective += self.course_vars[semester_index][course_id] * course["score"] * (5 / (self.num_future_semesters + 5))
         self.model.Maximize(self.objective)
     
     def _build_solver(self):
@@ -258,6 +312,9 @@ class ScheduleSolver:
         self.solver.parameters.max_time_in_seconds = time_limit
         self.solver.parameters.log_search_progress = verbosity == "detailed"
         self.solver.Solve(self.model, ObjectiveLogger(self.objective) if verbosity == "minimal" else None)
+        
+        if self.solver.status_name() == "INFEASIBLE":
+            return
         
         for semester_index in range(self.num_future_semesters):
             print(f"Semester {semester_index}:")

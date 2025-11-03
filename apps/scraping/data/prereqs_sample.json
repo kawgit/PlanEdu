@@ -1,0 +1,152 @@
+{
+  "CAS CS 210": {
+    "type": "course",
+    "course_id": "CAS CS 112"
+  },
+  "CAS CS 237": {
+    "type": "course",
+    "course_id": "CAS CS 131"
+  },
+  "CAS CS 132": {
+    "type": "and",
+    "children": [
+      {
+        "type": "course",
+        "course_id": "CAS CS 111"
+      },
+      {
+        "type": "course",
+        "course_id": "CAS MA 123"
+      }
+    ]
+  },
+  "CAS CS 235": {
+    "type": "course",
+    "course_id": "CAS CS 132"
+  },
+  "CAS CS 320": {
+    "type": "and",
+    "children": [
+      {
+        "type": "course",
+        "course_id": "CAS CS 131"
+      },
+      {
+        "type": "course",
+        "course_id": "CAS CS 210"
+      }
+    ]
+  },
+  "CAS CS 112": {
+    "type": "or",
+    "children": [
+      {
+        "type": "course",
+        "course_id": "CAS CS 111"
+      }
+    ]
+  },
+  "CAS CS 115": {
+    "type": "and",
+    "children": [
+      {
+        "type": "or",
+        "children": [
+          {
+            "type": "course",
+            "course_id": "CAS WR 120"
+          },
+          {
+            "type": "attribute",
+            "key": "equivalent",
+            "values": [
+              "equivalent"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "course",
+        "course_id": "CAS CS 111"
+      }
+    ]
+  },
+  "CAS CS 332": {
+    "type": "or",
+    "children": [
+      {
+        "type": "course",
+        "course_id": "CAS CS 330"
+      },
+      {
+        "type": "range",
+        "school": "CAS",
+        "department": "XL",
+        "min_number": 400,
+        "max_number": 499
+      },
+      {
+        "type": "group",
+        "group_id": "Writing-Intensive Course",
+        "count": 1
+      }
+    ]
+  },
+  "CAS CS 330": {
+    "type": "and",
+    "children": [
+      {
+        "type": "course",
+        "course_id": "CAS CS 112"
+      },
+      {
+        "type": "course",
+        "course_id": "CAS CS 131"
+      },
+      {
+        "type": "or",
+        "children": [
+          {
+            "type": "or",
+            "children": [
+              {
+                "type": "course",
+                "course_id": "CAS CS 132"
+              },
+              {
+                "type": "course",
+                "course_id": "CAS MA 242"
+              }
+            ]
+          },
+          {
+            "type": "or",
+            "children": [
+              {
+                "type": "course",
+                "course_id": "CAS CS 235"
+              },
+              {
+                "type": "course",
+                "course_id": "CAS MA 294"
+              }
+            ]
+          },
+          {
+            "type": "or",
+            "children": [
+              {
+                "type": "course",
+                "course_id": "CAS CS 237"
+              },
+              {
+                "type": "course",
+                "course_id": "CAS MA 581"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

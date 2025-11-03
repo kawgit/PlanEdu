@@ -79,5 +79,5 @@ class ObjectiveLogger(cp_model.CpSolverSolutionCallback):
             self._best = value
             print(f"[{now:6.2f}s]  New objective = {value:.3f}")
 
-def extract_course_number(course_id: str) -> int:
+def stoi(course_id: str) -> int:
     return int("".join(filter(str.isdigit, course_id)))

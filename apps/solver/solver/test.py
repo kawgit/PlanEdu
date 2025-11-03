@@ -13,21 +13,17 @@ bookmarked_ids = {
 }
 
 completed_ids = {
-    "CAS MA 115",
-    "CAS PO 151",
-    "CAS PY 212",
-    "CAS PY 211",
-    "CAS CS 237",
-    "CAS CS 330",
-    "CAS EC 201",
-    "CAS MA 231",
     "CAS CS 101",
     "CAS CS 111",
-    "CAS EC 102",
     "CAS EC 101",
+    "CAS EC 102",
     "CAS LS 212",
+    "CAS MA 115",
     "CAS MA 123",
     "CAS MA 124",
+    "CAS PO 151",
+    "CAS PY 211",
+    "CAS PY 212",
 }
 
 courses, slots = load_courses_and_slots()
@@ -35,6 +31,9 @@ courses, slots = load_courses_and_slots()
 for course_id, course in courses.items():
     if course_id in bookmarked_ids:
         course["score"] += 1000
+
+for course_id in completed_ids:
+    assert course_id in courses, f"Course {course_id} not found in courses"
 
 groups = load_groups()
 prerequisite_constraints = load_prerequisite_constraints()
