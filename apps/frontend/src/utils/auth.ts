@@ -117,7 +117,7 @@ export const saveUserPreferences = async (preferences: {
 };
 
 /**
- * Fetch user's bookmarked classes from database
+ * Fetch user's bookmarked courses from database
  */
 export const fetchUserBookmarks = async () => {
   const googleId = getUserGoogleId();
@@ -143,9 +143,9 @@ export const fetchUserBookmarks = async () => {
 };
 
 /**
- * Add a class to user's bookmarks
+ * Add a course to user's bookmarks
  */
-export const addBookmark = async (classId: number) => {
+export const addBookmark = async (courseId: number) => {
   const googleId = getUserGoogleId();
   
   if (!googleId) {
@@ -160,7 +160,7 @@ export const addBookmark = async (classId: number) => {
     },
     body: JSON.stringify({
       googleId,
-      classId,
+      courseId,
     }),
   });
 
@@ -172,9 +172,9 @@ export const addBookmark = async (classId: number) => {
 };
 
 /**
- * Remove a class from user's bookmarks
+ * Remove a course from user's bookmarks
  */
-export const removeBookmark = async (classId: number) => {
+export const removeBookmark = async (courseId: number) => {
   const googleId = getUserGoogleId();
   
   if (!googleId) {
@@ -189,7 +189,7 @@ export const removeBookmark = async (classId: number) => {
     },
     body: JSON.stringify({
       googleId,
-      classId,
+      courseId,
     }),
   });
 
@@ -206,9 +206,9 @@ export const removeBookmark = async (classId: number) => {
 export interface CompletedCourse {
   id: number;
   userId: number;
-  classId: number;
+  courseId: number;
   grade?: string;
-  // From joined Class table
+  // From joined Course table
   school: string;
   department: string;
   number: number;
@@ -275,7 +275,7 @@ export const fetchCompletedCourses = async () => {
 /**
  * Add a completed course manually
  */
-export const addCompletedCourse = async (classId: number, grade?: string) => {
+export const addCompletedCourse = async (courseId: number, grade?: string) => {
   const googleId = getUserGoogleId();
   
   if (!googleId) {
@@ -290,7 +290,7 @@ export const addCompletedCourse = async (classId: number, grade?: string) => {
     },
     body: JSON.stringify({
       googleId,
-      classId,
+      courseId,
       grade: grade || null,
     }),
   });
@@ -332,12 +332,12 @@ export const deleteCompletedCourse = async (completedCourseId: number) => {
 };
 
 /**
- * Search for classes by keyword
+ * Search for courses by keyword
  */
-export const searchClasses = async (keyword: string, limit: number = 20) => {
+export const searchCourses = async (keyword: string, limit: number = 20) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
   const response = await fetch(
-    `${backendUrl}/api/classes?keyword=${encodeURIComponent(keyword)}&limit=${limit}`,
+    `${backendUrl}/api/courses?keyword=${encodeURIComponent(keyword)}&limit=${limit}`,
     {
       method: 'GET',
       headers: {
@@ -347,7 +347,7 @@ export const searchClasses = async (keyword: string, limit: number = 20) => {
   );
 
   if (!response.ok) {
-    throw new Error('Failed to search classes');
+    throw new Error('Failed to search courses');
   }
 
   return response.json();

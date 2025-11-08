@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { runPythonScript } from '../utils/runPython';
-import sql from '../db';
+import query, { sql } from '../db';
 
 const router = Router();
 
@@ -51,11 +51,11 @@ router.get('/personalized', async (req: Request, res: Response) => {
     console.log('Fetching personalized recommendations for:', googleId);
     
     // Get user ID from Google ID
-    const users = await sql`
+    const users = await query(sql`
       SELECT id, major, embedding 
       FROM "Users" 
       WHERE google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -136,11 +136,11 @@ router.get('/similar-to-course', async (req: Request, res: Response) => {
     const limitNum = parseInt(limit as string);
     
     // Get the target course and its embedding
-    const targetCourse = await sql`
+    const targetCourse = await query(sql`
       SELECT id, school, department, number, title, embedding
-      FROM "Class"
+      FROM "Course"
       WHERE id = ${courseId}
-    `;
+    `);
     
     if (targetCourse.length === 0 || !targetCourse[0]) {
       return res.status(404).json({ error: 'Course not found' });
@@ -156,7 +156,7 @@ router.get('/similar-to-course', async (req: Request, res: Response) => {
     }
     
     // Find similar courses using cosine similarity
-    const similarCourses = await sql`
+    const similarCourses = await query(sql`
       SELECT 
         c.id,
         c.school,
@@ -166,12 +166,12 @@ router.get('/similar-to-course', async (req: Request, res: Response) => {
         c.description,
         c.embedding <=> ${course.embedding}::vector as distance,
         1 - (c.embedding <=> ${course.embedding}::vector) as similarity
-      FROM "Class" c
+      FROM "Course" c
       WHERE c.id != ${courseId}
         AND c.embedding IS NOT NULL
       ORDER BY c.embedding <=> ${course.embedding}::vector
       LIMIT ${limitNum}
-    `;
+    `);
     
     res.json({
       target_course: {

@@ -1,21 +1,21 @@
 import React from 'react';
 import { Container, Title, Text, Card, Badge, Group, Stack, ActionIcon, Button, Box, Alert } from '@mantine/core';
 import { IconBookmarkOff, IconExternalLink, IconSparkles, IconInfoCircle } from '@tabler/icons-react';
-import { TabName, BookmarkedClass } from '../App';
+import { TabName, BookmarkedCourse } from '../App';
 import { isUserLoggedIn } from '../utils/auth';
 
 interface BookmarksPageProps {
   setActiveTab?: (tab: TabName) => void;
-  bookmarks?: BookmarkedClass[];
-  removeBookmark?: (classId: number) => void;
+  bookmarks?: BookmarkedCourse[];
+  removeBookmark?: (courseId: number) => void;
 }
 
 const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks = [], removeBookmark }) => {
 
-  // Sort bookmarks by numeric class number ascending
+  // Sort bookmarks by numeric course number ascending
   const sorted = [...bookmarks].sort((a, b) => {
-    const aNum = typeof a.number === 'number' ? a.number : extractClassNumber(String(a.number || ''));
-    const bNum = typeof b.number === 'number' ? b.number : extractClassNumber(String(b.number || ''));
+    const aNum = typeof a.number === 'number' ? a.number : extractCourseNumber(String(a.number || ''));
+    const bNum = typeof b.number === 'number' ? b.number : extractCourseNumber(String(b.number || ''));
     return aNum - bNum;
   });
 
@@ -24,10 +24,10 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks =
       <Group justify="space-between" align="flex-start" mb="xl">
         <Box>
           <Title order={2} mb="xs" c="bu-red">
-            Class Bookmarks
+            Course Bookmarks
           </Title>
           <Text c="dimmed" size="sm">
-            Your saved classes for planning your schedule
+            Your saved courses for planning your schedule
           </Text>
         </Box>
   {setActiveTab && sorted.length > 0 && (
@@ -141,14 +141,14 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks =
         <>
           {!isUserLoggedIn() && (
             <Alert icon={<IconInfoCircle size={16} />} title="Not Logged In" color="blue" mb="md">
-              Please sign in to view and manage your bookmarked classes.
+              Please sign in to view and manage your bookmarked courses.
             </Alert>
           )}
           <Card shadow="sm" p="xl" radius="md" withBorder ta="center">
             <Text c="dimmed" size="lg">
               {isUserLoggedIn() 
-                ? 'No bookmarked classes yet. Start swiping!' 
-                : 'Sign in to bookmark classes and build your schedule'}
+                ? 'No bookmarked courses yet. Start swiping!' 
+                : 'Sign in to bookmark courses and build your schedule'}
             </Text>
           </Card>
         </>
@@ -159,7 +159,7 @@ const BookmarksPage: React.FC<BookmarksPageProps> = ({ setActiveTab, bookmarks =
 
 export default BookmarksPage;
 
-function extractClassNumber(code: string) {
+function extractCourseNumber(code: string) {
   const match = code.match(/(\d{2,4})/);
   if (!match) return 9999;
   return Number(match[0]);

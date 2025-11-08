@@ -4,7 +4,7 @@ import { IconSend, IconRobot, IconUser, IconFilter, IconBook, IconBookmark, Icon
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getUserGoogleId, fetchUserFromDB, fetchCompletedCourses, CompletedCourse } from '../utils/auth';
-import { BookmarkedClass } from '../App';
+import { BookmarkedCourse } from '../App';
 
 interface Message {
   type: 'user' | 'ai';
@@ -12,7 +12,7 @@ interface Message {
 }
 
 
-interface ClassOffering {
+interface CourseOffering {
   id: number;
   school: string;
   department: string;
@@ -22,9 +22,9 @@ interface ClassOffering {
 }
 
 interface QuestionsPageProps {
-  addBookmark?: (course: ClassOffering) => void;
-  removeBookmark?: (classId: number) => void;
-  bookmarks?: BookmarkedClass[];
+  addBookmark?: (course: CourseOffering) => void;
+  removeBookmark?: (courseId: number) => void;
+  bookmarks?: BookmarkedCourse[];
 }
 
 const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookmark, bookmarks = [] }) => {
@@ -41,14 +41,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  // Class data and filters
-  const [filteredClasses, setFilteredClasses] = useState<ClassOffering[]>([]);
+  // Course data and filters
+  const [filteredCourses, setFilteredCourses] = useState<CourseOffering[]>([]);
   const [selectedSchool, setSelectedSchool] = useState<string>('CAS');
   const [selectedDepartment, setSelectedDepartment] = useState<string>('CS');
   const [keywordSearch, setKeywordSearch] = useState<string>('');
   const [schools, setSchools] = useState<string[]>([]);
   const [departments, setDepartments] = useState<string[]>([]);
-  const [loadingClasses, setLoadingClasses] = useState<boolean>(false);
+  const [loadingCourses, setLoadingCourses] = useState<boolean>(false);
   
   
   // User profile data
@@ -71,13 +71,13 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
     }
   }, [messages]);
 
-  // Helper function to check if a class is bookmarked
-  const isBookmarked = (classId: number) => {
-    return bookmarks.some(bookmark => bookmark.id === classId);
+  // Helper function to check if a course is bookmarked
+  const isBookmarked = (courseId: number) => {
+    return bookmarks.some(bookmark => bookmark.id === courseId);
   };
 
   // Handle bookmark toggle
-  const handleBookmarkToggle = (course: ClassOffering) => {
+  const handleBookmarkToggle = (course: CourseOffering) => {
     const bookmarked = isBookmarked(course.id);
     
     if (bookmarked && removeBookmark) {
@@ -134,24 +134,24 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
       .catch(err => console.error('Error loading departments:', err));
   }, [backendUrl]);
 
-  // Fetch classes when filters change
+  // Fetch courses when filters change
   useEffect(() => {
     if (!selectedSchool && !selectedDepartment && !keywordSearch) {
       return;
     }
 
-    setLoadingClasses(true);
+    setLoadingCourses(true);
     
     const params = new URLSearchParams();
     if (selectedSchool) params.append('school', selectedSchool);
     if (selectedDepartment) params.append('department', selectedDepartment);
     if (keywordSearch.trim()) params.append('keyword', keywordSearch.trim());
     
-    fetch(`${backendUrl}/api/classes?${params}`)
+    fetch(`${backendUrl}/api/courses?${params}`)
       .then(res => res.json())
       .then(data => {
-        // Sort classes by school, department, then number
-        const sortedData = data.sort((a: ClassOffering, b: ClassOffering) => {
+        // Sort courses by school, department, then number
+        const sortedData = data.sort((a: CourseOffering, b: CourseOffering) => {
           // First sort by school
           if (a.school !== b.school) {
             return a.school.localeCompare(b.school);
@@ -163,12 +163,12 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
           // Finally by number (numerically)
           return a.number - b.number;
         });
-        setFilteredClasses(sortedData);
-        setLoadingClasses(false);
+        setFilteredCourses(sortedData);
+        setLoadingCourses(false);
       })
       .catch(err => {
-        console.error('Error loading classes:', err);
-        setLoadingClasses(false);
+        console.error('Error loading courses:', err);
+        setLoadingCourses(false);
       });
   }, [selectedSchool, selectedDepartment, keywordSearch, backendUrl]);
 
@@ -205,7 +205,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
         },
         body: JSON.stringify({
           question: userMessage,
-          classes: filteredClasses,
+          courses: filteredCourses,
           userProfile: userProfile,
           completedCourses: completedCourses,
           bookmarks: bookmarks,
@@ -276,13 +276,13 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
 
   return (
     <Box style={{ height: '90vh', display: 'flex', backgroundColor: '#f8f9fa' }}>
-      {/* Left Column - Class Filters and Search */}
+      {/* Left Column - Course Filters and Search */}
       <Box style={{ width: '40%', borderRight: '2px solid #dee2e6', display: 'flex', flexDirection: 'column' }}>
         <Paper p="lg" radius={0} style={{ borderBottom: '1px solid #dee2e6' }}>
           <Group mb="md">
             <IconFilter size={24} color="#CC0000" />
             <Title order={3} c="bu-red">
-              Class Filters
+              Course Filters
             </Title>
           </Group>
           
@@ -311,14 +311,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
             
             <TextInput
               label="Keyword Search"
-              placeholder="Search class titles, descriptions..."
+              placeholder="Search course titles, descriptions..."
               value={keywordSearch}
               onChange={(e) => setKeywordSearch(e.target.value)}
             />
             
             <Group justify="space-between" align="center">
               <Badge size="lg" color="bu-red" variant="light">
-                {filteredClasses.length} classes found
+                {filteredCourses.length} courses found
               </Badge>
               {(selectedSchool || selectedDepartment || keywordSearch) && (
                 <Button
@@ -338,28 +338,28 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
           </Stack>
         </Paper>
 
-        {/* Class List */}
+        {/* Course List */}
         <ScrollArea style={{ flex: 1 }} p="md">
           <Stack gap="sm">
-            {loadingClasses ? (
+            {loadingCourses ? (
               <Box style={{ textAlign: 'center', padding: '2rem' }}>
                 <Loader color="bu-red" size="md" />
                 <Text c="dimmed" size="sm" mt="md">
-                  Loading classes...
+                  Loading courses...
                 </Text>
               </Box>
-            ) : filteredClasses.length === 0 ? (
+            ) : filteredCourses.length === 0 ? (
               <Text c="dimmed" ta="center" mt="xl">
                 {selectedSchool || selectedDepartment || keywordSearch 
-                  ? 'No classes match your filters'
-                  : 'Select school and department to view classes'}
+                  ? 'No courses match your filters'
+                  : 'Select school and department to view courses'}
               </Text>
             ) : (
-              filteredClasses.map((cls) => {
-                const code = `${cls.school}-${cls.department}-${cls.number}`;
+              filteredCourses.map((course) => {
+                const code = `${course.school}-${course.department}-${course.number}`;
                 return (
                   <Paper
-                    key={cls.id}
+                    key={course.id}
                     p="md"
                     withBorder
                     radius="md"
@@ -382,16 +382,16 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                       </Text>
                       <Group gap="xs">
                         <Badge size="xs" variant="light">
-                          {cls.school} {cls.department}
+                          {course.school} {course.department}
                         </Badge>
                         {addBookmark && (
                           <ActionIcon
                             variant="subtle"
-                            color={isBookmarked(cls.id) ? "red" : "gray"}
+                            color={isBookmarked(course.id) ? "red" : "gray"}
                             size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleBookmarkToggle(cls);
+                              handleBookmarkToggle(course);
                             }}
                             style={{
                               transition: 'all 0.2s ease',
@@ -400,14 +400,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                               root: {
                                 '&:hover': {
                                   transform: 'scale(1.15)',
-                                  backgroundColor: isBookmarked(cls.id) 
+                                  backgroundColor: isBookmarked(course.id) 
                                     ? 'rgba(204, 0, 0, 0.1)' 
                                     : 'rgba(204, 0, 0, 0.05)',
                                 },
                               },
                             }}
                           >
-                            {isBookmarked(cls.id) ? (
+                            {isBookmarked(course.id) ? (
                               <IconBookmarkFilled size={16} />
                             ) : (
                               <IconBookmark size={16} />
@@ -417,10 +417,10 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                       </Group>
                     </Group>
                     <Text size="sm" fw={500} mb="xs">
-                      {cls.title}
+                      {course.title}
                     </Text>
                     <Text size="xs" c="dimmed" lineClamp={2} mb="xs">
-                      {cls.description}
+                      {course.description}
                     </Text>
                     
                   </Paper>
@@ -473,7 +473,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
             </Group>
           </Group>
           <Text size="sm" c="dimmed">
-            Ask questions about the {filteredClasses.length} filtered classes
+            Ask questions about the {filteredCourses.length} filtered courses
             
             {addBookmark && (
               <Text component="span" size="xs" c="dimmed" ml="xs">
@@ -493,7 +493,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
               )}
               {bookmarks.length > 0 && (
                 <Badge color="red" size="sm" variant="light">
-                  {bookmarks.length} Bookmarked Class{bookmarks.length !== 1 ? 'es' : ''}
+                  {bookmarks.length} Bookmarked Course{bookmarks.length !== 1 ? 's' : ''}
                 </Badge>
               )}
             </Group>
@@ -510,11 +510,11 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
                   Start a conversation
                 </Text>
                 <Text c="dimmed" size="sm" mb="xs">
-                  Ask about course recommendations, requirements, or anything else about the filtered classes
+                  Ask about course recommendations, requirements, or anything else about the filtered courses
                 </Text>
                 {(userProfile || completedCourses.length > 0 || bookmarks.length > 0) && (
                   <Text c="green" size="sm" fw={500} mt="md">
-                    💡 The advisor can see your profile{completedCourses.length > 0 && ', completed courses'}{bookmarks.length > 0 && ', and bookmarked classes'} for personalized advice
+                    💡 The advisor can see your profile{completedCourses.length > 0 && ', completed courses'}{bookmarks.length > 0 && ', and bookmarked courses'} for personalized advice
                   </Text>
                 )}
               </Box>
@@ -688,7 +688,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ addBookmark, removeBookma
         <Paper p="lg" radius={0} style={{ borderTop: '1px solid #dee2e6' }}>
           <Group wrap="nowrap">
             <TextInput
-              placeholder="Ask about these classes..."
+              placeholder="Ask about these courses..."
               style={{ flexGrow: 1 }}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}

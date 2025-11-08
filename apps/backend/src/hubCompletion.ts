@@ -1,4 +1,4 @@
-import sql from './db';
+import query, { sql } from './db';
 
 export interface HubCompletionResult {
   percentage: number;
@@ -12,7 +12,7 @@ export interface HubCompletionResult {
 export interface HubDetail {
   hubName: string;
   completed: boolean;
-  satisfiedByClasses: Array<{
+  satisfiedByCourses: Array<{
     department: string;
     number: number;
     title: string;
@@ -29,50 +29,56 @@ export async function calculateHubCompletion(
 ): Promise<HubCompletionResult> {
   try {
     // 1. Get all hub requirements from the database
-    const allHubs = await sql`
+    const allHubs = await query<{ id: number; name: string }>(sql`
       SELECT id, name 
       FROM "HubRequirement"
       ORDER BY name
-    `;
+    `);
 
     // 2. Get user's completed classes and their hub satisfactions
-    const completedHubsData = await sql`
+    const completedHubsData = await query<{
+      hub_id: number;
+      hub_name: string;
+      department: string;
+      number: string | number;
+      title: string;
+    }>(sql`
       SELECT DISTINCT 
         hr.id as hub_id,
         hr.name as hub_name,
         c.department,
         c.number,
         c.title
-      FROM "UserCompletedClass" ucc
-      JOIN "Class" c ON ucc."classId" = c.id
-      JOIN "ClassToHubRequirement" cthr ON c.id = cthr."classId"
+      FROM "UserCompletedCourse" ucc
+      JOIN "Course" c ON ucc."courseId" = c.id
+      JOIN "CourseToHubRequirement" cthr ON c.id = cthr."courseId"
       JOIN "HubRequirement" hr ON cthr."hubRequirementId" = hr.id
       WHERE ucc."userId" = ${userId}
       ORDER BY hr.name, c.department, c.number
-    `;
+    `);
 
     // 3. Process the data to group classes by hub
     const hubMap = new Map<number, {
       name: string;
-      classes: Array<{ department: string; number: number; title: string }>;
+      courses: Array<{ department: string; number: number; title: string }>;
     }>();
 
     // Initialize all hubs
     for (const hub of allHubs) {
       hubMap.set(hub.id, {
         name: hub.name,
-        classes: []
+        courses: []
       });
     }
 
-    // Add completed classes to their respective hubs
+    // Add completed courses to their respective hubs
     for (const row of completedHubsData) {
       const hubData = hubMap.get(row.hub_id);
       if (hubData) {
-        hubData.classes.push({
+        hubData.courses.push({
           department: row.department,
-          number: row.number,
-          title: row.title
+          number: Number(row.number),
+          title: row.title,
         });
       }
     }
@@ -83,12 +89,12 @@ export async function calculateHubCompletion(
     const missingHubNames: string[] = [];
 
     for (const [hubId, hubData] of hubMap.entries()) {
-      const completed = hubData.classes.length > 0;
+      const completed = hubData.courses.length > 0;
       
       hubDetails.push({
         hubName: hubData.name,
         completed,
-        satisfiedByClasses: hubData.classes
+        satisfiedByCourses: hubData.courses
       });
 
       if (completed) {

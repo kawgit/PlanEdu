@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Title, Text, Card, Group, Stack, Button, Badge, ActionIcon, Box, Modal, Select, Grid, Autocomplete, Loader, Alert, FileButton } from '@mantine/core';
 import { IconTrash, IconUpload, IconPlus, IconSchool, IconTrophy, IconSearch, IconInfoCircle } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
-import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchClasses, uploadTranscript } from '../utils/auth';
+import { isUserLoggedIn, fetchCompletedCourses, deleteCompletedCourse, addCompletedCourse, CompletedCourse, saveUserPreferences, fetchUserFromDB, searchCourses, uploadTranscript } from '../utils/auth';
 import CSMajorProgress from '../components/CSMajorProgress';
 import MathCSMajorProgress from '../components/MathCSMajorProgress';
 import HubProgress from '../components/HubProgress';
@@ -56,7 +56,7 @@ const ProfilePage: React.FC = () => {
   // Form state
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 300);
-  interface SearchedClass {
+  interface SearchedCourse {
     id: number;
     school: string;
     department: string;
@@ -64,9 +64,9 @@ const ProfilePage: React.FC = () => {
     title: string;
     description?: string;
   }
-  const [searchResults, setSearchResults] = useState<SearchedClass[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchedCourse[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<SearchedClass | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<SearchedCourse | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const ProfilePage: React.FC = () => {
     const performSearch = async () => {
       setIsSearching(true);
       try {
-        const results = await searchClasses(debouncedSearchQuery, 20);
+        const results = await searchCourses(debouncedSearchQuery, 20);
         setSearchResults(results);
       } catch (error) {
         console.error('Search failed:', error);

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { runPythonScript } from '../utils/runPython';
-import sql from '../db';
+import query, { sql } from '../db';
 
 const router = Router();
 
@@ -15,25 +15,25 @@ const router = Router();
  */
 router.post('/interact', async (req: Request, res: Response) => {
   try {
-    const { googleId, classId, liked } = req.body;
+    const { googleId, courseId, liked } = req.body;
     
     // Validate input
-    if (!googleId || !classId || typeof liked !== 'boolean') {
+    if (!googleId || !courseId || typeof liked !== 'boolean') {
       return res.status(400).json({ 
-        error: 'googleId, classId, and liked (boolean) are required' 
+        error: 'googleId, courseId, and liked (boolean) are required' 
       });
     }
     
     console.log('Processing swipe interaction:', {
       googleId,
-      classId,
+      courseId,
       liked: liked ? 'LIKE' : 'DISLIKE'
     });
     
     // Get user ID from google_id
-    const users = await sql`
+    const users = await query(sql`
       SELECT id FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -41,28 +41,28 @@ router.post('/interact', async (req: Request, res: Response) => {
     
     const userId = users[0].id;
     
-    // Verify class exists
-    const classes = await sql`
+    // Verify course exists
+    const courses = await query(sql`
       SELECT id, school, department, number, title 
-      FROM "Class" 
-      WHERE id = ${classId}
-    `;
+      FROM "Course" 
+      WHERE id = ${courseId}
+    `);
     
-    if (classes.length === 0 || !classes[0]) {
-      return res.status(404).json({ error: 'Class not found' });
+    if (courses.length === 0 || !courses[0]) {
+      return res.status(404).json({ error: 'Course not found' });
     }
     
-    const classInfo = classes[0];
-    const courseCode = `${classInfo.school}-${classInfo.department}-${classInfo.number}`;
+    const courseInfo = courses[0];
+    const courseCode = `${courseInfo.school}-${courseInfo.department}-${courseInfo.number}`;
     
     // Record the interaction based on liked/disliked
     if (liked) {
       // Add to bookmarks for likes
-      await sql`
-        INSERT INTO "Bookmark" ("userId", "classId")
-        VALUES (${userId}, ${classId})
-        ON CONFLICT ("userId", "classId") DO NOTHING
-      `;
+      await query(sql`
+        INSERT INTO "Bookmark" ("userId", "courseId")
+        VALUES (${userId}, ${courseId})
+        ON CONFLICT ("userId", "courseId") DO NOTHING
+      `);
       console.log('  → Bookmarked course');
     }
     // For dislikes, we can optionally track in a separate table or just skip
@@ -76,7 +76,7 @@ router.post('/interact', async (req: Request, res: Response) => {
         '../../scripts/update_user_embedding.py',
         {
           student_id: googleId,
-          course_id: classId.toString(),
+          course_id: courseId.toString(),
           liked: liked,
           learning_rate: 0.1
         }
@@ -98,9 +98,9 @@ router.post('/interact', async (req: Request, res: Response) => {
       success: true,
       action: liked ? 'liked' : 'disliked',
       course: {
-        id: classId,
+        id: courseId,
         code: courseCode,
-        title: classInfo.title
+        title: courseInfo.title
       },
       bookmarked: liked,
       embedding_updated: true
@@ -135,24 +135,24 @@ router.post('/batch-interact', async (req: Request, res: Response) => {
     const results = [];
     
     for (const interaction of interactions) {
-      const { classId, liked } = interaction;
+      const { courseId, liked } = interaction;
       
       try {
         // Process each interaction
         const response = await fetch(`http://localhost:3001/api/swipe/interact`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ googleId, classId, liked })
+          body: JSON.stringify({ googleId, courseId, liked })
         });
         
         if (response.ok) {
           const data = await response.json();
-          results.push({ classId, success: true, data });
+          results.push({ courseId, success: true, data });
         } else {
-          results.push({ classId, success: false, error: 'Request failed' });
+          results.push({ courseId, success: false, error: 'Request failed' });
         }
       } catch (error: any) {
-        results.push({ classId, success: false, error: error.message });
+        results.push({ courseId, success: false, error: error.message });
       }
     }
     
@@ -189,8 +189,8 @@ router.get('/history', async (req: Request, res: Response) => {
       });
     }
     
-    // Get bookmarked classes (likes)
-    const bookmarks = await sql`
+    // Get bookmarked courses (likes)
+    const bookmarks = await query(sql`
       SELECT 
         c.id,
         c.school,
@@ -201,10 +201,10 @@ router.get('/history', async (req: Request, res: Response) => {
         b.created_at as interacted_at
       FROM "Bookmark" b
       JOIN "Users" u ON u.id = b."userId"
-      JOIN "Class" c ON c.id = b."classId"
+      JOIN "Course" c ON c.id = b."courseId"
       WHERE u.google_id = ${googleId}
       ORDER BY b.created_at DESC
-    `;
+    `);
     
     res.json({
       likes: bookmarks,

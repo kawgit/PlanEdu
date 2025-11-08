@@ -35,8 +35,8 @@ const SignInPage: React.FC<SignInPageProps> = ({ setActiveTab }) => {
     },
     {
       icon: IconHeart,
-      title: 'Class Discovery',
-      description: 'Swipe through classes Tinder-style! Find courses that match your interests with integrated RateMyProfessor ratings.',
+      title: 'Course Discovery',
+      description: 'Swipe through courses Tinder-style! Find offerings that match your interests with integrated RateMyProfessor ratings.',
     },
     {
       icon: IconChartBar,
@@ -142,8 +142,8 @@ const SignInPage: React.FC<SignInPageProps> = ({ setActiveTab }) => {
                     lineHeight: 1.6,
                   }}
                 >
-                  PlanEdu uses AI to help you discover classes, meet requirements, and graduate on time — 
-                  all while exploring courses you'll actually love.
+                  PlanEdu uses AI to help you discover courses, meet requirements, and graduate on time — 
+                  all while exploring offerings you'll actually love.
                 </Text>
 
                 {/* CTA Buttons */}

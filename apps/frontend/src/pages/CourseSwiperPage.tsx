@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Container, Title, Text, Card, Group, Badge, Button, Stack, Box, Loader, ActionIcon, Modal } from '@mantine/core';
 import { IconBookmark, IconX, IconClock, IconInfoCircle } from '@tabler/icons-react';
 import { getUserGoogleId } from '../utils/auth';
-import { BookmarkedClass } from '../App';
+import { BookmarkedCourse } from '../App';
 import { track } from '../utils/analytics';
 import { notifications } from '@mantine/notifications';
 
-interface ClassCard {
+interface CourseCard {
   id: number;
   school: string;
   department: string;
@@ -18,12 +18,12 @@ interface ClassCard {
   score?: number;
 }
 
-interface ClassSwiperPageProps {
-  addBookmark?: (course: BookmarkedClass) => void;
+interface CourseSwiperPageProps {
+  addBookmark?: (course: BookmarkedCourse) => void;
 }
 
-const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
-  const [classes, setClasses] = useState<ClassCard[]>([]);
+const CourseSwiperPage: React.FC<CourseSwiperPageProps> = ({ addBookmark }) => {
+  const [courses, setCourses] = useState<CourseCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [swipeCount, setSwipeCount] = useState(0);
@@ -53,7 +53,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
     })();
   }, []);
 
-  const fetchRecommendedClasses = async () => {
+  const fetchRecommendedCourses = async () => {
     try {
       setLoading(true);
       const googleId = getUserGoogleId();
@@ -62,10 +62,10 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
       const response = await fetch(`${backendUrl}/api/recommendations?googleId=${googleId}&limit=30`);
       if (!response.ok) throw new Error('Failed to fetch recommendations');
       const data = await response.json();
-      setClasses(data || []);
+      setCourses(data || []);
       setCurrentIndex(0);
     } catch (err) {
-      console.error('Error fetching classes:', err);
+      console.error('Error fetching courses:', err);
       notifications.show({ title: 'Error', message: 'Failed to load course recommendations', color: 'red' });
     } finally {
       setLoading(false);
@@ -73,7 +73,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
   };
 
   useEffect(() => {
-    fetchRecommendedClasses();
+    fetchRecommendedCourses();
 
     const onKey = (e: KeyboardEvent) => {
       if (e.code === 'Space' || e.code === 'ArrowRight') {
@@ -93,41 +93,41 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const currentClass = classes[currentIndex];
+  const currentCourse = courses[currentIndex];
 
-  const canonicalScore = currentClass ? (currentClass.score ?? (currentClass as any)._recommendation_score ?? (currentClass as any).final_score ?? null) : null;
+  const canonicalScore = currentCourse ? (currentCourse.score ?? (currentCourse as any)._recommendation_score ?? (currentCourse as any).final_score ?? null) : null;
 
   // optimistic commit wrapper used by buttons/keys/swipes
   const commitSwipe = (bookmarked: boolean) => {
     // handle visual count and immediate UI
     setSwipeCount(s => s + 1);
-    const last = currentIndex >= classes.length - 1;
+    const last = currentIndex >= courses.length - 1;
     if (!last) {
       setCurrentIndex(i => i + 1);
       // ensure next card renders centered
       setTimeout(() => { if (cardRef.current) cardRef.current.style.transform = 'translateX(-50%)'; }, 16);
-    } else fetchRecommendedClasses().catch(() => {});
+    } else fetchRecommendedCourses().catch(() => {});
 
     // optimistic bookmark
-    if (bookmarked && addBookmark && currentClass) {
-      try { addBookmark(currentClass); } catch {}
-      const courseCode = `${currentClass.school} ${currentClass.department} ${currentClass.number}`;
-      notifications.show({ title: 'Course Bookmarked!', message: `${courseCode} - ${currentClass.title}`, color: 'green' });
-    } else if (!bookmarked && currentClass) {
-      try { track('skip', { courseId: currentClass.id }); } catch {}
+    if (bookmarked && addBookmark && currentCourse) {
+      try { addBookmark(currentCourse); } catch {}
+      const courseCode = `${currentCourse.school} ${currentCourse.department} ${currentCourse.number}`;
+      notifications.show({ title: 'Course Bookmarked!', message: `${courseCode} - ${currentCourse.title}`, color: 'green' });
+    } else if (!bookmarked && currentCourse) {
+      try { track('skip', { courseId: currentCourse.id }); } catch {}
       notifications.show({ title: 'Skipped', message: 'Moving to next course', color: 'gray', autoClose: 1500 });
     }
 
     // background persistence
     (async () => {
       try {
-        if (!currentClass) return;
+        if (!currentCourse) return;
         const googleId = getUserGoogleId();
         if (!googleId) throw new Error('Not authenticated');
         const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
         await fetch(`${backendUrl}/api/user/interaction`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ googleId, classId: currentClass.id, interactionType: bookmarked ? 'bookmark' : 'discard' })
+          body: JSON.stringify({ googleId, courseId: currentCourse.id, interactionType: bookmarked ? 'bookmark' : 'discard' })
         });
       } catch (err) {
         console.error('Failed to persist swipe', err);
@@ -140,9 +140,9 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
   const handleSwipe = (bookmarked: boolean) => commitSwipe(bookmarked);
 
   const openDetails = () => {
-    if (!currentClass) return;
+    if (!currentCourse) return;
     setDetailsOpen(true);
-    try { track('open_details', { courseId: currentClass.id }); } catch {}
+    try { track('open_details', { courseId: currentCourse.id }); } catch {}
   };
 
   // pointer handlers for drag (keeps card centered baseline)
@@ -219,7 +219,7 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
       window.removeEventListener('pointermove', onPointerMove as EventListener);
       window.removeEventListener('pointerup', onPointerUp as EventListener);
     };
-  }, [currentIndex, classes]);
+  }, [currentIndex, courses]);
 
   if (loading) return (
     <Container size="sm" p="lg" ta="center">
@@ -228,17 +228,17 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
     </Container>
   );
 
-  if (!currentClass) return (
+  if (!currentCourse) return (
     <Container size="sm" p="lg" ta="center">
       <Title order={2} c="bu-red">No More Courses</Title>
       <Text mt="md">{!userPreferences ? 'Set your preferences to get personalized recommendations!' : "You've seen all available recommendations!"}</Text>
-      <Button onClick={fetchRecommendedClasses} mt="lg" color="bu-red">Refresh Recommendations</Button>
+      <Button onClick={fetchRecommendedCourses} mt="lg" color="bu-red">Refresh Recommendations</Button>
     </Container>
   );
 
-  const courseCode = `${currentClass.school} ${currentClass.department} ${currentClass.number}`;
-  const hubArea = currentClass.hub_areas?.[0] || 'General Education';
-  const credits = currentClass.typical_credits || 4;
+  const courseCode = `${currentCourse.school} ${currentCourse.department} ${currentCourse.number}`;
+  const hubArea = currentCourse.hub_areas?.[0] || 'General Education';
+  const credits = currentCourse.typical_credits || 4;
 
   return (
     <Box style={{ height: 'calc(100vh - 80px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -276,14 +276,14 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
                 <Box style={{ flexShrink: 0 }}>
                   <Text size="xs" c="dimmed" mb="xs">{hubArea}</Text>
                   <Title order={3} c="bu-red" mb="xs">{courseCode}</Title>
-                  <Text fw={600} size="lg" mb="md">{currentClass.title}</Text>
+                  <Text fw={600} size="lg" mb="md">{currentCourse.title}</Text>
                   <Box style={{ position: 'absolute', right: 12, top: 12 }}>
                     <ActionIcon size="sm" onClick={() => setHelpOpen(true)} aria-label="Help"><IconInfoCircle size={18} /></ActionIcon>
                   </Box>
                 </Box>
 
                 <Box style={{ flex: 1, minHeight: 0 }}>
-                  <Text size="sm" c="dimmed" style={{ textAlign: 'left', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{currentClass.description || 'No description available.'}</Text>
+                  <Text size="sm" c="dimmed" style={{ textAlign: 'left', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{currentCourse.description || 'No description available.'}</Text>
                 </Box>
 
                 <Group justify="space-between" mt="md" style={{ flexShrink: 0 }}>
@@ -308,27 +308,27 @@ const ClassSwiperPage: React.FC<ClassSwiperPageProps> = ({ addBookmark }) => {
 
           <Modal opened={helpOpen} onClose={() => setHelpOpen(false)} title="Tips">
             <Stack>
-              <Text size="sm">• Tap Bookmark to save a class.</Text>
+              <Text size="sm">• Tap Bookmark to save a course.</Text>
               <Text size="sm">• Use Space or Arrow → to bookmark, Arrow ← to discard.</Text>
               <Text size="sm">• Open course details with Enter.</Text>
             </Stack>
           </Modal>
 
-          <Modal opened={detailsOpen} onClose={() => setDetailsOpen(false)} title={currentClass ? `${currentClass.school}-${currentClass.department}-${currentClass.number}` : 'Details'} size="lg">
-            {currentClass ? (
+          <Modal opened={detailsOpen} onClose={() => setDetailsOpen(false)} title={currentCourse ? `${currentCourse.school}-${currentCourse.department}-${currentCourse.number}` : 'Details'} size="lg">
+            {currentCourse ? (
               <Stack>
-                <Text fw={700}>{currentClass.title}</Text>
-                <Text size="sm" c="dimmed">{currentClass.description}</Text>
+                <Text fw={700}>{currentCourse.title}</Text>
+                <Text size="sm" c="dimmed">{currentCourse.description}</Text>
                 <Button color="bu-red" onClick={() => { handleSwipe(true); setDetailsOpen(false); }}>Bookmark</Button>
               </Stack>
             ) : null}
           </Modal>
 
-          <Text size="xs" c="dimmed" style={{ opacity: 1, position: 'relative', zIndex: 11 }}>{currentIndex + 1} / {classes.length} • {swipeCount} swipes today</Text>
+          <Text size="xs" c="dimmed" style={{ opacity: 1, position: 'relative', zIndex: 11 }}>{currentIndex + 1} / {courses.length} • {swipeCount} swipes today</Text>
         </Box>
       </Container>
     </Box>
   );
 };
 
-export default ClassSwiperPage;
+export default CourseSwiperPage;

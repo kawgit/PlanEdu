@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { runPythonScript } from '../utils/runPython';
-import sql from '../db';
+import query, { sql } from '../db';
 
 const router = Router();
 
@@ -32,7 +32,12 @@ router.post('/compute-embedding', async (req: Request, res: Response) => {
     }
     
     // Fetch user data from database
-    const users = await sql`
+    const users = await query<{
+      id: number;
+      google_id: string;
+      major: string | null;
+      interests: string | null;
+    }>(sql`
       SELECT 
         u.id,
         u.google_id,
@@ -40,7 +45,7 @@ router.post('/compute-embedding', async (req: Request, res: Response) => {
         u.interests
       FROM "Users" u
       WHERE u.google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -49,17 +54,22 @@ router.post('/compute-embedding', async (req: Request, res: Response) => {
     const user = users[0];
     
     // Fetch user's completed courses
-    const completedCourses = await sql`
+    const completedCourses = await query<{
+      school: string;
+      department: string;
+      number: string | number;
+      title: string;
+    }>(sql`
       SELECT 
         c.school,
         c.department,
         c.number,
         c.title
-      FROM "UserCompletedClass" ucc
-      JOIN "Class" c ON c.id = ucc."classId"
+      FROM "UserCompletedCourse" ucc
+      JOIN "Course" c ON c.id = ucc."courseId"
       WHERE ucc."userId" = ${user.id}
       ORDER BY c.school, c.department, c.number
-    `;
+    `);
     
     // Build courses_taken array with course codes
     const coursesTaken = completedCourses.map((course: any) => 
@@ -108,13 +118,13 @@ router.post('/compute-embedding', async (req: Request, res: Response) => {
     // Convert embedding array to PostgreSQL vector format
     const embeddingVector = `[${result.embedding.join(',')}]`;
     
-    await sql`
+    await query(sql`
       UPDATE "Users"
       SET 
         embedding = ${embeddingVector}::vector,
         embedding_updated_at = NOW()
       WHERE google_id = ${googleId}
-    `;
+    `);
     
     console.log('Embedding stored in database for user:', googleId);
     
@@ -153,7 +163,14 @@ router.get('/embedding', async (req: Request, res: Response) => {
     }
     
     // Fetch user embedding from database
-    const users = await sql`
+    const users = await query<{
+      id: number;
+      google_id: string;
+      major: string | null;
+      interests: string | null;
+      embedding: number[] | null;
+      embedding_updated_at: string | null;
+    }>(sql`
       SELECT 
         u.id,
         u.google_id,
@@ -163,7 +180,7 @@ router.get('/embedding', async (req: Request, res: Response) => {
         u.embedding_updated_at
       FROM "Users" u
       WHERE u.google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -218,11 +235,11 @@ router.get('/similar-users', async (req: Request, res: Response) => {
     const limitNum = parseInt(limit as string);
     
     // Get the current user's embedding
-    const currentUser = await sql`
+    const currentUser = await query<{ embedding: number[]; major: string | null }>(sql`
       SELECT embedding, major
       FROM "Users"
       WHERE google_id = ${googleId}
-    `;
+    `);
     
     if (currentUser.length === 0 || !currentUser[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -237,7 +254,13 @@ router.get('/similar-users', async (req: Request, res: Response) => {
     
     // Find similar users using cosine similarity
     // Lower distance = more similar
-    const similarUsers = await sql`
+    const similarUsers = await query<{
+      google_id: string;
+      major: string | null;
+      interests: string | null;
+      similarity_distance: number;
+      similarity_score: number;
+    }>(sql`
       SELECT 
         u.google_id,
         u.major,
@@ -249,7 +272,7 @@ router.get('/similar-users', async (req: Request, res: Response) => {
         AND u.embedding IS NOT NULL
       ORDER BY u.embedding <=> ${currentUser[0].embedding}::vector
       LIMIT ${limitNum}
-    `;
+    `);
     
     res.json({
       user_major: currentUser[0].major,

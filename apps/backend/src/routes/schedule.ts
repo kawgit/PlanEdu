@@ -9,7 +9,7 @@
  */
 
 import express from 'express';
-import sql from '../db';
+import query, { sql } from '../db';
 import { parseConstraints, sanitizeConstraints } from '../utils/constraintParser';
 
 const router = express.Router();
@@ -67,9 +67,9 @@ router.post('/generate', async (req, res) => {
     console.log(`Semester: ${semester || 'any'}`);
 
     // 1. Get user data
-    const users = await sql`
+    const users = await query(sql`
       SELECT id, major, minor FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
 
     if (users.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -83,37 +83,37 @@ router.post('/generate', async (req, res) => {
     console.log(`User ID: ${user.id}, Major: ${user.major || 'none'}`);
 
     // 2. Get user's bookmarked courses
-    const bookmarks = await sql`
+    const bookmarks = await query(sql`
       SELECT c.id, c.school, c.department, c.number, c.title
       FROM "Bookmark" b
-      JOIN "Class" c ON c.id = b."classId"
+      JOIN "Course" c ON c.id = b."courseId"
       WHERE b."userId" = ${user.id}
-    `;
+    `);
     
     const bookmarkIds = bookmarks.map(b => `${b.school}${b.department}${b.number}`);
     console.log(`Bookmarked courses: ${bookmarkIds.length}`);
 
     // 3. Get user's completed courses (to filter out)
-    const completed = await sql`
+    const completed = await query(sql`
       SELECT c.school, c.department, c.number
-      FROM "UserCompletedClass" ucc
-      JOIN "Class" c ON c.id = ucc."classId"
+      FROM "UserCompletedCourse" ucc
+      JOIN "Course" c ON c.id = ucc."courseId"
       WHERE ucc."userId" = ${user.id}
-    `;
+    `);
     const completedCourseIds = completed.map(c => `${c.school}${c.department}${c.number}`);
     console.log(`Completed courses: ${completedCourseIds.length}`);
 
     // 4. Get ALL available courses (not just bookmarks)
     // We'll let the solver decide which courses to include based on constraints
-    const allAvailableCourses = await sql`
+    const allAvailableCourses = await query(sql`
       SELECT c.id, c.school, c.department, c.number, c.title
-      FROM "Class" c
+      FROM "Course" c
       WHERE c.id NOT IN (
-        SELECT "classId" FROM "UserCompletedClass" WHERE "userId" = ${user.id}
+        SELECT "courseId" FROM "UserCompletedCourse" WHERE "userId" = ${user.id}
       )
       ORDER BY c.school, c.department, c.number
       LIMIT 100
-    `;
+    `);
     console.log(`Available courses for scheduling: ${allAvailableCourses.length}`);
 
     // 5. Get course data with sections (slots)
@@ -164,26 +164,27 @@ router.post('/generate', async (req, res) => {
 
     // 6. Get Hub requirements for user's major
     if (user && user.major) {
-      const hubReqs = await sql`
+      const hubReqs = await query<{ id: number; name: string | null }>(sql`
         SELECT hr.id, hr.name
         FROM "HubRequirement" hr
         LIMIT 5
-      `;
+      `);
       
       for (const hub of hubReqs) {
         if (hub && hub.name) {
-          hubs.requirements[hub.name] = 1; // Need 1 of each hub
+          const hubName = hub.name;
+          hubs.requirements[hubName] = 1; // Need 1 of each hub
           
           // Get classes that fulfill this hub
-          const hubClasses = await sql`
+          const hubCourses = await query<{ school: string; department: string; number: string | number }>(sql`
             SELECT c.school, c.department, c.number
-            FROM "ClassToHubRequirement" cthr
-            JOIN "Class" c ON c.id = cthr."classId"
+            FROM "CourseToHubRequirement" cthr
+            JOIN "Course" c ON c.id = cthr."courseId"
             WHERE cthr."hubRequirementId" = ${hub.id}
             LIMIT 10
-          `;
+          `);
           
-          hubs.classes_by_tag[hub.name] = hubClasses.map(
+          hubs.classes_by_tag[hubName] = hubCourses.map(
             c => `${c.school}${c.department}${c.number}`
           );
         }

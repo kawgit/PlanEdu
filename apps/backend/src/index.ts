@@ -6,7 +6,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import multer from 'multer';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import sql from './db';
+import query, { sql } from './db';
 import { calculateCSMajorCompletion, calculateMathCSMajorCompletion } from './majorCompletion';
 import { calculateHubCompletion } from './hubCompletion';
 import recommendRouter from './routes/recommend';
@@ -111,9 +111,9 @@ app.get('/api/user', async (req, res) => {
       return res.status(400).json({ error: 'googleId is required' });
     }
 
-    const users = await sql`
+    const users = await query(sql`
       SELECT * FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
 
     if (users.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -144,7 +144,7 @@ app.put('/api/user/preferences', async (req, res) => {
     }
 
     // Update user preferences
-    await sql`
+    await query(sql`
       UPDATE "Users" 
       SET 
         major = ${major || null},
@@ -154,7 +154,7 @@ app.put('/api/user/preferences', async (req, res) => {
         interests = ${interests || null},
         preferred_course_load = ${preferred_course_load || null}
       WHERE google_id = ${googleId}
-    `;
+    `);
 
     res.json({ success: true });
   } catch (error) {
@@ -163,17 +163,17 @@ app.put('/api/user/preferences', async (req, res) => {
   }
 });
 
-// Get classes with optional filters
-app.get('/api/classes', async (req, res) => {
+// Get courses with optional filters
+app.get('/api/courses', async (req, res) => {
   try {
     const { school, department, keyword, limit = '1000' } = req.query;
     
-    let classes;
+    let courses;
     
     if (school && department && keyword) {
       const searchTerm = `%${keyword}%`;
-      classes = await sql`
-        SELECT * FROM "Class" 
+      courses = await query(sql`
+        SELECT * FROM "Course" 
         WHERE "school" = ${school} 
           AND "department" = ${department}
           AND (
@@ -182,17 +182,17 @@ app.get('/api/classes', async (req, res) => {
             OR CAST("number" AS TEXT) ILIKE ${searchTerm}
           )
         LIMIT ${parseInt(limit as string)}
-      `;
+      `);
     } else if (school && department) {
-      classes = await sql`
-        SELECT * FROM "Class" 
+      courses = await query(sql`
+        SELECT * FROM "Course" 
         WHERE "school" = ${school} AND "department" = ${department}
         LIMIT ${parseInt(limit as string)}
-      `;
+      `);
     } else if (school && keyword) {
       const searchTerm = `%${keyword}%`;
-      classes = await sql`
-        SELECT * FROM "Class" 
+      courses = await query(sql`
+        SELECT * FROM "Course" 
         WHERE "school" = ${school}
           AND (
             "title" ILIKE ${searchTerm} 
@@ -201,17 +201,17 @@ app.get('/api/classes', async (req, res) => {
             OR CAST("number" AS TEXT) ILIKE ${searchTerm}
           )
         LIMIT ${parseInt(limit as string)}
-      `;
+      `);
     } else if (school) {
-      classes = await sql`
-        SELECT * FROM "Class" 
+      courses = await query(sql`
+        SELECT * FROM "Course" 
         WHERE "school" = ${school}
         LIMIT ${parseInt(limit as string)}
-      `;
+      `);
     } else if (keyword) {
       const searchTerm = `%${keyword}%`;
-      classes = await sql`
-        SELECT * FROM "Class" 
+      courses = await query(sql`
+        SELECT * FROM "Course" 
         WHERE "title" ILIKE ${searchTerm} 
           OR "description" ILIKE ${searchTerm}
           OR "school" ILIKE ${searchTerm}
@@ -219,29 +219,29 @@ app.get('/api/classes', async (req, res) => {
           OR CAST("number" AS TEXT) ILIKE ${searchTerm}
           OR CONCAT("school", "department", ' ', "number") ILIKE ${searchTerm}
         LIMIT ${parseInt(limit as string)}
-      `;
+      `);
     } else {
-      classes = await sql`
-        SELECT * FROM "Class" 
+      courses = await query(sql`
+        SELECT * FROM "Course" 
         LIMIT ${parseInt(limit as string)}
-      `;
+      `);
     }
     
-    res.json(classes);
+    res.json(courses);
   } catch (error) {
     console.error('Database error:', error);
-    res.status(500).json({ error: 'Failed to fetch classes' });
+    res.status(500).json({ error: 'Failed to fetch courses' });
   }
 });
 
 // Get unique schools
 app.get('/api/schools', async (req, res) => {
   try {
-    const schools = await sql`
-      SELECT DISTINCT "school" FROM "Class" 
+    const schools = await query(sql`
+      SELECT DISTINCT "school" FROM "Course" 
       WHERE "school" IS NOT NULL
       ORDER BY "school"
-    `;
+    `);
     res.json(schools.map(s => s.school));
   } catch (error) {
     console.error('Database error:', error);
@@ -256,17 +256,17 @@ app.get('/api/departments', async (req, res) => {
     
     let departments;
     if (school) {
-      departments = await sql`
-        SELECT DISTINCT "department" FROM "Class" 
+      departments = await query(sql`
+        SELECT DISTINCT "department" FROM "Course" 
         WHERE "school" = ${school} AND "department" IS NOT NULL
         ORDER BY "department"
-      `;
+      `);
     } else {
-      departments = await sql`
-        SELECT DISTINCT "department" FROM "Class" 
+      departments = await query(sql`
+        SELECT DISTINCT "department" FROM "Course" 
         WHERE "department" IS NOT NULL
         ORDER BY "department"
-      `;
+      `);
     }
     
     res.json(departments.map(d => d.department));
@@ -529,9 +529,9 @@ app.get('/api/recommendations', async (req, res) => {
     console.log(`Fetching recommendations for swiper: ${googleId}`);
 
     // Get user and check if they have an embedding
-    const users = await sql`
+    const users = await query(sql`
       SELECT id, major, embedding FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -572,19 +572,19 @@ app.get('/api/recommendations', async (req, res) => {
           
           if (courseIds.length > 0) {
             // Get hub areas
-            const hubData = await sql`
-              SELECT cthr."classId", hr.name
-              FROM "ClassToHubRequirement" cthr
+            const hubData = await query(sql`
+              SELECT cthr."courseId", hr.name
+              FROM "CourseToHubRequirement" cthr
               JOIN "HubRequirement" hr ON cthr."hubRequirementId" = hr.id
-              WHERE cthr."classId" = ANY(${courseIds})
-            `;
+              WHERE cthr."courseId" = ANY(${courseIds})
+            `);
             
             const hubMap = new Map();
             for (const row of hubData) {
-              if (!hubMap.has(row.classId)) {
-                hubMap.set(row.classId, []);
+              if (!hubMap.has(row.courseId)) {
+                hubMap.set(row.courseId, []);
               }
-              hubMap.get(row.classId).push(row.name);
+              hubMap.get(row.courseId).push(row.name);
             }
             
             // Add to courses
@@ -623,32 +623,32 @@ app.get('/api/recommendations', async (req, res) => {
 async function getBasicRecommendations(googleId: string, limit: number) {
   console.log('  → Using basic recommendation fallback');
   
-  const users = await sql`SELECT * FROM "Users" WHERE google_id = ${googleId}`;
+  const users = await query(sql`SELECT * FROM "Users" WHERE google_id = ${googleId}`);
   const user = users[0];
   
-  const bookmarkedClasses = await sql`
+  const bookmarkedCourses = await query(sql`
     SELECT DISTINCT c.id
     FROM "Bookmark" b
     JOIN "Users" u ON u.id = b."userId"
-    JOIN "Class" c ON c.id = b."classId"
+    JOIN "Course" c ON c.id = b."courseId"
     WHERE u.google_id = ${googleId}
-  `;
+  `);
   
-  const completedClasses = await sql`
+  const completedCourses = await query(sql`
     SELECT DISTINCT c.id
-    FROM "UserCompletedClass" ucc
+    FROM "UserCompletedCourse" ucc
     JOIN "Users" u ON u.id = ucc."userId"
-    JOIN "Class" c ON c.id = ucc."classId"
+    JOIN "Course" c ON c.id = ucc."courseId"
     WHERE u.google_id = ${googleId}
-  `;
+  `);
   
   const excludeIds = new Set([
-    ...bookmarkedClasses.map((c: any) => c.id),
-    ...completedClasses.map((c: any) => c.id)
+    ...bookmarkedCourses.map((c: any) => c.id),
+    ...completedCourses.map((c: any) => c.id)
   ]);
   
-  const allClasses = await sql`
-    WITH ClassesWithHubs AS (
+  const allCourses = await query(sql`
+    WITH CoursesWithHubs AS (
       SELECT 
         c.id,
         c.school,
@@ -658,45 +658,45 @@ async function getBasicRecommendations(googleId: string, limit: number) {
         c.description,
         ARRAY_AGG(DISTINCT hr.name) FILTER (WHERE hr.name IS NOT NULL) as hub_areas,
         4 as typical_credits
-      FROM "Class" c
-      LEFT JOIN "ClassToHubRequirement" cthr ON c.id = cthr."classId"
+      FROM "Course" c
+      LEFT JOIN "CourseToHubRequirement" cthr ON c.id = cthr."courseId"
       LEFT JOIN "HubRequirement" hr ON cthr."hubRequirementId" = hr.id
       GROUP BY c.id, c.school, c.department, c.number, c.title, c.description
     )
-    SELECT * FROM ClassesWithHubs
+    SELECT * FROM CoursesWithHubs
     ORDER BY RANDOM()
-  `;
+  `);
   
-  const availableClasses = allClasses.filter((cls: any) => !excludeIds.has(cls.id));
+  const availableCourses = allCourses.filter((course: any) => !excludeIds.has(course.id));
   
-  const scoredClasses = availableClasses
-    .map((cls: any) => ({
-      ...cls,
-      score: calculateRelevanceScore(cls, user)
+  const scoredCourses = availableCourses
+    .map((course: any) => ({
+      ...course,
+      score: calculateRelevanceScore(course, user)
     }))
     .sort((a: any, b: any) => b.score - a.score)
     .slice(0, limit);
   
-  return scoredClasses;
+  return scoredCourses;
 }
 
 // Save user interaction (bookmark or discard)
 app.post('/api/user/interaction', async (req, res) => {
   try {
-    const { googleId, classId, interactionType } = req.body;
+    const { googleId, courseId, interactionType } = req.body;
     
-    if (!googleId || !classId || !interactionType) {
+    if (!googleId || !courseId || !interactionType) {
       return res.status(400).json({ 
-        error: 'googleId, classId, and interactionType are required' 
+        error: 'googleId, courseId, and interactionType are required' 
       });
     }
     
     // Only handle bookmarks - discards are just ignored (user moves to next card)
     if (interactionType === 'bookmark') {
       // Get user ID from google_id
-      const users = await sql`
+      const users = await query(sql`
         SELECT id FROM "Users" WHERE google_id = ${googleId}
-      `;
+      `);
       
       if (users.length === 0 || !users[0]) {
         return res.status(404).json({ error: 'User not found' });
@@ -705,11 +705,11 @@ app.post('/api/user/interaction', async (req, res) => {
       const userId = users[0].id;
       
       // Insert bookmark (will ignore on conflict)
-      await sql`
-        INSERT INTO "Bookmark" ("userId", "classId")
-        VALUES (${userId}, ${classId})
-        ON CONFLICT ("userId", "classId") DO NOTHING
-      `;
+      await query(sql`
+        INSERT INTO "Bookmark" ("userId", "courseId")
+        VALUES (${userId}, ${courseId})
+        ON CONFLICT ("userId", "courseId") DO NOTHING
+      `);
     }
     // For 'discard', we just do nothing - no need to track it
     
@@ -731,14 +731,14 @@ app.get('/api/user/interactions', async (req, res) => {
     }
     
     // Only return bookmarks now (no more interaction tracking)
-    const bookmarks = await sql`
+    const bookmarks = await query(sql`
       SELECT c.*, b.created_at as bookmarked_at
       FROM "Bookmark" b
       JOIN "Users" u ON u.id = b."userId"
-      JOIN "Class" c ON c.id = b."classId"
+      JOIN "Course" c ON c.id = b."courseId"
       WHERE u.google_id = ${googleId}
       ORDER BY b.created_at DESC
-    `;
+    `);
     
     res.json(bookmarks);
   } catch (error) {
@@ -747,7 +747,7 @@ app.get('/api/user/interactions', async (req, res) => {
   }
 });
 
-// Get user's bookmarked classes
+// Get user's bookmarked courses
 app.get('/api/user/bookmarks', async (req, res) => {
   try {
     const { googleId } = req.query;
@@ -756,14 +756,14 @@ app.get('/api/user/bookmarks', async (req, res) => {
       return res.status(400).json({ error: 'googleId is required' });
     }
     
-    const bookmarks = await sql`
+    const bookmarks = await query(sql`
       SELECT c.*
       FROM "Bookmark" b
       JOIN "Users" u ON u.id = b."userId"
-      JOIN "Class" c ON c.id = b."classId"
+      JOIN "Course" c ON c.id = b."courseId"
       WHERE u.google_id = ${googleId}
       ORDER BY b.id DESC
-    `;
+    `);
     
     res.json(bookmarks);
   } catch (error) {
@@ -775,46 +775,47 @@ app.get('/api/user/bookmarks', async (req, res) => {
 // Add a bookmark
 app.post('/api/user/bookmark', async (req, res) => {
   try {
-    const { googleId, classId } = req.body;
+    const { googleId, courseId } = req.body;
     
-    if (!googleId || !classId) {
-      return res.status(400).json({ error: 'googleId and classId are required' });
+    if (!googleId || !courseId) {
+      return res.status(400).json({ error: 'googleId and courseId are required' });
     }
     
     // Get user ID from google_id
-    const users = await sql`
+    const users = await query<{ id: number }>(sql`
       SELECT id FROM "Users" WHERE google_id = ${googleId}
-    `;
-    
+    `);
+
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
     }
     
-    const userId = users[0].id;
+    const userRow = users[0] as { id: number };
+    const userId = Number(userRow.id);
     
-    // Check if the class exists
-    const classExists = await sql`
-      SELECT id FROM "Class" WHERE id = ${classId}
-    `;
+    // Check if the course exists
+    const courseExists = await query(sql`
+      SELECT id FROM "Course" WHERE id = ${courseId}
+    `);
     
-    if (classExists.length === 0) {
-      return res.status(404).json({ error: 'Class not found' });
+    if (courseExists.length === 0) {
+      return res.status(404).json({ error: 'Course not found' });
     }
     
     // Insert bookmark (check if already exists first)
-    const existingBookmark = await sql`
+    const existingBookmark = await query(sql`
       SELECT id FROM "Bookmark" 
-      WHERE "userId" = ${userId} AND "classId" = ${classId}
-    `;
+      WHERE "userId" = ${userId} AND "courseId" = ${courseId}
+    `);
     
     if (existingBookmark.length > 0) {
       return res.json({ success: true, message: 'Bookmark already exists' });
     }
     
-    await sql`
-      INSERT INTO "Bookmark" ("userId", "classId")
-      VALUES (${userId}, ${classId})
-    `;
+    await query(sql`
+      INSERT INTO "Bookmark" ("userId", "courseId")
+      VALUES (${userId}, ${courseId})
+    `);
     
     res.json({ success: true });
   } catch (error) {
@@ -829,16 +830,16 @@ app.post('/api/user/bookmark', async (req, res) => {
 // Remove a bookmark
 app.delete('/api/user/bookmark', async (req, res) => {
   try {
-    const { googleId, classId } = req.body;
+    const { googleId, courseId } = req.body;
     
-    if (!googleId || !classId) {
-      return res.status(400).json({ error: 'googleId and classId are required' });
+    if (!googleId || !courseId) {
+      return res.status(400).json({ error: 'googleId and courseId are required' });
     }
     
     // Get user ID from google_id
-    const users = await sql`
+    const users = await query<{ id: number }>(sql`
       SELECT id FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -847,10 +848,10 @@ app.delete('/api/user/bookmark', async (req, res) => {
     const userId = users[0].id;
     
     // Delete bookmark
-    await sql`
+    await query(sql`
       DELETE FROM "Bookmark" 
-      WHERE "userId" = ${userId} AND "classId" = ${classId}
-    `;
+      WHERE "userId" = ${userId} AND "courseId" = ${courseId}
+    `);
     
     res.json({ success: true });
   } catch (error) {
@@ -889,17 +890,17 @@ app.post('/auth/google', async (req, res) => {
     console.log('User authenticated:', { userId, email, name });
 
     // Check if user exists in database, create if not
-    const existingUsers = await sql`
+    const existingUsers = await query(sql`
       SELECT * FROM "Users" WHERE google_id = ${userId}
-    `;
+    `);
 
     if (existingUsers.length === 0) {
       // Create new user with just google_id
       // major, minor, target_graduation will be set later via preferences
-      await sql`
+      await query(sql`
         INSERT INTO "Users" (google_id)
         VALUES (${userId})
-      `;
+      `);
       console.log('New user created:', userId);
     } else {
       console.log('User already exists:', userId);
@@ -934,9 +935,9 @@ app.post('/api/transcript/upload', upload.single('transcript'), async (req, res)
     }
 
     // Get user ID from google_id
-    const users = await sql`
+    const users = await query(sql`
       SELECT id FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -1047,19 +1048,18 @@ ONLY return the JSON array, no markdown, no explanation, no additional text.`;
 
     for (const course of courses) {
       try {
-        // Convert number to integer (in case it's a string from the API)
-        const courseNumber = parseInt(course.number.toString(), 10);
+        const courseNumber = course.number.toString();
         
-        // First, look up the class in the Class table
-        const classes = await sql`
-          SELECT id FROM "Class" 
+        // First, look up the course in the Course table
+        const matchingCourses = await query(sql`
+          SELECT id FROM "Course" 
           WHERE school = ${course.school} 
             AND department = ${course.department} 
             AND number = ${courseNumber}
           LIMIT 1
-        `;
+        `);
 
-        if (classes.length === 0 || !classes[0]) {
+        if (matchingCourses.length === 0 || !matchingCourses[0]) {
           console.log(`Course not found in database: ${course.school}${course.department} ${course.number}`);
           errors.push({ 
             course: `${course.school}${course.department} ${course.number}`, 
@@ -1068,21 +1068,21 @@ ONLY return the JSON array, no markdown, no explanation, no additional text.`;
           continue;
         }
 
-        const classId = classes[0].id;
+        const courseId = matchingCourses[0].id;
 
-        // Insert into UserCompletedClass
-        const result = await sql`
-          INSERT INTO "UserCompletedClass" 
-          ("userId", "classId", "grade")
+        // Insert into UserCompletedCourse
+        const result = await query(sql`
+          INSERT INTO "UserCompletedCourse" 
+          ("userId", "courseId", "grade")
           VALUES (
             ${userId},
-            ${classId},
+            ${courseId},
             ${course.grade || null}
           )
-          ON CONFLICT ("userId", "classId") DO UPDATE
+          ON CONFLICT ("userId", "courseId") DO UPDATE
           SET grade = EXCLUDED.grade
           RETURNING *
-        `;
+        `);
         insertedCourses.push(result[0]);
       } catch (error: any) {
         console.error('Error inserting course:', course, error);
@@ -1119,24 +1119,24 @@ app.get('/api/user/completed-courses', async (req, res) => {
       return res.status(400).json({ error: 'googleId is required' });
     }
 
-    // Get courses from UserCompletedClass table joined with Class table
-    const completedCourses = await sql`
+    // Get courses from UserCompletedCourse table joined with Course table
+    const completedCourses = await query(sql`
       SELECT 
         ucc.id,
         ucc."userId",
-        ucc."classId",
+        ucc."courseId",
         ucc.grade,
         c.school,
         c.department,
         c.number,
         c.title,
         c.description
-      FROM "UserCompletedClass" ucc
+      FROM "UserCompletedCourse" ucc
       JOIN "Users" u ON u.id = ucc."userId"
-      JOIN "Class" c ON c.id = ucc."classId"
+      JOIN "Course" c ON c.id = ucc."courseId"
       WHERE u.google_id = ${googleId}
       ORDER BY ucc.id DESC
-    `;
+    `);
     
     res.json(completedCourses);
   } catch (error) {
@@ -1148,18 +1148,18 @@ app.get('/api/user/completed-courses', async (req, res) => {
 // Add a completed course manually
 app.post('/api/user/completed-course', async (req, res) => {
   try {
-    const { googleId, classId, grade } = req.body;
+    const { googleId, courseId, grade } = req.body;
     
-    if (!googleId || !classId) {
+    if (!googleId || !courseId) {
       return res.status(400).json({ 
-        error: 'googleId and classId are required' 
+        error: 'googleId and courseId are required' 
       });
     }
     
     // Get user ID from google_id
-    const users = await sql`
+    const users = await query(sql`
       SELECT id FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -1167,28 +1167,28 @@ app.post('/api/user/completed-course', async (req, res) => {
     
     const userId = users[0].id;
     
-    // Check if class exists
-    const classes = await sql`
-      SELECT id FROM "Class" WHERE id = ${classId}
-    `;
+    // Check if course exists
+    const coursesMatching = await query(sql`
+      SELECT id FROM "Course" WHERE id = ${courseId}
+    `);
     
-    if (classes.length === 0) {
-      return res.status(404).json({ error: 'Class not found' });
+    if (coursesMatching.length === 0) {
+      return res.status(404).json({ error: 'Course not found' });
     }
     
-    // Insert into UserCompletedClass
-    const result = await sql`
-      INSERT INTO "UserCompletedClass" 
-      ("userId", "classId", "grade")
+    // Insert into UserCompletedCourse
+    const result = await query(sql`
+      INSERT INTO "UserCompletedCourse" 
+      ("userId", "courseId", "grade")
       VALUES (
         ${userId},
-        ${classId},
+        ${courseId},
         ${grade || null}
       )
-      ON CONFLICT ("userId", "classId") DO UPDATE
+      ON CONFLICT ("userId", "courseId") DO UPDATE
       SET grade = EXCLUDED.grade
       RETURNING *
-    `;
+    `);
     
     res.json({ success: true, course: result[0] });
   } catch (error) {
@@ -1207,9 +1207,9 @@ app.delete('/api/user/completed-course', async (req, res) => {
     }
     
     // Get user ID from google_id
-    const users = await sql`
+    const users = await query(sql`
       SELECT id FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
     
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -1217,11 +1217,11 @@ app.delete('/api/user/completed-course', async (req, res) => {
     
     const userId = users[0].id;
     
-    // Delete from UserCompletedClass
-    await sql`
-      DELETE FROM "UserCompletedClass" 
+    // Delete from UserCompletedCourse
+    await query(sql`
+      DELETE FROM "UserCompletedCourse" 
       WHERE id = ${completedCourseId} AND "userId" = ${userId}
-    `;
+    `);
     
     res.json({ success: true });
   } catch (error) {
@@ -1240,7 +1240,7 @@ app.get('/api/user/cs-major-completion', async (req, res) => {
     }
 
     // Get user's completed courses
-    const completedCoursesRaw = await sql`
+    const completedCoursesRaw = await query(sql`
       SELECT 
         c.school,
         c.department,
@@ -1248,11 +1248,11 @@ app.get('/api/user/cs-major-completion', async (req, res) => {
         c.title,
         c.description,
         ucc.grade
-      FROM "UserCompletedClass" ucc
+      FROM "UserCompletedCourse" ucc
       JOIN "Users" u ON u.id = ucc."userId"
-      JOIN "Class" c ON c.id = ucc."classId"
+      JOIN "Course" c ON c.id = ucc."courseId"
       WHERE u.google_id = ${googleId}
-    `;
+    `);
     
     // Map to CompletedCourse type
     const completedCourses = completedCoursesRaw.map(course => ({
@@ -1295,7 +1295,7 @@ app.get('/api/user/math-cs-major-completion', async (req, res) => {
     }
 
     // Get user's completed courses
-    const completedCoursesRaw = await sql`
+    const completedCoursesRaw = await query(sql`
       SELECT 
         c.school,
         c.department,
@@ -1303,11 +1303,11 @@ app.get('/api/user/math-cs-major-completion', async (req, res) => {
         c.title,
         c.description,
         ucc.grade
-      FROM "UserCompletedClass" ucc
+      FROM "UserCompletedCourse" ucc
       JOIN "Users" u ON u.id = ucc."userId"
-      JOIN "Class" c ON c.id = ucc."classId"
+      JOIN "Course" c ON c.id = ucc."courseId"
       WHERE u.google_id = ${googleId}
-    `;
+    `);
     
     // Map to CompletedCourse type
     const completedCourses = completedCoursesRaw.map(course => ({
@@ -1350,9 +1350,9 @@ app.get('/api/user/hub-completion', async (req, res) => {
     }
 
     // Get user ID from google ID
-    const users = await sql`
+    const users = await query(sql`
       SELECT id FROM "Users" WHERE google_id = ${googleId}
-    `;
+    `);
 
     if (users.length === 0 || !users[0]) {
       return res.status(404).json({ error: 'User not found' });
@@ -1361,7 +1361,7 @@ app.get('/api/user/hub-completion', async (req, res) => {
     const userId = users[0].id;
     
     // Calculate hub completion percentage
-    const result = await calculateHubCompletion(userId);
+    const result = await calculateHubCompletion(userId as number);
     
     res.json(result);
   } catch (error) {

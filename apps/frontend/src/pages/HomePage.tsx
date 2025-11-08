@@ -19,13 +19,13 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
     {
       icon: IconCalendar,
       title: 'AI Schedule Builder',
-      description: 'Build your perfect schedule from bookmarked classes',
+      description: 'Build your perfect schedule from bookmarked courses',
       color: 'bu-red',
       action: () => setActiveTab('schedule-builder'),
     },
     {
       icon: IconBook,
-      title: 'Discover Classes',
+      title: 'Discover Courses',
       description: 'Get personalized course recommendations based on your preferences',
       color: 'blue',
       action: () => setActiveTab('swiper'),
@@ -39,7 +39,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
     },
   ];
 
-  const upcomingClasses = [
+  const upcomingCourses = [
     { code: 'CS 111', name: 'Intro to Computer Science', time: 'MWF 10:00 AM' },
     { code: 'WR 100', name: 'Writing Seminar', time: 'TR 2:00 PM' },
     { code: 'MA 123', name: 'Calculus I', time: 'MWF 11:00 AM' },
@@ -194,7 +194,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
                 12
               </Text>
               <Text size="xs" c="dimmed" mt="md">
-                classes saved
+                courses saved
               </Text>
             </Card>
           </Grid.Col>
@@ -259,7 +259,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
           ))}
         </Grid>
 
-        {/* Current Semester Classes */}
+        {/* Current Semester Courses */}
         <Grid gutter="md">
           <Grid.Col span={{ base: 12, md: 8 }}>
             <Card shadow="sm" p="lg" radius="md" withBorder>
@@ -277,7 +277,7 @@ const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
                 </Button>
               </Group>
               <Stack gap="sm">
-                {upcomingClasses.map((course, index) => (
+                {upcomingCourses.map((course, index) => (
                   <Card
                     key={index}
                     p="md"

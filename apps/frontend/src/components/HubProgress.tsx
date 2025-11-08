@@ -6,7 +6,7 @@ import { isUserLoggedIn, getUserGoogleId } from '../utils/auth';
 interface HubDetail {
   hubName: string;
   completed: boolean;
-  satisfiedByClasses: Array<{
+  satisfiedByCourses: Array<{
     department: string;
     number: number;
     title: string;
@@ -96,15 +96,15 @@ const HubProgress: React.FC<HubProgressProps> = ({ refreshTrigger }) => {
             {hub.completed ? 'Complete' : 'Incomplete'}
           </Badge>
         </Group>
-        {hub.completed && hub.satisfiedByClasses.length > 0 && (
+        {hub.completed && hub.satisfiedByCourses.length > 0 && (
           <Box ml="xl">
             <Text size="xs" c="dimmed" mb={4}>
               Satisfied by:
             </Text>
             <Stack gap={4}>
-              {hub.satisfiedByClasses.map((cls, idx) => (
+              {hub.satisfiedByCourses.map((course, idx) => (
                 <Text key={idx} size="xs" c="green">
-                  • {cls.department} {cls.number}: {cls.title}
+                  • {course.department} {course.number}: {course.title}
                 </Text>
               ))}
             </Stack>

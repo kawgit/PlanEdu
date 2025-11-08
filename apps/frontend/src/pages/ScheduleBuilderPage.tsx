@@ -33,7 +33,7 @@ import { getUserGoogleId } from '../utils/auth';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 
-interface BookmarkedClass {
+interface BookmarkedCourse {
   id: number;
   school: string;
   department: string;
@@ -83,7 +83,7 @@ function minutesToTime(minutes: number): string {
 }
 
 interface ScheduleBuilderProps {
-  bookmarks?: BookmarkedClass[];
+  bookmarks?: BookmarkedCourse[];
 }
 
 const ScheduleBuilderPage: React.FC<ScheduleBuilderProps> = ({ bookmarks: initialBookmarks }) => {
@@ -91,7 +91,7 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderProps> = ({ bookmarks: initia
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedSchedule, setGeneratedSchedule] = useState<GeneratedSchedule | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [bookmarks, setBookmarks] = useState<BookmarkedClass[]>(initialBookmarks || []);
+  const [bookmarks, setBookmarks] = useState<BookmarkedCourse[]>(initialBookmarks || []);
   const [loadingBookmarks, setLoadingBookmarks] = useState(initialBookmarks ? false : true);
   const [maxCoursesPerSemester, setMaxCoursesPerSemester] = useState<string>('4');
   const [selectedSemester, setSelectedSemester] = useState<string>('all');
@@ -207,7 +207,7 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderProps> = ({ bookmarks: initia
       </Title>
       <Text c="dimmed" mb="xl" size="sm">
         Tell our AI what you want, and we'll build the perfect schedule. 
-        {bookmarks.length > 0 ? ` We'll prioritize your ${bookmarks.length} bookmarked classes.` : ' Bookmark courses to give them priority.'}
+        {bookmarks.length > 0 ? ` We'll prioritize your ${bookmarks.length} bookmarked courses.` : ' Bookmark courses to give them priority.'}
       </Text>
 
       <Grid gutter="lg">
@@ -223,7 +223,7 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderProps> = ({ bookmarks: initia
               
               {bookmarks.length === 0 ? (
                 <Alert color="blue" icon={<IconAlertCircle size={16} />}>
-                  No bookmarked courses yet. You can still generate a schedule from all available courses, or visit the Class Swiper to bookmark preferred courses!
+                  No bookmarked courses yet. You can still generate a schedule from all available courses, or visit the Course Swiper to bookmark preferred courses!
                 </Alert>
               ) : (
                 <>
@@ -367,7 +367,7 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderProps> = ({ bookmarks: initia
                 
                 <Group gap="md" mb="md">
                   <Badge color="blue" variant="light">
-                    {generatedSchedule.totalCourses} Classes
+                    {generatedSchedule.totalCourses} Courses
                   </Badge>
                   {generatedSchedule.parsedConstraints.length > 0 && (
                     <Badge color="purple" variant="light">
@@ -524,7 +524,7 @@ const ScheduleBuilderPage: React.FC<ScheduleBuilderProps> = ({ bookmarks: initia
                 </Title>
                 <Text c="dimmed" size="sm">
                   {bookmarks.length > 0 
-                    ? `Enter your preferences above and let our AI create the perfect schedule, prioritizing your ${bookmarks.length} bookmarked classes.`
+                    ? `Enter your preferences above and let our AI create the perfect schedule, prioritizing your ${bookmarks.length} bookmarked courses.`
                     : 'Enter your preferences above and our AI will create a schedule from all available courses. Bookmark courses to give them priority!'
                   }
                 </Text>
