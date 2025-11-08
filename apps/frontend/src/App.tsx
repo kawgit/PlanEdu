@@ -72,12 +72,20 @@ const App: React.FC = () => {
   }, []);
 
   const addBookmark = async (course: BookmarkedCourse) => {
+    // Optimistic add: append locally first, avoid duplicates
+    setBookmarks(prev => {
+      if (prev.some(b => b.id === course.id)) {
+        return prev;
+      }
+      return [...prev, course];
+    });
+
     try {
       await addBookmarkAPI(course.id);
       // keep optimistic state; optionally refresh if you want canonical data
     } catch (error) {
       console.error('Failed to add bookmark:', error);
-      // revert optimistic update
+      // Revert optimistic update if API call fails
       setBookmarks(prev => prev.filter(b => b.id !== course.id));
     }
   };
