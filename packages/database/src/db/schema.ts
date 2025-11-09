@@ -42,9 +42,15 @@ export const courseTable = pgTable("Course", {
 	title: text("title").notNull(),
 	description: text("description").notNull(),
 	embedding: jsonb("embedding"),
+	prerequisiteConstraint: jsonb("prerequisiteConstraint"),
 }, (table) => [
 	unique("course_school_dept_num_unique").on(table.school, table.department, table.number),
 ]);
+
+export const graduationConstraint = pgTable("GraduationConstraint", {
+	id: text("id").primaryKey(),
+	constraint: jsonb("constraint").notNull(),
+})
 
 export const section = pgTable("Section", {
 	id: integer("id")
@@ -128,12 +134,6 @@ export const userCompletedCourse = pgTable("UserCompletedCourse", {
 	}).onUpdate("cascade").onDelete("cascade"),
 	unique("ucc_user_course_unique").on(table.userId, table.courseId),
 ]);
-
-export const prerequisite = pgTable("Prerequisite", {
-	name: text("name").primaryKey().notNull(),
-	type: text("type").notNull(),
-	content: jsonb("payload").notNull(),
-});
 
 export const courseGroup = pgTable("CourseGroup", {
 	name: text("name").primaryKey(),
