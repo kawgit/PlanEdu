@@ -1,7 +1,8 @@
+import json
 from solver import ScheduleSolver
 from utils import load_graduation_constraints, load_courses_and_slots, load_groups, load_prerequisite_constraints
 
-num_future_semesters = 8
+num_future_semesters = 3
 num_courses_per_semester = 4
 
 bookmarked_ids = {
@@ -24,6 +25,19 @@ completed_ids = {
     "CAS PO 151",
     "CAS PY 211",
     "CAS PY 212",
+    "CAS MA 225",
+    "CAS CS 112",
+    "CAS MA 242",
+    "ENG EC 400",
+    "CAS CS 210",
+    "CAS MA 293",
+    "CAS CH 101",
+    "CAS CS 330",
+    "CAS EC 201",
+    "CAS MA 231",
+    "CAS CS 237",
+    "CAS CS 131",
+    "CAS CS 132"
 }
 
 courses, slots = load_courses_and_slots()
@@ -45,4 +59,6 @@ print("Initializing solver...")
 solver = ScheduleSolver(courses, slots, groups, prerequisite_constraints, graduation_constraints, completed_ids, num_future_semesters, num_courses_per_semester)
 
 print("Solving...")
-solver.solve(time_limit=5, verbosity="detailed")
+result = solver.solve(time_limit=5, verbosity="detailed")
+
+print(json.dumps(result, indent=4))

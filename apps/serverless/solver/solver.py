@@ -313,23 +313,32 @@ class ScheduleSolver:
         self.solver.parameters.log_search_progress = verbosity == "detailed"
         self.solver.Solve(self.model, ObjectiveLogger(self.objective) if verbosity == "minimal" else None)
         
+        result = {
+            "status": self.solver.status_name()
+        }
+        
         if self.solver.status_name() == "INFEASIBLE":
-            return
+            return result
+        
+        result["objective_value"] = self.solver.ObjectiveValue()
+        courses: Dict[SemesterIndex, List[CourseId]] = {}
         
         for semester_index in range(self.num_future_semesters):
-            print(f"Semester {semester_index}:")
-            for course_id, course in self.courses.items():
-                
+            courses[semester_index] = []
+            for course_id in self.courses.keys():
                 if course_id not in self.course_vars[semester_index]:
                     continue
-                
                 if self.solver.Value(self.course_vars[semester_index][course_id]):
-                    
-                    if semester_index == 0:
-                        for slot_id in self.slot_vars[course_id]:
-                            if self.solver.Value(self.slot_vars[course_id][slot_id]):
-                                print(f"{self.slots[slot_id]:<15}", end=" ")
-                                break
-                    
-                    print(course['name'])
+                    courses[semester_index].append(course_id)
  
+        slot_map: Dict[CourseId, SlotId] = {}
+        for course_id in courses[0]:
+            for slot_id in self.slot_vars[course_id]:
+                if self.solver.Value(self.slot_vars[course_id][slot_id]):
+                    slot_map[course_id] = slot_id
+                    break
+        
+        result["slots"] = slot_map
+        result["courses"] = courses
+        
+        return result

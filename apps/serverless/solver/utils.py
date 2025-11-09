@@ -30,7 +30,7 @@ def load_courses_and_slots():
                 if slot not in slots:
                     slots.append(slot)
 
-                course["slots_ids"].append(slots.index(slot))
+                course["slots_ids"].append(slot)
 
             courses[course["id"]] = course
             
